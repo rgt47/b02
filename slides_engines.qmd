@@ -1,0 +1,233 @@
+---
+title: "Multi-Language Data Science"
+subtitle: "Combining R and Python in RMarkdown"
+author: "phb 243b"
+date: "March 12, 2025"
+format: 
+  revealjs:
+    theme: simple
+    slide-number: true
+    code-fold: false
+    incremental: false
+    transition: slide
+    background-transition: fade
+    highlight-style: github
+    footer: "Multi-Language Data Science with R and Python"
+---
+
+## Why Use Multiple Languages?
+
+- **Leverage strengths** of different ecosystems
+- **Reuse existing code** without rewriting
+- **Collaborate** across language preferences
+- **Choose optimal tools** for each task
+- **Learn new languages** while using familiar ones
+
+::: notes
+- R excels at statistical analysis and visualization
+- Python has strong machine learning and data manipulation libraries
+- Some tasks might be easier in one language than the other
+:::
+
+## RMarkdown: The Multi-Language Notebook
+
+- Seamlessly combine R, Python, SQL, Julia, and more
+- Uses the `reticulate` package for R-Python integration
+- Each code chunk can use a different language engine
+- Data objects can be shared between environments
+- Rendered into HTML, PDF, Word, presentations, etc.
+
+::: notes
+- RMarkdown is built on knitr and pandoc
+- Quarto is the next generation of RMarkdown
+- The reticulate package is what makes the Python integration possible
+:::
+
+## Setting Up the Environment {.smaller}
+
+```{r}
+#| echo: true
+#| eval: false
+
+# In R, load the necessary packages
+library(reticulate)  # Core package for R-Python integration
+library(ggplot2)     # For R visualizations
+library(dplyr)       # For R data manipulation
+
+# Configure Python (optional but recommended)
+use_python("/path/to/python")  # Specify Python installation
+use_virtualenv("my-env")       # Or use a virtual environment
+use_condaenv("my-conda-env")   # Or use a conda environment
+```
+
+::: notes
+- It's important to be explicit about which Python environment to use
+- This helps with reproducibility and avoiding conflicts
+- You can specify Python versions and environments in the YAML header too
+:::
+
+## Accessing R Objects from Python {.smaller}
+
+```{python}
+#| echo: true
+#| eval: false
+
+# The 'r' object provides access to the R environment
+penguins = r.penguins_clean  # Access an R dataframe
+
+# Check the data
+print(type(penguins))
+print(penguins.columns)
+print(penguins.head())
+
+# Use the data with Python libraries
+import matplotlib.pyplot as plt
+import numpy as np
+
+# The data is now ready for Python analysis
+```
+
+::: notes
+- The 'r' object is automatically created by reticulate
+- It provides access to any objects in the R global environment
+- Type conversions are handled automatically in most cases
+:::
+
+## Example: Penguin Visualization in R {.smaller}
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Create scatter plot with R and ggplot2
+ggplot(penguins_clean, aes(x = body_mass_g, y = bill_depth_mm, color = species)) +
+  geom_point(alpha = 0.8, size = 3) +
+  scale_color_manual(values = c("Adelie" = "darkorange", 
+                               "Chinstrap" = "purple", 
+                               "Gentoo" = "#008080")) +
+  labs(
+    title = "Bill Depth vs Body Mass by Penguin Species (R)",
+    x = "Body Mass (g)",
+    y = "Bill Depth (mm)",
+    color = "Species"
+  ) +
+  theme_minimal()
+```
+
+::: notes
+- ggplot2 provides a grammar of graphics approach
+- We explicitly map colors to species for consistency
+- This is the declarative approach common in R
+:::
+
+## Example: Penguin Visualization in Python {.smaller}
+
+```{python}
+#| echo: true
+#| eval: false
+
+# Create scatter plot with Python and matplotlib
+import matplotlib.pyplot as plt
+
+# Define colors for each species
+colors = {"Adelie": "darkorange", "Chinstrap": "purple", "Gentoo": "#008080"}
+
+# Create figure and axis
+fig, ax = plt.subplots(figsize=(8, 5))
+
+# Create scatter plot for each species
+for species in penguins['species'].unique():
+    species_data = penguins[penguins['species'] == species]
+    
+    ax.scatter(
+        species_data['body_mass_g'],
+        species_data['bill_depth_mm'],
+        c=colors[species],
+        label=species,
+        alpha=0.8,
+        s=80
+    )
+
+ax.set_title("Bill Depth vs Body Mass by Penguin Species (Matplotlib)")
+ax.set_xlabel("Body Mass (g)")
+ax.set_ylabel("Bill Depth (mm)")
+ax.legend(title="Species")
+ax.grid(True, linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+```
+
+::: notes
+- Matplotlib takes a more imperative approach
+- We need to iterate through species groups manually
+- The result is similar but the approach is different
+:::
+
+## Passing Objects Between Languages {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**R to Python**
+```{r}
+#| echo: true
+#| eval: false
+# Create in R
+mtcars_subset <- mtcars %>%
+  filter(cyl == 8) %>%
+  select(mpg, hp, wt)
+```
+
+```{python}
+#| echo: true
+#| eval: false
+# Use in Python
+cars = r.mtcars_subset
+print(cars.mean())
+```
+:::
+
+::: {.column width="50%"}
+**Python to R**
+```{python}
+#| echo: true
+#| eval: false
+# Create in Python
+import numpy as np
+import pandas as pd
+py_data = pd.DataFrame({
+  'x': np.random.normal(0, 1, 100),
+  'y': np.random.normal(5, 2, 100)
+})
+```
+
+```{r}
+#| echo: true
+#| eval: false
+# Use in R
+py_data <- py$py_data
+cor(py_data$x, py_data$y)
+```
+:::
+
+::::
+
+::: notes
+- Data types are automatically converted between languages
+- R data frames become pandas DataFrames
+- Python objects are accessed via the py variable in R
+:::
+
+## Data Type Conversions {.smaller}
+
+| R Type | Python Type |
+|--------|-------------|
+| vector | numpy array |
+| data.frame | pandas.DataFrame |
+| matrix | numpy.ndarray |
+| list | list or dict |
+| environment | dict |
+| function | function |
+| NULL | None |
+
+

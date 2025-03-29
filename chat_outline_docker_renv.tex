@@ -1,0 +1,308 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[left=3cm,right=3in,top=2cm,bottom=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Docker and renv strategy},
+  pdfauthor={R.G. Thomas},
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Docker and renv strategy}
+\author{R.G. Thomas}
+\date{}
+
+\begin{document}
+\maketitle
+
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\section{Introduction}\label{introduction}
+
+Reproducibility is a cornerstone of professional data analysis, yet
+achieving it with R Markdown can be challenging. R projects often break
+on other computers due to mismatched R versions or package versions,
+sending developers into ``dependency hell.'' To solve this, we can
+leverage \textbf{renv} (for R package management) and \textbf{Docker}
+(for containerizing the computing environment). Together, these tools
+ensure that an R Markdown document runs anywhere with the same packages,
+R version, and system libraries as the original setup. Below, we present
+a structured guide on using renv and Docker for a reproducible R
+Markdown workflow, with diagrams, code snippets, and clear steps.
+
+R is an open-source programming language for statistics and data
+science. The \textbf{renv} package helps create reproducible R project
+environments by isolating package dependencies.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Using renv for R Package
+Reproducibility}\label{using-renv-for-r-package-reproducibility}
+
+\textbf{renv} (Reproducible Environment) is an R package that manages
+library dependencies for your project. Instead of sharing one system
+library across projects, renv gives each project its own library of R
+packages and a lockfile (\texttt{renv.lock}) recording exact package
+versions. This means that if two developers use renv, they can install
+identical package versions for a project, avoiding version conflicts and
+``it works on my machine'' issues. In practice, renv makes it easy to
+\textbf{snapshot} your R packages and later \textbf{restore} them on any
+system.
+
+\subsubsection{Key Features of renv:}\label{key-features-of-renv}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Isolated project library}: renv creates a project-specific
+  library (usually in \texttt{renv/library}) containing all packages
+  used by that project. This isolation means updates in one project
+  won't affect others.
+\item
+  \textbf{Lockfile for dependencies}: When you finish installing or
+  updating packages, you call \texttt{renv::snapshot()}. This produces
+  \textbf{\texttt{renv.lock}}, a JSON file listing each package and the
+  exact version (and source) in use. The lockfile is meant to be
+  committed to version control and shared.
+\item
+  \textbf{Restoring environment}: On a new machine (or when reproducing
+  past results), you use \texttt{renv::restore()} to install the
+  \textbf{exact versions} of packages from the lockfile. This gives an R
+  environment \textbf{identical} to the one that created the lockfile,
+  as long as the same R version is available.
+\end{itemize}
+
+\subsubsection{Example: Using renv in an R
+Project}\label{example-using-renv-in-an-r-project}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Install and initialize renv in a new R project}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"renv"}\NormalTok{)      }\CommentTok{\# one{-}time installation of renv}
+\NormalTok{renv}\SpecialCharTok{::}\FunctionTok{init}\NormalTok{()                  }\CommentTok{\# initialize renv (creates renv infrastructure)}
+
+\CommentTok{\# ...After installing or updating some project{-}specific packages...}
+\NormalTok{renv}\SpecialCharTok{::}\FunctionTok{snapshot}\NormalTok{()              }\CommentTok{\# save exact package versions to renv.lock}
+
+\CommentTok{\# ...Later or on another system...}
+\NormalTok{renv}\SpecialCharTok{::}\FunctionTok{restore}\NormalTok{()               }\CommentTok{\# restore packages from renv.lock for reproducibility}
+\end{Highlighting}
+\end{Shaded}
+
+In an R Markdown workflow, you would: attach renv to the project, work
+on your \texttt{.Rmd} using whatever CRAN/Bioconductor packages needed,
+and finally snapshot the environment. The \texttt{renv.lock} file
+ensures that anyone with the lockfile can recreate the \textbf{same R
+package environment}. However, renv alone does \textbf{not lock the R
+version or system libraries} -- that's where Docker comes in.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Using Docker for OS-Level
+Reproducibility}\label{using-docker-for-os-level-reproducibility}
+
+While renv handles R packages, \textbf{Docker} takes care of the
+\textbf{operating system, R interpreter, and system libraries}. A Docker
+container is like a lightweight virtual machine image that includes
+everything needed to run your project: the specific OS (Linux
+distribution), exact R version, required system libraries (e.g.~C/C++
+libraries), and your R code. By running an R Markdown project in Docker,
+you ensure that differences in OS or R installation are no longer an
+issue -- any machine running Docker will run the container
+\emph{identically}.
+
+Docker allows you to \textbf{build an image} that encapsulates your
+environment. For R workflows, a common practice is to start from a base
+image (for example, the Rocker project provides images like
+\texttt{rocker/r-ver:\textless{}R-version\textgreater{}} for R). You
+then add your content and dependencies.
+
+\subsubsection{Example: A Simple Dockerfile for an R Markdown
+Project}\label{example-a-simple-dockerfile-for-an-r-markdown-project}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Use R 4.1.0 on Linux as base image}
+\KeywordTok{FROM}\NormalTok{ rocker/r{-}ver:4.1.0  }
+
+\CommentTok{\# Copy renv lockfile into the image}
+\KeywordTok{COPY}\NormalTok{ renv.lock /renv.lock}
+
+\CommentTok{\# Install renv and restore packages from lockfile}
+\KeywordTok{RUN} \ExtensionTok{R} \AttributeTok{{-}e} \StringTok{"install.packages(\textquotesingle{}renv\textquotesingle{}, repos=\textquotesingle{}https://cloud.r{-}project.org\textquotesingle{}); renv::restore()"}  
+
+\CommentTok{\# Copy the rest of the project (e.g., R Markdown files)}
+\KeywordTok{COPY}\NormalTok{ . /workspace}
+
+\CommentTok{\# Set working directory and default command (if needed)}
+\KeywordTok{WORKDIR}\NormalTok{ /workspace}
+\KeywordTok{CMD}\NormalTok{ [}\StringTok{"Rscript"}\NormalTok{, }\StringTok{"{-}e"}\NormalTok{, }\StringTok{"rmarkdown::render(\textquotesingle{}analysis.Rmd\textquotesingle{})"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+In the snippet above, the Docker image will install the exact package
+versions from \texttt{renv.lock}. The \texttt{renv::restore()} command
+inside \texttt{RUN} will install all the R packages (and exact versions)
+listed in the lockfile into the image's R library.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Combining renv and Docker in R Markdown
+Workflows}\label{combining-renv-and-docker-in-r-markdown-workflows}
+
+Using renv or Docker alone improves reproducibility, but
+\textbf{combining them gives the best of both worlds}. Docker will
+guarantee the OS and R version, and renv will guarantee the R packages.
+Together, you achieve \textbf{end-to-end reproducibility} --- from
+operating system all the way to the R code's package versions.
+
+\subsubsection{Steps to Integrate renv with
+Docker:}\label{steps-to-integrate-renv-with-docker}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Develop with renv}: Start a new R project for your R Markdown
+  analysis and run \texttt{renv::init()}. Install all the R packages
+  your \texttt{.Rmd} needs. Periodically run \texttt{renv::snapshot()}
+  to update the lockfile.
+\item
+  \textbf{Write a Dockerfile}: Define the base image (e.g.,
+  \texttt{FROM\ rocker/r-ver:4.1.0}), copy the \texttt{renv.lock},
+  install dependencies, and set up the project.
+\item
+  \textbf{Build the Docker image}: Run
+  \texttt{docker\ build\ -t\ myanalysis/image:v1\ .} to create the
+  image.
+\item
+  \textbf{Share the image}: Push it to Docker Hub or share the file, so
+  others can pull and run it.
+\item
+  \textbf{Run anywhere with confidence}: The container ensures
+  consistency across machines without additional manual setup.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Conclusion}\label{conclusion}
+
+By incorporating \textbf{renv} and \textbf{Docker}, an R Markdown
+project becomes \textbf{easy to share and fully reproducible}. The
+original author can provide a Docker image (or Dockerfile) along with
+the R Markdown and \texttt{renv.lock}. A collaborator or reviewer can
+launch the container and get the \textbf{same results}, without worrying
+about package versions or system setup. This approach is considered a
+\textbf{best practice for long-term reproducibility in R}.
+
+Together, \textbf{renv and Docker} ensure that your R Markdown analyses
+are \textbf{completely reproducible and portable}, meeting the high
+standards required for professional data science and research
+documentation.
+
+\end{document}

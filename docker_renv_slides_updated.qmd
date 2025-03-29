@@ -1,0 +1,129 @@
+---
+title: "Reproducible R Development with Docker and renv"
+author: "phb 243b"
+date: "`r Sys.Date()`"
+format: revealjs
+fontsize: 20pt
+code-block-font-size: 90%
+---
+
+## Introduction
+- Ensuring reproducibility in R Markdown can be challenging.
+- Package version mismatches and OS differences cause issues.
+- Solution: **renv** (package management) + **Docker** (containerization).
+
+## Workflow Overview
+- Developer 1: Sets up **renv** & Docker, pushes to GitHub & DockerHub.
+- Developer 2: Clones repo, pulls Docker image, runs & modifies analysis.
+- Uses **bind mounting** to ensure local files persist.
+
+## Developer 1 - Setup GitHub Repository
+```sh
+git clone https://github.com/username/penguins-analysis.git
+cd penguins-analysis
+```
+
+## Developer 1 - Initialize renv
+```r
+install.packages("renv")
+renv::init()
+```
+- Creates **renv.lock** to track package versions.
+
+## Developer 1 - Install Required Packages
+```r
+install.packages("ggplot2")
+install.packages("palmerpenguins")
+renv::snapshot()
+```
+- **renv::snapshot()** saves exact package versions.
+
+## Developer 1 - Create Dockerfile
+```dockerfile
+FROM rocker/r-ver:4.1.0
+WORKDIR /workspace
+RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+COPY renv.lock renv/activate.R /workspace/
+RUN R -e "renv::restore()"
+CMD ["/bin/bash"]
+```
+- **Does NOT include peng1.Rmd** (handled locally by Developer 2).
+
+## Developer 1 - Build & Push Docker Image
+```sh
+docker build -t username/penguins-analysis:v1 .
+docker login
+docker push username/penguins-analysis:v1
+```
+- Image now available on **DockerHub**.
+
+## Developer 1 - Push to GitHub
+```sh
+git add .
+git commit -m "Initial renv setup and Docker environment (without Rmd)"
+git push origin main
+```
+
+## Developer 2 - Clone & Pull Docker Image
+```sh
+git clone https://github.com/username/penguins-analysis.git
+cd penguins-analysis
+docker pull username/penguins-analysis:v1
+```
+
+## Developer 2 - Run Docker Interactively
+```sh
+docker run --rm -it -v "$(pwd):/workspace" -w /workspace username/penguins-analysis:v1 /bin/bash
+```
+- Mounts **local repository** to `/workspace` inside the container.
+
+## Developer 2 - Write peng1.Rmd
+```rmd
+---
+title: "Palmer Penguins Analysis"
+author: "Developer 2"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(palmerpenguins)
+
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_point() + theme_minimal()
+```
+```
+
+## Developer 2 - Render R Markdown
+```r
+rmarkdown::render("peng1.Rmd")
+```
+- Output **peng1.html** is saved **locally** (due to bind mount).
+
+## Developer 2 - Extend Analysis & Push to GitHub
+```rmd
+## Body Mass vs. Bill Length
+
+```{r}
+ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() + theme_minimal()
+```
+```
+
+```sh
+git add peng1.Rmd
+git commit -m "Added second plot: Body Mass vs. Bill Length"
+git push origin main
+```
+
+## Conclusion
+✅ **renv** ensures package reproducibility.  
+✅ **Docker** ensures OS & R version consistency.  
+✅ **GitHub** & **DockerHub** enable collaboration.  
+✅ **Bind mounting** ensures local modifications persist.  
+
+## Thank You! 🚀
+- Questions?  
+- Try setting up your own Dockerized R environment!
+
