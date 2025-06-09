@@ -1,0 +1,24 @@
+ideas for 2026 course. 
+
+30 students
+18 lectures
+
+goals
+get teams working together
+apply a full gammet of skills
+work on presentation skills
+
+reproducibility work
+develop a list of data analysis skills
+get list of Xin's topics
+review Loki's Rmd files
+consider the TidyTuesday data sets
+
+want to have student presentations 16 out of 18 days. 
+want smaller teams 3 at the most. maybe divide effort into 
+1) manage repo and presentation process (AV system)
+2) prepare presentation (quarto) slides and speakers notes
+3) prepare code and analysis
+
+Rotate assignments so everyone does 3 code and analysis parts. 
+
