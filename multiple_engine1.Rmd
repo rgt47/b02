@@ -13,9 +13,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(palmerpenguins)
 library(ggplot2)
 library(dplyr)
-library(reticulate)
-
-# Clean data for plotting
+library(ggplot2)
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +                               geom_point() 
+f# Clean data for plotting
 data(penguins)
 penguins_clean <- penguins %>% 
   drop_na(bill_depth_mm, body_mass_g, species)
