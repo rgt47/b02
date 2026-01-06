@@ -1,7 +1,14 @@
 ---
 title: "Essential Team Science Skills for Biostatisticians"
-subtitle: "Based on Slade et al. (2023)"
-author: "Journal of Clinical and Translational Science"
+subtitle: "PHB 243b - Practicum in Biostatistics"
+author:
+  - name: "Ronald G. Thomas, PhD"
+    affiliation: "Instructor"
+    email: "rgthomas@ucsd.edu"
+  - name: "Man Luo"
+    affiliation: "TA"
+    email: "maluo@ucsd.edu"
+date: "Winter Quarter 2026"
 format:
   revealjs:
     theme: default
