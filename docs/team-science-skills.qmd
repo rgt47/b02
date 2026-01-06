@@ -1,6 +1,5 @@
 ---
-title: "Essential Team Science Skills for Biostatisticians"
-subtitle: "PHB 243b - Practicum in Biostatistics"
+title: "PHB 243b - Practicum in Biostatistics"
 author:
   - name: "Ronald G. Thomas, PhD"
     affiliation: "Instructor"
@@ -8,7 +7,7 @@ author:
   - name: "Man Luo"
     affiliation: "TA"
     email: "maluo@ucsd.edu"
-date: "Winter Quarter 2026"
+date: "1/6/26"
 format:
   revealjs:
     theme: default
