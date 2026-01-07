@@ -158,7 +158,7 @@ Laptops and tablets are welcome in class for note-taking and data analysis. Howe
 
 All work submitted in this course must be your own and produced exclusively for this course. Academic dishonesty, including plagiarism, cheating, and unauthorized collaboration, will not be tolerated. While discussion of concepts and approaches is encouraged, sharing code for assignments is prohibited unless explicitly stated otherwise.
 
-The use of sources (ideas, quotations, paraphrases, and code) must be properly acknowledged and documented. If in doubt, you are encouraged to review guidelines for the proper use of sources, as well as the UCSD policy on plagiarism and other forms of academic misconduct. It is your responsibility to know what constitutes academic misconduct at UCSD.
+The use of sources (ideas, quotations, paraphrases, and code) must be properly acknowledged and documented. If in doubt, you are encouraged to review guidelines for the proper use of sources, as well as the UCSD policy on plagiarism and other forms of academic misconduct. It is your responsibility to know what constitutes academic misconduct at UCSD. The instructor is professionally and ethically responsible to report all possible integrity violations to the Academic Integrity Office.
 
 UCSD's definition of academic misconduct can be found at: http://students.ucsd.edu/academics/academic-integrity/defining.html
 
