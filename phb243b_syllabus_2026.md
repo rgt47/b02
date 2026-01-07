@@ -11,6 +11,8 @@
 -   **Email:** rgthomas@ucsd.edu
 -   **Office:** MTF 180b
 -   **Office Hours:** by appointment
+-   **Teaching Assistant:** Man Luo
+-   **TA Email:** maluo@ucsd.edu
 -   **Course Time:** Tuesday and Thursday, 9:30--10:50 AM
 -   **Location:** Pepper Canyon Hall 245
 -   **Units:** 4
@@ -18,7 +20,7 @@
 
 ### Course Description
 
-This is the second course in a three-course sequence specifically designed for students enrolled in the MS in biostatistics program. It takes advantage of the extensive involvement of the program faculty in collaborative and interdisciplinary work within the life sciences. A key goal is instruction on best practices in statistical collaboration.
+This is the second course in a three-course sequence specifically designed for students enrolled in the MS in biostatistics program. Key goals are instruction on best practices in statistical collaboration and reproducible research.
 
 ### Learning Outcomes
 
@@ -87,35 +89,28 @@ https://journals.lww.com/anesthesia-analgesia/fulltext/2013/09000/a_randomized,_
 
 - R (latest version) and RStudio Desktop
 - Git and GitHub account
-- Additional R packages (installation instructions provided in Canvas):
-  - tidyverse (includes ggplot2, dplyr, etc.)
-  - data.table
-  - Matrix
-  - purrr
-  - rmarkdown
-  - knitr
 
 ## Class Schedule
 
 | **Tuesday**                      | **Thursday**                         |
 |----------------------------------|--------------------------------------|
-| **Jan 6** Introduction           | **Jan 8** Assign Project 1 (P1)      |
-| **Jan 13** Lecture and Lab       | **Jan 15** Present P1 Plan           |
-| **Jan 20** Lecture and Lab       | **Jan 22** Present P1 Report         |
-| **Jan 27** Lecture and Lab       | **Jan 29** Assign Project 2 (P2)     |
-| **Feb 3** Lecture and Lab        | **Feb 5** Present P2 Plan            |
-| **Feb 10** Lecture and Lab       | **Feb 12** Present P2 Report         |
-| **Feb 17** Lecture and Lab       | **Feb 19** Assign Project 3 (P3)     |
-| **Feb 24** Lecture and Lab       | **Feb 26** Present P3 Plan           |
-| **Mar 3** Lecture and Lab        | **Mar 5** Present P3 Report          |
-| **Mar 10** Lecture and Lab       | **Mar 12** Review                    |
+| **Jan 6** Introductions          | **Jan 8** Introduction to Reproducible Research |
+| **Jan 13** renv and Docker       | **Jan 15** Git and GitHub            |
+| **Jan 20** Assign Project 1 (Penguins) | **Jan 22** Present P1 Plan       |
+| **Jan 27** Present P1 Report     | **Jan 29** Test 1                    |
+| **Feb 3** Assign Project 2 (ADNI) | **Feb 5** Present P2 Plan           |
+| **Feb 10** Present P2 Report     | **Feb 12** Lecture and Lab           |
+| **Feb 17** Assign Project 3 (Policing) | **Feb 19** Present P3 Plan      |
+| **Feb 24** Present P3 Report     | **Feb 26** Lecture and Lab           |
+| **Mar 3** Assign Project 4 (Licorice) | **Mar 5** Present P4 Plan        |
+| **Mar 10** Present P4 Report     | **Mar 12** Test 2                    |
 
 ## Assessment and Grading
 
 | **Component**                                | **Percentage** |
 |----------------------------------------------|----------------|
-| Preparation and Presentation of Plans (3)    | 30%            |
-| Preparation and Presentation of Reports (3)  | 30%            |
+| Preparation and Presentation of Plans (4)    | 30%            |
+| Preparation and Presentation of Reports (4)  | 30%            |
 | Tests                                        | 30%            |
 | Class Attendance and Participation           | 10%            |
 
