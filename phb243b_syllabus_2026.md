@@ -9,6 +9,7 @@
 
 -   **Instructor:** Ronald G. Thomas, PhD
 -   **Email:** rgthomas@ucsd.edu
+-   **GitHub:** @rgt47
 -   **Office:** MTF 180b
 -   **Office Hours:** by appointment
 -   **Teaching Assistant:** Man Luo
@@ -82,12 +83,11 @@ A Randomized, Double-Blind Comparison of Licorice Versus Sugar-Water
 Gargle for Prevention of Postoperative Sore Throat and Postextubation
 Coughing
 
-Anesthesia & Analgesia:
-https://journals.lww.com/anesthesia-analgesia/fulltext/2013/09000/a_randomized,_double_blind_comparison_of_licorice.12.aspx
+Anesthesia & Analgesia: <https://pubmed.ncbi.nlm.nih.gov/23921656/>
 
 ### Required Software:
 
-- R (latest version) and RStudio Desktop
+- R (latest version)
 - Git and GitHub account
 
 ## Class Schedule
@@ -97,13 +97,13 @@ https://journals.lww.com/anesthesia-analgesia/fulltext/2013/09000/a_randomized,_
 | **Jan 6** Introductions          | **Jan 8** Introduction to Reproducible Research |
 | **Jan 13** renv and Docker       | **Jan 15** Git and GitHub            |
 | **Jan 20** Assign Project 1 (Penguins) | **Jan 22** Present P1 Plan       |
-| **Jan 27** Present P1 Report     | **Jan 29** Test 1                    |
+| **Jan 27** Test 1                | **Jan 29** Present P1 Report         |
 | **Feb 3** Assign Project 2 (ADNI) | **Feb 5** Present P2 Plan           |
-| **Feb 10** Present P2 Report     | **Feb 12** Lecture and Lab           |
+| **Feb 10** Lecture and Lab       | **Feb 12** Present P2 Report         |
 | **Feb 17** Assign Project 3 (Policing) | **Feb 19** Present P3 Plan      |
-| **Feb 24** Present P3 Report     | **Feb 26** Lecture and Lab           |
+| **Feb 24** Lecture and Lab       | **Feb 26** Present P3 Report         |
 | **Mar 3** Assign Project 4 (Licorice) | **Mar 5** Present P4 Plan        |
-| **Mar 10** Present P4 Report     | **Mar 12** Test 2                    |
+| **Mar 10** Test 2                | **Mar 12** Present P4 Report         |
 
 ## Assessment and Grading
 
