@@ -56,7 +56,22 @@ Predicting conversion to Alzheimer's disease in individuals with Mild
 Cognitive Impairment using clinically transferable features \|
 Scientific Reports https://www.nature.com/articles/s41598-022-18805-5
 
-### 3. Licorice Gargle
+### 3. Stanford Open Policing Project
+
+**Data Page:** https://openpolicing.stanford.edu/data/
+
+Standardized data on vehicle and pedestrian stops from law enforcement
+departments across the United States.
+
+Rivera R, Rosenbaum J. Racial disparities in police stops in US cities.
+*Significance*. 2020;17(4):4-5.
+https://rss.onlinelibrary.wiley.com/doi/full/10.1111/1740-9713.01412
+
+Pierson E, Simoiu C, Overgoor J, et al. A large-scale analysis of racial
+disparities in police stops across the United States. *Nature Human Behaviour*.
+2020;4(7):736-745. https://doi.org/10.1038/s41562-020-0858-1
+
+### 4. Licorice Gargle
 
 **An R Package Of Medical Data For Teaching • medicaldata**
 <https://higgi13425.github.io/medicaldata/>
@@ -66,7 +81,7 @@ Gargle for Prevention of Postoperative Sore Throat and Postextubation
 Coughing
 
 Anesthesia & Analgesia:
-https://journals.lww.com/anesthesia-analgesia/FullText/2013/09000/A_Randomized,\_Double_Blind_Comparison_of_Licorice.12.aspx
+https://journals.lww.com/anesthesia-analgesia/fulltext/2013/09000/a_randomized,_double_blind_comparison_of_licorice.12.aspx
 
 ### Required Software:
 
@@ -99,9 +114,10 @@ https://journals.lww.com/anesthesia-analgesia/FullText/2013/09000/A_Randomized,\
 
 | **Component**                                | **Percentage** |
 |----------------------------------------------|----------------|
-| Preparation and Presentation of Plans (3)    | 40%            |
-| Preparation and Presentation of Reports (3)  | 40%            |
-| Class Attendance and Participation           | 20%            |
+| Preparation and Presentation of Plans (3)    | 30%            |
+| Preparation and Presentation of Reports (3)  | 30%            |
+| Tests                                        | 30%            |
+| Class Attendance and Participation           | 10%            |
 
 **Presentations graded pass/fail.** Lowest presentation grade will be dropped.
 
