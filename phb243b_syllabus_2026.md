@@ -11,8 +11,8 @@
 -   **Email:** rgthomas@ucsd.edu
 -   **Office:** MTF 180b
 -   **Office Hours:** by appointment
--   **Course Time:** Monday and Wednesday, 9:00--10:20 AM
--   **Location:** MET 315
+-   **Course Time:** Tuesday and Thursday, 9:30--10:50 AM
+-   **Location:** Pepper Canyon Hall 245
 -   **Units:** 4
 -   **Prerequisites:** PHB 221 and PHB 243A
 
@@ -82,18 +82,18 @@ https://journals.lww.com/anesthesia-analgesia/FullText/2013/09000/A_Randomized,\
 
 ## Class Schedule
 
-| **Monday**                       | **Wednesday**                        |
+| **Tuesday**                      | **Thursday**                         |
 |----------------------------------|--------------------------------------|
-| **Jan 5** Introduction           | **Jan 7** Assign Project 1 (P1)      |
-| **Jan 12** Lecture and Lab       | **Jan 14** Present P1 Plan           |
-| **Holiday**                      | **Jan 21** Present P1 Report         |
-| **Jan 26** Lecture and Lab       | **Jan 28** Assign Project 2 (P2)     |
-| **Feb 2** Lecture and Lab        | **Feb 4** Present P2 Plan            |
-| **Feb 9** Lecture and Lab        | **Feb 11** Present P2 Report         |
-| **Holiday**                      | **Feb 18** Assign Project 3 (P3)     |
-| **Feb 23** Lecture and Lab       | **Feb 25** Present P3 Plan           |
-| **Mar 2** Lecture and Lab        | **Mar 4** Present P3 Report          |
-| **Mar 9** Lecture and Lab        | **Mar 11** Review                    |
+| **Jan 6** Introduction           | **Jan 8** Assign Project 1 (P1)      |
+| **Jan 13** Lecture and Lab       | **Jan 15** Present P1 Plan           |
+| **Jan 20** Lecture and Lab       | **Jan 22** Present P1 Report         |
+| **Jan 27** Lecture and Lab       | **Jan 29** Assign Project 2 (P2)     |
+| **Feb 3** Lecture and Lab        | **Feb 5** Present P2 Plan            |
+| **Feb 10** Lecture and Lab       | **Feb 12** Present P2 Report         |
+| **Feb 17** Lecture and Lab       | **Feb 19** Assign Project 3 (P3)     |
+| **Feb 24** Lecture and Lab       | **Feb 26** Present P3 Plan           |
+| **Mar 3** Lecture and Lab        | **Mar 5** Present P3 Report          |
+| **Mar 10** Lecture and Lab       | **Mar 12** Review                    |
 
 ## Assessment and Grading
 
@@ -165,6 +165,17 @@ UCSD's definition of academic misconduct can be found at: http://students.ucsd.e
 The official university policy on the Integrity of Scholarship can be found at: http://students.ucsd.edu/_files/Academic-Integrity/Policy-on-Integrity-of-Scholarship_eff-fall2009.pdf
 
 For more information, please refer to UCSD's Academic Integrity Office: https://academicintegrity.ucsd.edu/
+
+## AI Use Policy
+
+Use of AI tools (such as ChatGPT, Claude, Copilot, etc.) is permitted in this course, provided that proper credit is given. When using AI assistance for analysis plans, reports, or code:
+
+- Cite the AI tool used and the explicit prompts that were provided
+- Clearly distinguish your original contribution from AI-generated content
+- You remain responsible for the accuracy and quality of all submitted work
+- AI-generated content should be reviewed, understood, and verified before submission
+
+The goal is to learn how to use these tools effectively and transparently as part of modern biostatistical practice, not to substitute them for your own understanding and critical thinking.
 
 ## Accommodation for Students with Disabilities
 
