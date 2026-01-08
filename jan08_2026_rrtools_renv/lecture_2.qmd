@@ -1,0 +1,548 @@
+---
+title: "PHB 228: Statistical Computing"
+subtitle: "Lecture 19: Course Review"
+author: "Dr. Ronald G. Thomas"
+date: "Spring Quarter 2025"
+format-notes: "Slides marked as 'REFERENCE ONLY' are included as learning resources for students and are placed at the end of the presentation"
+format:
+  revealjs:
+    # filters:
+    #   - student-filter.lua
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    slideNumber: true
+    smaller: false
+    css: custom.css    # Link your custom CSS file here
+    # pandoc-lua-filters: [strip-notes.lua]
+    # show-notes: false
+    title-slide-attributes:
+      data-background-image: "ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
+
+## Instructor Information {.smaller}
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: Mondays & Wednesdays, 11:00 AM - 12:00 PM
+- **TA**: Man Luo
+- **Email**: maluo@ucsd.edu
+- **Office Hours**: Wednesdays, 3:00 PM - 5:00 PM
+
+:::{.notes}
+- Welcome students to the final lecture of the quarter
+- Remind them of availability for final questions during office hours
+- Emphasize that learning continues beyond this course
+:::
+
+## Lecture 19: Course Review {.subtitle}
+
+## Today's Agenda {.smaller}
+
+1. Journey Through Statistical Computing
+2. Programming Foundations Review
+3. Version Control and Reproducibility
+4. Matrix Computation and Optimization
+5. Statistical Model Implementation
+6. Integration and Future Learning
+
+:::{.notes}
+- Explain that today is about synthesis, not introducing new material
+- Note connections between topics covered throughout the quarter
+- Emphasize practical applications in biostatistical research
+- Prepare students for continued learning beyond this course
+:::
+
+::: {.fragment .question}
+**Question:** What has been the most transformative concept you've learned in statistical computing this quarter?
+:::
+
+::: {.fragment .answer}
+**Answer:** "The shift from thinking in loops to thinking in vectors completely changed how I approach data analysis. It's not just faster code - it's a fundamentally different way of conceptualizing computational problems in statistics."
+:::
+
+## Journey Through Statistical Computing {.smaller}
+
+- Four foundational pillars that support modern biostatistical practice
+- Programming Foundations: R mastery, vectorization, functional programming
+- Computational Methods: Matrix operations, optimization, simulation
+- Statistical Implementation: Linear models, GLMs, mixed-effects models
+- Research Workflow: Version control, visualization, reproducible research
+
+:::{.callout-note}
+These four areas interconnect in practice - mastery comes from applying them together, not in isolation.
+:::
+
+:::{.notes}
+- Emphasize how these four areas interconnect in practice
+- Note that mastery comes from applying these together, not in isolation
+- Remind students that each area supports the others
+- Consider asking students which connections they found most surprising
+- Highlight that this foundation prepares them for advanced biostatistical research
+:::
+
+::: {.fragment .question}
+**Question:** How do these four pillars work together in a typical biostatistical research project?
+:::
+
+::: {.fragment .answer}
+**Answer:** "In my thesis project, I used version control to manage my analysis pipeline, matrix operations to implement a custom mixed-effects model, simulation to validate the method's performance, and visualization to communicate results. Each pillar supported the others throughout the entire research process."
+:::
+
+## Programming Foundations Review {.smaller}
+
+- Key progression from basic scripts to sophisticated computational tools
+- Vectorization: Moving beyond loops to R's natural computational style
+- Functional Programming: Using functions as building blocks for complex analyses
+- Memory Management: Understanding R's copy-on-modify behavior
+- Code Organization: From scripts to well-structured, documented functions
+
+```r
+# Evolution from loop-based to vectorized thinking
+# Before: element-wise operations
+result <- numeric(length(x))
+for(i in seq_along(x)) {
+  result[i] <- x[i]^2 + log(x[i])
+}
+
+# After: vectorized operations
+result <- x^2 + log(x)
+```
+
+:::{.notes}
+- Emphasize the shift from "making R work" to "thinking in R"
+- Discuss how vectorization fundamentally changes computational efficiency
+- Highlight the importance of functional programming for reproducible research
+- Note that understanding memory management prevents common performance issues
+- Connect this to the broader theme of writing code that others can understand and use
+:::
+
+::: {.fragment .question}
+**Question:** What's the difference between writing R code that works and writing R code that's efficient and maintainable?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Working code gets the job done once, but efficient and maintainable code uses R's vectorization naturally, has clear function structure with proper documentation, and can be easily understood and modified by others - including your future self six months later."
+:::
+
+## Version Control and Reproducibility {.smaller}
+
+- Essential for biostatistical research transparency and collaboration
+- Transparency: Complete history of analytical decisions
+- Collaboration: Multiple researchers working on shared projects
+- Reproducibility: Anyone can recreate your exact analysis
+- Recovery: Never lose work or wonder "what did I change?"
+
+```r
+# Example of reproducible analysis structure
+# analysis/
+#   ├── data-raw/          # Original data and processing scripts
+#   ├── R/                 # Analysis functions
+#   ├── reports/           # Reproducible reports
+#   ├── tests/             # Unit tests for functions
+#   └── README.md          # Project documentation
+```
+
+:::{.notes}
+- Emphasize that version control is about more than backing up code
+- Discuss how this supports the scientific method through reproducibility
+- Note the career benefits - industry and academia both expect these skills
+- Remind students that good practices become habit with consistent use
+- Connect to broader themes of scientific integrity and open science
+:::
+
+::: {.fragment .question}
+**Question:** Why is reproducibility crucial for the scientific credibility of biostatistical research?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Reproducibility ensures that other researchers can verify our findings, regulatory agencies can audit our methods for drug approvals, and we can defend our analytical choices. It's the foundation of scientific integrity in an era where computational methods drive biomedical discoveries."
+:::
+
+## Matrix Computation Foundations {.smaller}
+
+- Mathematical foundation for virtually all statistical methods
+- Linear Models: $\boldsymbol{y} = \boldsymbol{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}$
+- Optimization: Gradient descent, Newton-Raphson methods
+- Decompositions: SVD, Cholesky for numerical stability
+- Efficiency: Vectorized operations vs. element-wise loops
+
+```r
+# Matrix operations in statistical computing
+# Linear regression via matrix operations
+beta_hat <- solve(t(X) %*% X) %*% t(X) %*% y
+
+# More numerically stable approach
+qr_decomp <- qr(X)
+beta_hat <- qr.coef(qr_decomp, y)
+```
+
+:::{.notes}
+- Emphasize that matrices aren't just mathematical abstractions - they're computational tools
+- Discuss how understanding matrix operations helps debug statistical code
+- Note the performance benefits of matrix operations over loops
+- Connect to the broader theme that statistical methods are implemented through linear algebra
+- Highlight how this knowledge helps in understanding statistical software output
+:::
+
+::: {.fragment .question}
+**Question:** How does understanding matrix decompositions improve your statistical computing practice?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Understanding QR decomposition helped me realize why my regression was failing with collinear predictors, and knowing about Cholesky decomposition explained why mixed-effects models sometimes don't converge. It's not just theory - it's practical troubleshooting knowledge."
+:::
+
+## Optimization in Statistical Practice {.smaller}
+
+- Encountered whenever we fit models: maximum likelihood, least squares, regularization
+- GLM Fitting: Iteratively reweighted least squares
+- Mixed Models: REML estimation of variance components
+- Regularization: LASSO, Ridge regression penalty optimization
+- Custom Models: Likelihood-based estimation for novel methods
+
+```r
+# Custom optimization example
+loglik <- function(params, data) {
+  # Define log-likelihood function
+  mu <- params[1]
+  sigma <- exp(params[2])  # Ensure positive
+  -sum(dnorm(data, mu, sigma, log = TRUE))
+}
+
+# Optimization
+result <- optim(c(0, 0), loglik, data = my_data)
+```
+
+:::{.notes}
+- Emphasize that optimization is often "under the hood" in statistical functions
+- Discuss how understanding optimization helps troubleshoot convergence issues
+- Note the importance of starting values and algorithm choice
+- Connect to the theme that statistical computing often involves numerical approximation
+- Highlight career relevance - many biostatistics positions involve custom model development
+:::
+
+::: {.fragment .question}
+**Question:** When might a biostatistician need to implement custom optimization rather than using built-in functions?
+:::
+
+::: {.fragment .answer}
+**Answer:** "In my research on adaptive clinical trials, existing functions couldn't handle the dynamic allocation rules we needed. I had to implement custom optimization for the likelihood function, which required understanding convergence criteria and starting values - skills that proved essential for method development."
+:::
+
+## Simulation Studies and Bootstrap {.smaller}
+
+- Evaluate method performance and provide inference when theory falls short
+- Method Development: Testing new statistical procedures
+- Power Analysis: Planning clinical trials and observational studies
+- Sensitivity Analysis: Assessing robustness of conclusions
+- Bootstrap Inference: Confidence intervals when distributional assumptions fail
+
+```r
+# Bootstrap confidence interval example
+bootstrap_stat <- function(data, indices) {
+  sample_data <- data[indices]
+  # Calculate statistic of interest
+  return(median(sample_data))
+}
+
+boot_results <- boot(original_data, bootstrap_stat, R = 1000)
+boot.ci(boot_results, type = "perc")
+```
+
+:::{.notes}
+- Emphasize that simulation is both a research tool and a method evaluation approach
+- Discuss how bootstrap methods democratize statistical inference
+- Note the importance of realistic simulation scenarios that match actual data challenges
+- Connect to regulatory science - FDA often requires simulation studies for method validation
+- Highlight how these methods support evidence-based statistical practice
+:::
+
+::: {.fragment .question}
+**Question:** How do simulation studies support the development and validation of new biostatistical methods?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Simulation lets us test methods under controlled conditions where we know the true answer. For my survival analysis method, I simulated datasets with known hazard ratios to verify that my estimator was unbiased and had proper coverage before applying it to real clinical trial data."
+:::
+
+## Statistical Model Implementation {.smaller}
+
+- Understanding implementation distinguishes from using black-box software
+- Linear Models: From `lm()` to matrix implementations
+- GLMs: Understanding link functions and estimation
+- Mixed-Effects Models: Random effects structure and estimation challenges
+- Custom Extensions: Adapting existing methods for biostatistical applications
+
+::: {.panel-tabset}
+### Built-in Function
+```r
+# Using lm() function
+model <- lm(y ~ x1 + x2, data = mydata)
+summary(model)
+```
+
+### Matrix Implementation
+```r
+# Manual matrix implementation
+X <- model.matrix(~ x1 + x2, data = mydata)
+y <- mydata$y
+beta_hat <- solve(t(X) %*% X) %*% t(X) %*% y
+residuals <- y - X %*% beta_hat
+```
+:::
+
+:::{.notes}
+- Emphasize that understanding implementation helps interpret output correctly
+- Discuss how manual implementation deepens understanding of model assumptions
+- Note the career advantage of being able to modify and extend existing methods
+- Connect to the theme that biostatistics often requires method adaptation for specific applications
+- Highlight troubleshooting skills - knowing what can go wrong and why
+:::
+
+::: {.fragment .question}
+**Question:** What advantages come from implementing statistical methods manually rather than relying solely on built-in functions?
+:::
+
+::: {.fragment .answer}
+**Answer:** "When I implemented logistic regression from scratch, I finally understood why separation causes convergence issues and how regularization helps. This knowledge helped me troubleshoot a complex analysis where the built-in function was failing, and I could modify the algorithm to handle the specific data structure."
+:::
+
+## Data Visualization Evolution {.smaller}
+
+- From basic plots to principled, publication-ready graphics
+- Grammar of Graphics: Systematic approach via `ggplot2`
+- Design Principles: Clarity, accuracy, and aesthetic appeal
+- Interactive Elements: `plotly` and `shiny` for exploration
+- Statistical Graphics: Diagnostic plots, model visualization
+
+```r
+# Evolution of visualization approach
+# Before: Basic plotting
+plot(x, y)
+abline(lm(y ~ x))
+
+# After: Grammar of graphics
+ggplot(data, aes(x = x, y = y)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Relationship between X and Y",
+       x = "Predictor Variable", y = "Response Variable") +
+  theme_minimal()
+```
+
+:::{.notes}
+- Emphasize that good visualization is about effective scientific communication
+- Discuss how interactive elements support exploratory data analysis
+- Note the importance of diagnostic plots in model validation
+- Connect to career skills - ability to communicate statistical findings visually
+- Highlight that effective graphics can make or break research presentations and publications
+:::
+
+::: {.fragment .question}
+**Question:** How has your approach to data visualization changed throughout this course?
+:::
+
+::: {.fragment .answer}
+**Answer:** "I moved from creating whatever plot I could get to work, to thinking systematically about what story the data should tell. Now I consider the audience, choose appropriate visual encodings, and create graphics that support scientific communication rather than just displaying numbers."
+:::
+
+## Integration: Putting It All Together {.smaller}
+
+- Modern biostatistical projects require orchestrating all elements simultaneously
+- Typical Project Workflow:
+  1. Version Control: Initialize repository, plan collaboration
+  2. Data Management: Efficient structures, quality checks
+  3. Statistical Analysis: Model fitting, diagnostics, validation
+  4. Simulation: Method evaluation, sensitivity analysis
+  5. Visualization: Results communication, diagnostic graphics
+  6. Documentation: Reproducible reports, package development
+
+:::{.callout-note}
+Professional Reality: Biostatisticians are computational scientists who integrate statistical theory with computing practice.
+:::
+
+:::{.notes}
+- Emphasize that real projects don't use these skills in isolation
+- Discuss how computational skills distinguish modern biostatisticians
+- Note the importance of workflow planning and project organization
+- Connect to the scientific method - these tools support rigorous, reproducible research
+- Highlight career preparation - these are the skills employers expect
+:::
+
+::: {.fragment .question}
+**Question:** How do you prioritize and coordinate these different computational skills in a complex research project?
+:::
+
+::: {.fragment .answer}
+**Answer:** "I start with version control and project structure, then build analysis functions with proper testing, use simulation to validate approaches before applying to real data, and create visualizations throughout to understand what's happening. Each step builds on the others in a coordinated workflow."
+:::
+
+## Looking Forward: Continued Learning {.smaller}
+
+- Continue developing computational skills through practice and community engagement
+- Practice Projects: Apply skills to real biostatistical problems
+- Community Engagement: R user groups, statistical computing conferences
+- Open Source: Contribute to statistical software projects
+- Continuing Education: New methods, emerging computational paradigms
+
+:::{.callout-note}
+Remember: Statistical computing is a rapidly evolving field - this course provides a foundation, not an endpoint.
+:::
+
+:::{.notes}
+- Emphasize that this course provides a foundation, not an endpoint
+- Discuss the importance of continuous learning in computational fields
+- Note the value of community engagement for career development
+- Connect to the broader theme of lifelong learning in statistics
+- Highlight opportunities for contributing to the statistical computing community
+:::
+
+::: {.fragment .question}
+**Question:** What specific steps will you take to continue developing your statistical computing skills after this course?
+:::
+
+::: {.fragment .answer}
+**Answer:** "I plan to contribute to an open-source R package in my research area, attend the useR! conference, and apply these skills to my thesis research. I also want to start a local R user group to build community and learn from others working on similar problems."
+:::
+
+## Summary {.smaller}
+
+1. Technical skills mastered: R programming, version control, statistical implementation
+2. Methodological understanding: Simulation, optimization, model development
+3. Professional skills developed: Reproducible research, scientific communication
+4. Problem-solving approach: Breaking complex problems into computational components
+5. Career preparation: Ready for advanced research and industry positions
+
+:::{.notes}
+- Reinforce main points about the comprehensive skill set developed
+- Address any remaining questions about course material
+- Preview how these skills support continued learning and career development
+- Emphasize the interconnected nature of all topics covered
+:::
+
+## Reference Material {.center}
+
+The following slides are provided as reference material and are not part of the core lecture.
+
+## Parallel Computing and Efficiency {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+Computational efficiency becomes critical with large datasets and complex models:
+
+- Genomics: Millions of genetic variants across thousands of individuals
+- Clinical Trials: Complex adaptive designs requiring real-time analysis
+- Population Studies: Large cohorts with longitudinal follow-up
+- Method Development: Extensive simulation studies for method validation
+
+```r
+# Parallel processing example
+library(parallel)
+cl <- makeCluster(detectCores() - 1)
+results <- parLapply(cl, data_list, analysis_function)
+stopCluster(cl)
+```
+
+::: {.fragment .question}
+**Question:** When should a biostatistician invest time in parallel computing optimization?
+:::
+
+::: {.fragment .answer}
+**Answer:** "When standard approaches become computationally infeasible - like when my genome-wide association study took 3 days to run, parallelization reduced it to 4 hours and made iterative model refinement practical."
+:::
+
+## R Package Development Foundations {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+Package development for method sharing and reproducibility:
+
+- Method Sharing: Make novel statistical methods available to researchers
+- Reproducibility: Package your analysis pipeline for transparency
+- Quality Control: Testing and documentation improve code reliability
+- Career Development: Many positions involve developing statistical software
+
+```r
+# Package structure
+my_package/
+├── DESCRIPTION
+├── NAMESPACE
+├── R/
+│   ├── main_function.R
+│   └── helper_functions.R
+├── man/
+├── tests/
+└── vignettes/
+```
+
+::: {.fragment .question}
+**Question:** How does package development contribute to scientific impact in biostatistics?
+:::
+
+::: {.fragment .answer}
+**Answer:** "My advisor's method remained obscure until we packaged it properly with documentation and examples. Now it's used by researchers worldwide, cited hundreds of times, and has real impact on clinical research - that's the power of accessible statistical software."
+:::
+
+## Additional Resources {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+### Further Reading
+- Wickham, H. & Grolemund, G.: "R for Data Science" - Advanced data manipulation
+- Chambers, J.M.: "Extending R" - Advanced programming techniques
+
+### Online Resources
+- [R-bloggers](https://www.r-bloggers.com/): Community-driven R tutorials and examples
+- [RStudio Community](https://community.rstudio.com/): Q&A and discussion forum
+
+### R Packages for Continued Learning
+- Advanced modeling: `lme4`, `brms`, `rstanarm`
+- High-performance computing: `Rcpp`, `parallel`, `foreach`
+- Package development: `devtools`, `usethis`, `testthat`
+
+:::{.notes}
+- Notes about which resources address specific computational challenges
+- Recommendations for students interested in method development vs. applied work
+- Guidance on building computational skills for different career paths
+:::

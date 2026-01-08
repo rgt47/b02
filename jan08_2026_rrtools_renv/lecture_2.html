@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Ronald G. Thomas">
+<meta name="dcterms.date" content="2025-01-01">
+
+<title>PHB 228: Statistical Computing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="lecture_2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lecture_2_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="lecture_2_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="lecture_2_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="lecture_2_files/libs/quarto-html/popper.min.js"></script>
+<script src="lecture_2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="lecture_2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="lecture_2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lecture_2_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="lecture_2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="lecture_2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="lecture_2_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="lecture_2.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">PHB 228: Statistical Computing</h1>
+<p class="subtitle lead">Lecture 19: Course Review</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Ronald G. Thomas </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 1, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<style>
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
+<section id="instructor-information" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="instructor-information">Instructor Information</h2>
+<ul>
+<li><strong>Instructor</strong>: Dr.&nbsp;Ronald G. Thomas</li>
+<li><strong>Email</strong>: rgthomas@ucsd.edu</li>
+<li><strong>Office Hours</strong>: Mondays &amp; Wednesdays, 11:00 AM - 12:00 PM</li>
+<li><strong>TA</strong>: Man Luo</li>
+<li><strong>Email</strong>: maluo@ucsd.edu</li>
+<li><strong>Office Hours</strong>: Wednesdays, 3:00 PM - 5:00 PM</li>
+</ul>
+<div class="notes">
+<ul>
+<li>Welcome students to the final lecture of the quarter</li>
+<li>Remind them of availability for final questions during office hours</li>
+<li>Emphasize that learning continues beyond this course</li>
+</ul>
+</div>
+</section>
+<section id="lecture-19-course-review" class="level2 subtitle">
+<h2 class="subtitle anchored" data-anchor-id="lecture-19-course-review">Lecture 19: Course Review</h2>
+</section>
+<section id="todays-agenda" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="todays-agenda">Today’s Agenda</h2>
+<ol type="1">
+<li>Journey Through Statistical Computing</li>
+<li>Programming Foundations Review</li>
+<li>Version Control and Reproducibility</li>
+<li>Matrix Computation and Optimization</li>
+<li>Statistical Model Implementation</li>
+<li>Integration and Future Learning</li>
+</ol>
+<div class="notes">
+<ul>
+<li>Explain that today is about synthesis, not introducing new material</li>
+<li>Note connections between topics covered throughout the quarter</li>
+<li>Emphasize practical applications in biostatistical research</li>
+<li>Prepare students for continued learning beyond this course</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> What has been the most transformative concept you’ve learned in statistical computing this quarter?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “The shift from thinking in loops to thinking in vectors completely changed how I approach data analysis. It’s not just faster code - it’s a fundamentally different way of conceptualizing computational problems in statistics.”</p>
+</div>
+</section>
+<section id="journey-through-statistical-computing" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="journey-through-statistical-computing">Journey Through Statistical Computing</h2>
+<ul>
+<li>Four foundational pillars that support modern biostatistical practice</li>
+<li>Programming Foundations: R mastery, vectorization, functional programming</li>
+<li>Computational Methods: Matrix operations, optimization, simulation</li>
+<li>Statistical Implementation: Linear models, GLMs, mixed-effects models</li>
+<li>Research Workflow: Version control, visualization, reproducible research</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>These four areas interconnect in practice - mastery comes from applying them together, not in isolation.</p>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Emphasize how these four areas interconnect in practice</li>
+<li>Note that mastery comes from applying these together, not in isolation</li>
+<li>Remind students that each area supports the others</li>
+<li>Consider asking students which connections they found most surprising</li>
+<li>Highlight that this foundation prepares them for advanced biostatistical research</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> How do these four pillars work together in a typical biostatistical research project?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “In my thesis project, I used version control to manage my analysis pipeline, matrix operations to implement a custom mixed-effects model, simulation to validate the method’s performance, and visualization to communicate results. Each pillar supported the others throughout the entire research process.”</p>
+</div>
+</section>
+<section id="programming-foundations-review" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="programming-foundations-review">Programming Foundations Review</h2>
+<ul>
+<li>Key progression from basic scripts to sophisticated computational tools</li>
+<li>Vectorization: Moving beyond loops to R’s natural computational style</li>
+<li>Functional Programming: Using functions as building blocks for complex analyses</li>
+<li>Memory Management: Understanding R’s copy-on-modify behavior</li>
+<li>Code Organization: From scripts to well-structured, documented functions</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evolution from loop-based to vectorized thinking</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Before: element-wise operations</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(x))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(x)) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  result[i] <span class="ot">&lt;-</span> x[i]<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">log</span>(x[i])</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># After: vectorized operations</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">log</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="notes">
+<ul>
+<li>Emphasize the shift from “making R work” to “thinking in R”</li>
+<li>Discuss how vectorization fundamentally changes computational efficiency</li>
+<li>Highlight the importance of functional programming for reproducible research</li>
+<li>Note that understanding memory management prevents common performance issues</li>
+<li>Connect this to the broader theme of writing code that others can understand and use</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> What’s the difference between writing R code that works and writing R code that’s efficient and maintainable?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “Working code gets the job done once, but efficient and maintainable code uses R’s vectorization naturally, has clear function structure with proper documentation, and can be easily understood and modified by others - including your future self six months later.”</p>
+</div>
+</section>
+<section id="version-control-and-reproducibility" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="version-control-and-reproducibility">Version Control and Reproducibility</h2>
+<ul>
+<li>Essential for biostatistical research transparency and collaboration</li>
+<li>Transparency: Complete history of analytical decisions</li>
+<li>Collaboration: Multiple researchers working on shared projects</li>
+<li>Reproducibility: Anyone can recreate your exact analysis</li>
+<li>Recovery: Never lose work or wonder “what did I change?”</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example of reproducible analysis structure</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># analysis/</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ├── data-raw/          # Original data and processing scripts</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   ├── R/                 # Analysis functions</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   ├── reports/           # Reproducible reports</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   ├── tests/             # Unit tests for functions</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   └── README.md          # Project documentation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="notes">
+<ul>
+<li>Emphasize that version control is about more than backing up code</li>
+<li>Discuss how this supports the scientific method through reproducibility</li>
+<li>Note the career benefits - industry and academia both expect these skills</li>
+<li>Remind students that good practices become habit with consistent use</li>
+<li>Connect to broader themes of scientific integrity and open science</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> Why is reproducibility crucial for the scientific credibility of biostatistical research?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “Reproducibility ensures that other researchers can verify our findings, regulatory agencies can audit our methods for drug approvals, and we can defend our analytical choices. It’s the foundation of scientific integrity in an era where computational methods drive biomedical discoveries.”</p>
+</div>
+</section>
+<section id="matrix-computation-foundations" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="matrix-computation-foundations">Matrix Computation Foundations</h2>
+<ul>
+<li>Mathematical foundation for virtually all statistical methods</li>
+<li>Linear Models: <span class="math inline">\(\boldsymbol{y} = \boldsymbol{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}\)</span></li>
+<li>Optimization: Gradient descent, Newton-Raphson methods</li>
+<li>Decompositions: SVD, Cholesky for numerical stability</li>
+<li>Efficiency: Vectorized operations vs.&nbsp;element-wise loops</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matrix operations in statistical computing</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Linear regression via matrix operations</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># More numerically stable approach</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>qr_decomp <span class="ot">&lt;-</span> <span class="fu">qr</span>(X)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">qr.coef</span>(qr_decomp, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="notes">
+<ul>
+<li>Emphasize that matrices aren’t just mathematical abstractions - they’re computational tools</li>
+<li>Discuss how understanding matrix operations helps debug statistical code</li>
+<li>Note the performance benefits of matrix operations over loops</li>
+<li>Connect to the broader theme that statistical methods are implemented through linear algebra</li>
+<li>Highlight how this knowledge helps in understanding statistical software output</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> How does understanding matrix decompositions improve your statistical computing practice?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “Understanding QR decomposition helped me realize why my regression was failing with collinear predictors, and knowing about Cholesky decomposition explained why mixed-effects models sometimes don’t converge. It’s not just theory - it’s practical troubleshooting knowledge.”</p>
+</div>
+</section>
+<section id="optimization-in-statistical-practice" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="optimization-in-statistical-practice">Optimization in Statistical Practice</h2>
+<ul>
+<li>Encountered whenever we fit models: maximum likelihood, least squares, regularization</li>
+<li>GLM Fitting: Iteratively reweighted least squares</li>
+<li>Mixed Models: REML estimation of variance components</li>
+<li>Regularization: LASSO, Ridge regression penalty optimization</li>
+<li>Custom Models: Likelihood-based estimation for novel methods</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom optimization example</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>loglik <span class="ot">&lt;-</span> <span class="cf">function</span>(params, data) {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define log-likelihood function</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> params[<span class="dv">1</span>]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">&lt;-</span> <span class="fu">exp</span>(params[<span class="dv">2</span>])  <span class="co"># Ensure positive</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">dnorm</span>(data, mu, sigma, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Optimization</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), loglik, <span class="at">data =</span> my_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="notes">
+<ul>
+<li>Emphasize that optimization is often “under the hood” in statistical functions</li>
+<li>Discuss how understanding optimization helps troubleshoot convergence issues</li>
+<li>Note the importance of starting values and algorithm choice</li>
+<li>Connect to the theme that statistical computing often involves numerical approximation</li>
+<li>Highlight career relevance - many biostatistics positions involve custom model development</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> When might a biostatistician need to implement custom optimization rather than using built-in functions?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “In my research on adaptive clinical trials, existing functions couldn’t handle the dynamic allocation rules we needed. I had to implement custom optimization for the likelihood function, which required understanding convergence criteria and starting values - skills that proved essential for method development.”</p>
+</div>
+</section>
+<section id="simulation-studies-and-bootstrap" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="simulation-studies-and-bootstrap">Simulation Studies and Bootstrap</h2>
+<ul>
+<li>Evaluate method performance and provide inference when theory falls short</li>
+<li>Method Development: Testing new statistical procedures</li>
+<li>Power Analysis: Planning clinical trials and observational studies</li>
+<li>Sensitivity Analysis: Assessing robustness of conclusions</li>
+<li>Bootstrap Inference: Confidence intervals when distributional assumptions fail</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrap confidence interval example</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>bootstrap_stat <span class="ot">&lt;-</span> <span class="cf">function</span>(data, indices) {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  sample_data <span class="ot">&lt;-</span> data[indices]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate statistic of interest</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">median</span>(sample_data))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>boot_results <span class="ot">&lt;-</span> <span class="fu">boot</span>(original_data, bootstrap_stat, <span class="at">R =</span> <span class="dv">1000</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">boot.ci</span>(boot_results, <span class="at">type =</span> <span class="st">"perc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="notes">
+<ul>
+<li>Emphasize that simulation is both a research tool and a method evaluation approach</li>
+<li>Discuss how bootstrap methods democratize statistical inference</li>
+<li>Note the importance of realistic simulation scenarios that match actual data challenges</li>
+<li>Connect to regulatory science - FDA often requires simulation studies for method validation</li>
+<li>Highlight how these methods support evidence-based statistical practice</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> How do simulation studies support the development and validation of new biostatistical methods?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “Simulation lets us test methods under controlled conditions where we know the true answer. For my survival analysis method, I simulated datasets with known hazard ratios to verify that my estimator was unbiased and had proper coverage before applying it to real clinical trial data.”</p>
+</div>
+</section>
+<section id="statistical-model-implementation" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="statistical-model-implementation">Statistical Model Implementation</h2>
+<ul>
+<li>Understanding implementation distinguishes from using black-box software</li>
+<li>Linear Models: From <code>lm()</code> to matrix implementations</li>
+<li>GLMs: Understanding link functions and estimation</li>
+<li>Mixed-Effects Models: Random effects structure and estimation challenges</li>
+<li>Custom Extensions: Adapting existing methods for biostatistical applications</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Built-in Function</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Matrix Implementation</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using lm() function</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> mydata)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Manual matrix implementation</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> mydata)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> mydata<span class="sc">$</span>y</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>residuals <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta_hat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Emphasize that understanding implementation helps interpret output correctly</li>
+<li>Discuss how manual implementation deepens understanding of model assumptions</li>
+<li>Note the career advantage of being able to modify and extend existing methods</li>
+<li>Connect to the theme that biostatistics often requires method adaptation for specific applications</li>
+<li>Highlight troubleshooting skills - knowing what can go wrong and why</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> What advantages come from implementing statistical methods manually rather than relying solely on built-in functions?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “When I implemented logistic regression from scratch, I finally understood why separation causes convergence issues and how regularization helps. This knowledge helped me troubleshoot a complex analysis where the built-in function was failing, and I could modify the algorithm to handle the specific data structure.”</p>
+</div>
+</section>
+<section id="data-visualization-evolution" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="data-visualization-evolution">Data Visualization Evolution</h2>
+<ul>
+<li>From basic plots to principled, publication-ready graphics</li>
+<li>Grammar of Graphics: Systematic approach via <code>ggplot2</code></li>
+<li>Design Principles: Clarity, accuracy, and aesthetic appeal</li>
+<li>Interactive Elements: <code>plotly</code> and <code>shiny</code> for exploration</li>
+<li>Statistical Graphics: Diagnostic plots, model visualization</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evolution of visualization approach</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Before: Basic plotting</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># After: Grammar of graphics</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Relationship between X and Y"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Predictor Variable"</span>, <span class="at">y =</span> <span class="st">"Response Variable"</span>) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="notes">
+<ul>
+<li>Emphasize that good visualization is about effective scientific communication</li>
+<li>Discuss how interactive elements support exploratory data analysis</li>
+<li>Note the importance of diagnostic plots in model validation</li>
+<li>Connect to career skills - ability to communicate statistical findings visually</li>
+<li>Highlight that effective graphics can make or break research presentations and publications</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> How has your approach to data visualization changed throughout this course?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “I moved from creating whatever plot I could get to work, to thinking systematically about what story the data should tell. Now I consider the audience, choose appropriate visual encodings, and create graphics that support scientific communication rather than just displaying numbers.”</p>
+</div>
+</section>
+<section id="integration-putting-it-all-together" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="integration-putting-it-all-together">Integration: Putting It All Together</h2>
+<ul>
+<li>Modern biostatistical projects require orchestrating all elements simultaneously</li>
+<li>Typical Project Workflow:
+<ol type="1">
+<li>Version Control: Initialize repository, plan collaboration</li>
+<li>Data Management: Efficient structures, quality checks</li>
+<li>Statistical Analysis: Model fitting, diagnostics, validation</li>
+<li>Simulation: Method evaluation, sensitivity analysis</li>
+<li>Visualization: Results communication, diagnostic graphics</li>
+<li>Documentation: Reproducible reports, package development</li>
+</ol></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Professional Reality: Biostatisticians are computational scientists who integrate statistical theory with computing practice.</p>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Emphasize that real projects don’t use these skills in isolation</li>
+<li>Discuss how computational skills distinguish modern biostatisticians</li>
+<li>Note the importance of workflow planning and project organization</li>
+<li>Connect to the scientific method - these tools support rigorous, reproducible research</li>
+<li>Highlight career preparation - these are the skills employers expect</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> How do you prioritize and coordinate these different computational skills in a complex research project?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “I start with version control and project structure, then build analysis functions with proper testing, use simulation to validate approaches before applying to real data, and create visualizations throughout to understand what’s happening. Each step builds on the others in a coordinated workflow.”</p>
+</div>
+</section>
+<section id="looking-forward-continued-learning" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="looking-forward-continued-learning">Looking Forward: Continued Learning</h2>
+<ul>
+<li>Continue developing computational skills through practice and community engagement</li>
+<li>Practice Projects: Apply skills to real biostatistical problems</li>
+<li>Community Engagement: R user groups, statistical computing conferences</li>
+<li>Open Source: Contribute to statistical software projects</li>
+<li>Continuing Education: New methods, emerging computational paradigms</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Remember: Statistical computing is a rapidly evolving field - this course provides a foundation, not an endpoint.</p>
+</div>
+</div>
+<div class="notes">
+<ul>
+<li>Emphasize that this course provides a foundation, not an endpoint</li>
+<li>Discuss the importance of continuous learning in computational fields</li>
+<li>Note the value of community engagement for career development</li>
+<li>Connect to the broader theme of lifelong learning in statistics</li>
+<li>Highlight opportunities for contributing to the statistical computing community</li>
+</ul>
+</div>
+<div class="fragment question">
+<p><strong>Question:</strong> What specific steps will you take to continue developing your statistical computing skills after this course?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “I plan to contribute to an open-source R package in my research area, attend the useR! conference, and apply these skills to my thesis research. I also want to start a local R user group to build community and learn from others working on similar problems.”</p>
+</div>
+</section>
+<section id="summary" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="summary">Summary</h2>
+<ol type="1">
+<li>Technical skills mastered: R programming, version control, statistical implementation</li>
+<li>Methodological understanding: Simulation, optimization, model development</li>
+<li>Professional skills developed: Reproducible research, scientific communication</li>
+<li>Problem-solving approach: Breaking complex problems into computational components</li>
+<li>Career preparation: Ready for advanced research and industry positions</li>
+</ol>
+<div class="notes">
+<ul>
+<li>Reinforce main points about the comprehensive skill set developed</li>
+<li>Address any remaining questions about course material</li>
+<li>Preview how these skills support continued learning and career development</li>
+<li>Emphasize the interconnected nature of all topics covered</li>
+</ul>
+</div>
+</section>
+<section id="reference-material" class="level2 center">
+<h2 class="center anchored" data-anchor-id="reference-material">Reference Material</h2>
+<p>The following slides are provided as reference material and are not part of the core lecture.</p>
+</section>
+<section id="parallel-computing-and-efficiency" class="level2 smaller reference-only">
+<h2 class="smaller reference-only anchored" data-anchor-id="parallel-computing-and-efficiency">Parallel Computing and Efficiency</h2>
+<div class="reference-stamp">
+<p>REFERENCE ONLY</p>
+</div>
+<p>Computational efficiency becomes critical with large datasets and complex models:</p>
+<ul>
+<li>Genomics: Millions of genetic variants across thousands of individuals</li>
+<li>Clinical Trials: Complex adaptive designs requiring real-time analysis</li>
+<li>Population Studies: Large cohorts with longitudinal follow-up</li>
+<li>Method Development: Extensive simulation studies for method validation</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parallel processing example</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">makeCluster</span>(<span class="fu">detectCores</span>() <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">parLapply</span>(cl, data_list, analysis_function)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment question">
+<p><strong>Question:</strong> When should a biostatistician invest time in parallel computing optimization?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “When standard approaches become computationally infeasible - like when my genome-wide association study took 3 days to run, parallelization reduced it to 4 hours and made iterative model refinement practical.”</p>
+</div>
+</section>
+<section id="r-package-development-foundations" class="level2 smaller reference-only">
+<h2 class="smaller reference-only anchored" data-anchor-id="r-package-development-foundations">R Package Development Foundations</h2>
+<div class="reference-stamp">
+<p>REFERENCE ONLY</p>
+</div>
+<p>Package development for method sharing and reproducibility:</p>
+<ul>
+<li>Method Sharing: Make novel statistical methods available to researchers</li>
+<li>Reproducibility: Package your analysis pipeline for transparency</li>
+<li>Quality Control: Testing and documentation improve code reliability</li>
+<li>Career Development: Many positions involve developing statistical software</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Package structure</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>my_package<span class="sc">/</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>├── DESCRIPTION</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>├── NAMESPACE</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>│   ├── main_function.R</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>│   └── helper_functions.R</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>├── man<span class="sc">/</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>├── tests<span class="sc">/</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>└── vignettes<span class="sc">/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment question">
+<p><strong>Question:</strong> How does package development contribute to scientific impact in biostatistics?</p>
+</div>
+<div class="fragment answer">
+<p><strong>Answer:</strong> “My advisor’s method remained obscure until we packaged it properly with documentation and examples. Now it’s used by researchers worldwide, cited hundreds of times, and has real impact on clinical research - that’s the power of accessible statistical software.”</p>
+</div>
+</section>
+<section id="additional-resources" class="level2 smaller reference-only">
+<h2 class="smaller reference-only anchored" data-anchor-id="additional-resources">Additional Resources</h2>
+<div class="reference-stamp">
+<p>REFERENCE ONLY</p>
+</div>
+<section id="further-reading" class="level3">
+<h3 class="anchored" data-anchor-id="further-reading">Further Reading</h3>
+<ul>
+<li>Wickham, H. &amp; Grolemund, G.: “R for Data Science” - Advanced data manipulation</li>
+<li>Chambers, J.M.: “Extending R” - Advanced programming techniques</li>
+</ul>
+</section>
+<section id="online-resources" class="level3">
+<h3 class="anchored" data-anchor-id="online-resources">Online Resources</h3>
+<ul>
+<li><a href="https://www.r-bloggers.com/">R-bloggers</a>: Community-driven R tutorials and examples</li>
+<li><a href="https://community.rstudio.com/">RStudio Community</a>: Q&amp;A and discussion forum</li>
+</ul>
+</section>
+<section id="r-packages-for-continued-learning" class="level3">
+<h3 class="anchored" data-anchor-id="r-packages-for-continued-learning">R Packages for Continued Learning</h3>
+<ul>
+<li>Advanced modeling: <code>lme4</code>, <code>brms</code>, <code>rstanarm</code></li>
+<li>High-performance computing: <code>Rcpp</code>, <code>parallel</code>, <code>foreach</code></li>
+<li>Package development: <code>devtools</code>, <code>usethis</code>, <code>testthat</code></li>
+</ul>
+<div class="notes">
+<ul>
+<li>Notes about which resources address specific computational challenges</li>
+<li>Recommendations for students interested in method development vs.&nbsp;applied work</li>
+<li>Guidance on building computational skills for different career paths</li>
+</ul>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
