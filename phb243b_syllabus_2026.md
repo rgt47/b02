@@ -14,6 +14,7 @@
 -   **Office Hours:** by appointment
 -   **Teaching Assistant:** Man Luo
 -   **TA Email:** maluo@ucsd.edu
+-   **TA GitHub:** @Aileen-Luo
 -   **Course Time:** Tuesday and Thursday, 9:30--10:50 AM
 -   **Location:** Pepper Canyon Hall 245
 -   **Units:** 4
