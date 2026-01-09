@@ -143,7 +143,7 @@ This course consists of twice-weekly meetings combining lectures, discussions, a
 
 ### Attendance and Participation
 
-Class attendance is mandatory and will directly impact your grade. Regular attendance and active participation are essential components of this course and account for 20% of your final grade. This includes engagement in discussions, team collaboration, and presentation feedback.
+Class attendance is mandatory and will directly impact your grade. Regular attendance and active participation are essential components of this course and account for 10% of your final grade. This includes engagement in discussions, team collaboration, and presentation feedback.
 
 Each unexcused absence will result in a deduction from your participation grade. If you must miss class due to illness or emergency, please notify the instructor in advance when possible. Documented medical or family emergencies will be considered for excused absences on a case-by-case basis.
 
