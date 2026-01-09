@@ -1,0 +1,14 @@
+# Archive directory
+archive/
+
+# R artifacts
+.Rhistory
+.RData
+.Rproj.user/
+
+# OS files
+.DS_Store
+
+# Temporary files
+*~
+*.swp
