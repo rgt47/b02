@@ -1,0 +1,160 @@
+/* custom.css: Comprehensive styling for lecture slides */
+
+/* ===== HEADER STYLES ===== */
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-size: 90% !important;
+}
+
+.reveal h1, .reveal h3 {
+  font-weight: 400; /* lighter headings for a refined look */
+}
+
+/* Improve slide title positioning and styling */
+.reveal .slide-title {
+  margin-top: -30px !important;
+  margin-bottom: 30px !important;
+}
+
+.reveal h2 {
+  border-bottom: 3px solid #4682B4; /* Steel blue underline */
+  padding: 5px 15px;
+  padding-bottom: 6px;
+  margin-left: -15px;
+  display: inline-block;
+  position: relative;
+  top: -25px;
+  width: 100%;
+  background: linear-gradient(to right, #ffffff, #e6f2ff); /* Subtle gradient */
+}
+
+/* ===== GENERAL THEME SETTINGS ===== */
+.reveal {
+  background-color: #ffffff;
+  color: #333;
+  font-family: 'Georgia', serif;
+}
+
+/* ===== LAYOUT AND SPACING ===== */
+/* Content area with controlled height and scrolling */
+.reveal section {
+  padding: 1.5em;
+  padding-top: 0.8em;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Reduce main text size */
+.reveal .slides p,
+.reveal .slides li,
+.reveal .slides td,
+.reveal .slides th,
+.reveal .slides div:not(.question):not(.answer) {
+  font-size: 85%;
+}
+
+/* Fragment positioning */
+.fragment {
+  font-size: 0.95em;
+  margin-top: 5px !important;
+}
+
+/* Space after code blocks */
+.sourceCode + .fragment {
+  margin-top: 10px !important;
+}
+
+/* ===== CODE BLOCKS ===== */
+/* Unified code styling with height limits */
+.reveal pre,
+.reveal code,
+.reveal .sourceCode {
+  font-size: 0.85em !important;
+  line-height: 1.3 !important;
+  max-height: 30vh !important;
+  overflow-y: auto !important;
+}
+
+/* Consistent styling for panel tabs code */
+.panel-tabset pre code {
+  max-height: 30vh; /* Match other code blocks */
+  overflow-y: auto;
+}
+
+/* Optional class for slightly larger code */
+.small-code pre {
+  font-size: 0.9em !important; /* Reduced from 1em to be more consistent */
+}
+
+/* ===== Q&A SECTIONS ===== */
+/* Base styling for questions and answers */
+.question, .answer {
+  padding: 7px 10px;
+  margin-top: 8px;
+  border-radius: 5px;
+  font-size: 0.8em;
+  max-height: 28vh;
+  overflow-y: auto;
+  line-height: 1.3;
+}
+
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+}
+
+/* Make labels stand out */
+.question strong, .answer strong {
+  font-size: 1.15em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* ===== BROWSER-SPECIFIC ADJUSTMENTS ===== */
+/* Firefox-specific fixes */
+@-moz-document url-prefix() {
+  .question, .answer {
+    max-height: 25vh;
+    font-size: 0.75em;
+  }
+  
+  .reveal pre, .reveal code, .reveal .sourceCode {
+    max-height: 28vh !important; /* Slightly smaller in Firefox */
+  }
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+/* Adjustments for smaller screens */
+@media (max-height: 600px) {
+  .reveal pre, .reveal code, .reveal .sourceCode {
+    max-height: 25vh !important;
+  }
+  
+  .question, .answer {
+    max-height: 20vh;
+    font-size: 0.75em;
+  }
+}
+
+/* ===== SPECIAL ELEMENTS ===== */
+/* Reference stamp styling */
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}

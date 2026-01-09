@@ -1,0 +1,493 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 2: Introduction to Reproducible Research"
+author: "Dr. Ronald G. Thomas"
+date: "January 8, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    smaller: false
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
+
+## Course Information {.smaller}
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+:::{.notes}
+- Welcome students to PHB 243b Practicum in Biostatistics
+- Introduce today's focus on reproducible research principles
+- Emphasize that reproducibility is foundational to all work in this course
+:::
+
+## Lecture 2: Introduction to Reproducible Research {.subtitle}
+
+## Today's Agenda {.smaller}
+
+1. What is Reproducible Research?
+2. The Reproducibility Crisis in Science
+3. Essential Components of Reproducible Analysis
+4. Tools for Reproducibility: R Markdown, Quarto, renv
+5. Best Practices for Collaborative Biostatistics
+
+:::{.notes}
+- Today establishes the foundational principles for all project work this quarter
+- Reproducibility is not optional in modern biostatistics
+- These practices are expected in both academic and industry settings
+:::
+
+::: {.fragment .question}
+**Question:** Have you ever tried to reproduce someone else's analysis or
+your own work from a year ago? What challenges did you encounter?
+:::
+
+::: {.fragment .answer}
+**Answer:** "When I tried to reproduce my thesis advisor's analysis from
+three years ago, I discovered the code required packages that no longer
+existed in their original form, the data had been reorganized, and several
+manual steps were undocumented. It took two weeks to recreate what should
+have been a simple rerun."
+:::
+
+## What is Reproducible Research? {.smaller}
+
+- **Reproducibility**: Same data + same code = same results
+- **Replicability**: New data + same methods = consistent findings
+- **Transparency**: Complete documentation of analytical decisions
+
+:::{.callout-note}
+Reproducibility is the minimum standard for credible scientific research.
+Replicability builds scientific knowledge.
+:::
+
+:::{.notes}
+- Distinguish between reproducibility and replicability
+- Reproducibility is technically achievable with proper practices
+- Replicability depends on underlying scientific phenomena
+- Both are essential for building trustworthy biostatistical research
+:::
+
+::: {.fragment .question}
+**Question:** Why is reproducibility particularly important in biostatistics
+compared to other fields?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Biostatistical analyses directly inform clinical decisions,
+drug approvals, and public health policy. A non-reproducible analysis could
+lead to ineffective treatments being approved or effective ones being
+rejected. The stakes are literally life and death."
+:::
+
+## The Reproducibility Crisis {.smaller}
+
+- 2016 Nature survey: 70% of researchers failed to reproduce others' work
+- 50% failed to reproduce their own work
+- Causes include:
+  - Incomplete documentation
+  - Software version changes
+  - Undocumented data preprocessing
+  - "Works on my machine" syndrome
+
+:::{.notes}
+- The reproducibility crisis affects all scientific fields
+- Biostatistics has a special responsibility to lead by example
+- Our methods and code are integral to research conclusions
+- Proper practices prevent embarrassing retractions and wasted resources
+:::
+
+::: {.fragment .question}
+**Question:** What are the professional consequences of publishing
+non-reproducible research?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Beyond retractions, which damage careers and institutions,
+non-reproducible work wastes research funding when others cannot build on
+it. In clinical contexts, it can delay effective treatments or expose
+patients to ineffective ones. It erodes public trust in science."
+:::
+
+## Components of Reproducible Analysis {.smaller}
+
+1. **Data Management**: Raw data preservation, clear provenance
+2. **Code Organization**: Modular, well-documented scripts
+3. **Environment Capture**: Package versions, system dependencies
+4. **Documentation**: README files, analysis narratives
+5. **Version Control**: Complete history of changes
+
+```
+project/
+├── data/
+│   ├── raw/           # Never modify
+│   └── processed/     # Generated by code
+├── R/                 # Analysis functions
+├── analysis/          # Scripts and reports
+├── output/            # Results, figures
+└── README.md          # Project documentation
+```
+
+:::{.notes}
+- Each component addresses specific reproducibility failures
+- Data management prevents "which version did I use?" problems
+- Code organization enables others to understand your work
+- Environment capture addresses software dependency issues
+- Version control provides complete audit trail
+:::
+
+::: {.fragment .question}
+**Question:** Which of these components do you think is most commonly
+neglected in biostatistical practice?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Environment capture is often overlooked. People assume their
+code will work because they documented it, but then package updates break
+functionality. I once spent days debugging an analysis that failed simply
+because dplyr had changed how it handled grouped operations."
+:::
+
+## Literate Programming {.smaller}
+
+- Combine narrative, code, and results in single documents
+- R Markdown and Quarto enable literate programming in R
+- Benefits:
+  - Analysis and documentation stay synchronized
+  - Results update automatically when data changes
+  - Complete transparency of analytical process
+
+```{r}
+#| echo: true
+#| eval: false
+# Example: Analysis and explanation together
+library(palmerpenguins)
+
+# Calculate mean body mass by species
+penguins |>
+  group_by(species) |>
+  summarise(
+    mean_mass = mean(body_mass_g, na.rm = TRUE),
+    sd_mass = sd(body_mass_g, na.rm = TRUE)
+  )
+```
+
+:::{.notes}
+- Literate programming was proposed by Donald Knuth in 1984
+- R Markdown and Quarto are modern implementations
+- Documents serve as both analysis scripts and reports
+- Updates propagate automatically through the document
+:::
+
+::: {.fragment .question}
+**Question:** How does literate programming change the way you think about
+documenting statistical analyses?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Instead of writing code first and documentation later, I now
+write the narrative of my analysis and embed code within it. This forces me
+to explain my reasoning as I work, which often catches logical errors early
+and produces better documentation as a natural byproduct."
+:::
+
+## Package Management with renv {.smaller}
+
+- `renv` captures exact package versions used in a project
+- Creates isolated, reproducible R environments
+- Key commands:
+  - `renv::init()` - Initialize renv for a project
+  - `renv::snapshot()` - Record current package versions
+  - `renv::restore()` - Restore recorded package versions
+
+```{r}
+#| echo: true
+#| eval: false
+# Initialize renv in a new project
+renv::init()
+
+# After installing packages, capture the state
+renv::snapshot()
+
+# On a new machine, restore the exact environment
+renv::restore()
+```
+
+:::{.notes}
+- renv solves the "works on my machine" problem
+- Each project has its own package library
+- The renv.lock file records exact versions
+- Collaborators can recreate your exact environment
+:::
+
+::: {.fragment .question}
+**Question:** What problems does renv solve that simply documenting
+package versions in a README does not?
+:::
+
+::: {.fragment .answer}
+**Answer:** "README documentation requires manual installation and hopes
+versions are still available. renv automates restoration and handles
+dependency chains. When package A requires version 2.0 of package B, but
+package C requires version 1.5, renv manages these conflicts
+automatically."
+:::
+
+## Version Control with Git {.smaller}
+
+- Track all changes to code and documents over time
+- Collaborate without overwriting each other's work
+- Revert to any previous state of the project
+- Essential Git concepts:
+  - **Repository**: Project folder tracked by Git
+  - **Commit**: Snapshot of changes with description
+  - **Branch**: Parallel version for development
+  - **Merge**: Combine branches together
+
+:::{.notes}
+- Git is the standard version control system in data science
+- GitHub and GitLab provide cloud hosting and collaboration features
+- Version control is expected in both academic and industry positions
+- We will cover Git and GitHub in detail in the next lecture
+:::
+
+::: {.fragment .question}
+**Question:** How does version control support reproducibility beyond
+simply backing up your files?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Version control provides a complete audit trail of analytical
+decisions. When a reviewer asks why you chose a particular model
+specification, you can show exactly when and why that decision was made.
+It's documentation through history rather than separate narrative."
+:::
+
+## Best Practices for Collaborative Biostatistics {.smaller}
+
+1. **Never modify raw data** - All transformations in code
+2. **Use relative paths** - Projects should be portable
+3. **Document dependencies** - Use renv or similar tools
+4. **Write modular code** - Functions over scripts
+5. **Include a README** - Project overview and instructions
+6. **Use version control** - Git for all projects
+7. **Review each other's code** - Catch errors early
+
+:::{.callout-note}
+These practices are not extra work - they prevent rework, enable
+collaboration, and build trust in your analyses.
+:::
+
+:::{.notes}
+- Each practice addresses specific collaboration failures
+- Raw data preservation enables reanalysis from scratch
+- Relative paths allow projects to move between machines
+- Code review catches errors and spreads knowledge
+:::
+
+::: {.fragment .question}
+**Question:** Which of these practices would have the biggest impact on
+your current workflow?
+:::
+
+::: {.fragment .answer}
+**Answer:** "For me, writing modular code as functions rather than
+monolithic scripts would be transformative. Currently, when I need to
+change something, I have to hunt through hundreds of lines. Functions with
+clear inputs and outputs would make changes localized and testing
+possible."
+:::
+
+## Team Science in Biostatistics {.smaller}
+
+- Biostatisticians work on collaborative research teams
+- Essential team science skills:
+  - Clear communication of statistical concepts
+  - Documentation that non-statisticians can understand
+  - Reproducible workflows that others can verify
+  - Responsive collaboration and revision
+
+:::{.notes}
+- Reference the team science skills paper for deeper reading
+- Biostatisticians bridge quantitative methods and domain science
+- Communication skills are as important as technical skills
+- Reproducible practices enable effective collaboration
+:::
+
+::: {.fragment .question}
+**Question:** How does reproducible research practice improve collaboration
+with non-statistician colleagues?
+:::
+
+::: {.fragment .answer}
+**Answer:** "When I share a reproducible analysis with clinical
+collaborators, they can see exactly what was done to their data. This
+builds trust and enables meaningful discussions about analytical choices.
+They may not read the code, but knowing it exists and is transparent
+changes the dynamic."
+:::
+
+## Course Projects Overview {.smaller}
+
+- Four team projects analyzing real datasets
+- Each project requires:
+  - Analysis plan presentation
+  - Final report presentation
+  - Reproducible analysis repository
+- Datasets:
+  1. Palmer Penguins - Exploratory analysis
+  2. ADNI - Alzheimer's disease prediction
+  3. Stanford Policing - Racial disparities analysis
+  4. Licorice Gargle - Clinical trial analysis
+
+:::{.notes}
+- Projects apply reproducible research principles in practice
+- Team collaboration mirrors real biostatistical work
+- Each dataset presents different analytical challenges
+- Reproducibility is a grading criterion for all projects
+:::
+
+::: {.fragment .question}
+**Question:** How will you organize your team's workflow to ensure
+reproducibility across all four projects?
+:::
+
+::: {.fragment .answer}
+**Answer:** "We plan to establish a standard project template with renv,
+Git, and folder structure from day one. Each team member will work on
+branches, and we'll use pull requests for code review. This upfront
+investment will pay off across all four projects."
+:::
+
+## Summary {.smaller}
+
+1. Reproducibility is the foundation of credible biostatistical research
+2. Key components: data management, code organization, environment capture
+3. Tools: R Markdown/Quarto, renv, Git/GitHub
+4. Best practices enable collaboration and build trust
+5. Course projects will apply these principles in practice
+
+:::{.notes}
+- Reinforce that reproducibility is not optional
+- These skills are expected in professional practice
+- Next lecture covers renv and Docker in detail
+:::
+
+## Reference Material {.center}
+
+The following slides are provided as reference material.
+
+## Recommended Reading {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+### Papers
+
+- Wilson G, et al. (2017). Good enough practices in scientific computing.
+  *PLOS Computational Biology*
+- Marwick B, et al. (2018). Packaging data analytical work reproducibly
+  using R. *The American Statistician*
+
+### Books
+
+- Xie Y, Allaire JJ, Grolemund G. *R Markdown: The Definitive Guide*
+- Bryan J. *Happy Git and GitHub for the useR*
+
+### Online Resources
+
+- [R for Data Science](https://r4ds.had.co.nz/)
+- [What They Forgot to Teach You About R](https://rstats.wtf/)
+
+::: {.fragment .question}
+**Question:** Which resource would you recommend starting with for someone
+new to reproducible research practices?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Wilson et al.'s 'Good enough practices' paper is an excellent
+starting point because it's practical and achievable. It doesn't demand
+perfection but outlines concrete steps that make a real difference. From
+there, Jenny Bryan's Git materials provide the next level of skill."
+:::
+
+## The rrtools Package {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+- `rrtools` provides templates for reproducible research projects
+- Creates standardized project structure
+- Integrates with R package development tools
+
+```{r}
+#| echo: true
+#| eval: false
+# Create a new research compendium
+rrtools::use_compendium("myproject")
+
+# Add analysis folder structure
+rrtools::use_analysis()
+
+# Creates:
+# analysis/
+# ├── paper/
+# ├── figures/
+# ├── data/
+# └── templates/
+```
+
+::: {.fragment .question}
+**Question:** When would you choose rrtools over a simpler project
+structure?
+:::
+
+::: {.fragment .answer}
+**Answer:** "rrtools is ideal when the goal is a published paper with a
+complete research compendium. For exploratory analyses or internal reports,
+a simpler structure suffices. The key is matching project organization to
+project goals and audience."
+:::
