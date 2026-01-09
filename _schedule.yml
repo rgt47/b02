@@ -1,0 +1,199 @@
+datasets:
+  - id: 1
+    name: "Penguin Dataset"
+    short_name: "Penguins"
+    data_url: "https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-07-28/readme.md"
+    references:
+      - title: "Palmer Archipelago Penguins Data in the palmerpenguins R Package"
+        url: "https://journal.r-project.org/articles/RJ-2022-020/"
+
+  - id: 2
+    name: "ADNI Dataset"
+    short_name: "ADNI"
+    data_url: "https://adni.loni.usc.edu/data-samples/adni-data/"
+    references:
+      - title: "Predicting conversion to Alzheimer's disease in individuals with Mild Cognitive Impairment using clinically transferable features"
+        url: "https://www.nature.com/articles/s41598-022-18805-5"
+
+  - id: 3
+    name: "Stanford Open Policing Project"
+    short_name: "Policing"
+    data_url: "https://openpolicing.stanford.edu/data/"
+    description: "Standardized data on vehicle and pedestrian stops from law enforcement departments across the United States."
+    references:
+      - title: "Racial disparities in police stops in US cities"
+        citation: "Rivera R, Rosenbaum J. Significance. 2020;17(4):4-5."
+        url: "https://rss.onlinelibrary.wiley.com/doi/full/10.1111/1740-9713.01412"
+      - title: "A large-scale analysis of racial disparities in police stops across the United States"
+        citation: "Pierson E, Simoiu C, Overgoor J, et al. Nature Human Behaviour. 2020;4(7):736-745."
+        url: "https://doi.org/10.1038/s41562-020-0858-1"
+
+  - id: 4
+    name: "Licorice Gargle"
+    short_name: "Licorice"
+    data_url: "https://higgi13425.github.io/medicaldata/"
+    description: "A Randomized, Double-Blind Comparison of Licorice Versus Sugar-Water Gargle for Prevention of Postoperative Sore Throat and Postextubation Coughing"
+    references:
+      - title: "Licorice gargle RCT"
+        url: "https://pubmed.ncbi.nlm.nih.gov/23921656/"
+
+lectures:
+  - id: "01"
+    day: "Tuesday"
+    week: 1
+    month: "Jan"
+    date: 6
+    topic: "Introductions"
+    project: ~
+
+  - id: "02"
+    day: "Thursday"
+    week: 1
+    month: "Jan"
+    date: 8
+    topic: "Introduction to Reproducible Research"
+    project: ~
+
+  - id: "03"
+    day: "Tuesday"
+    week: 2
+    month: "Jan"
+    date: 13
+    topic: "renv and Docker"
+    project: ~
+
+  - id: "04"
+    day: "Thursday"
+    week: 2
+    month: "Jan"
+    date: 15
+    topic: "Git and GitHub"
+    project: ~
+
+  - id: "05"
+    day: "Tuesday"
+    week: 3
+    month: "Jan"
+    date: 20
+    topic: "Assign Project 1 (Penguins)"
+    project: 1
+
+  - id: "06"
+    day: "Thursday"
+    week: 3
+    month: "Jan"
+    date: 22
+    topic: "Present P1 Plan"
+    project: 1
+
+  - id: "07"
+    day: "Tuesday"
+    week: 4
+    month: "Jan"
+    date: 27
+    topic: "Test 1"
+    project: ~
+
+  - id: "08"
+    day: "Thursday"
+    week: 4
+    month: "Jan"
+    date: 29
+    topic: "Present P1 Report"
+    project: 1
+
+  - id: "09"
+    day: "Tuesday"
+    week: 5
+    month: "Feb"
+    date: 3
+    topic: "Assign Project 2 (ADNI)"
+    project: 2
+
+  - id: "10"
+    day: "Thursday"
+    week: 5
+    month: "Feb"
+    date: 5
+    topic: "Present P2 Plan"
+    project: 2
+
+  - id: "11"
+    day: "Tuesday"
+    week: 6
+    month: "Feb"
+    date: 10
+    topic: "Lecture and Lab"
+    project: ~
+
+  - id: "12"
+    day: "Thursday"
+    week: 6
+    month: "Feb"
+    date: 12
+    topic: "Present P2 Report"
+    project: 2
+
+  - id: "13"
+    day: "Tuesday"
+    week: 7
+    month: "Feb"
+    date: 17
+    topic: "Assign Project 3 (Policing)"
+    project: 3
+
+  - id: "14"
+    day: "Thursday"
+    week: 7
+    month: "Feb"
+    date: 19
+    topic: "Present P3 Plan"
+    project: 3
+
+  - id: "15"
+    day: "Tuesday"
+    week: 8
+    month: "Feb"
+    date: 24
+    topic: "Lecture and Lab"
+    project: ~
+
+  - id: "16"
+    day: "Thursday"
+    week: 8
+    month: "Feb"
+    date: 26
+    topic: "Present P3 Report"
+    project: 3
+
+  - id: "17"
+    day: "Tuesday"
+    week: 9
+    month: "Mar"
+    date: 3
+    topic: "Assign Project 4 (Licorice)"
+    project: 4
+
+  - id: "18"
+    day: "Thursday"
+    week: 9
+    month: "Mar"
+    date: 5
+    topic: "Present P4 Plan"
+    project: 4
+
+  - id: "19"
+    day: "Tuesday"
+    week: 10
+    month: "Mar"
+    date: 10
+    topic: "Test 2"
+    project: ~
+
+  - id: "20"
+    day: "Thursday"
+    week: 10
+    month: "Mar"
+    date: 12
+    topic: "Present P4 Report"
+    project: 4

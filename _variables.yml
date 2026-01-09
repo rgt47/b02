@@ -1,0 +1,21 @@
+year: 2026
+quarter: "Winter"
+course_number: "PHB 243b"
+course_title: "Practicum in Biostatistics"
+
+instructor:
+  name: "Ronald G. Thomas, PhD"
+  email: "rgthomas@ucsd.edu"
+  github: "@rgt47"
+  office: "MTF 180b"
+  office_hours: "by appointment"
+
+ta:
+  name: "Man Luo"
+  email: "maluo@ucsd.edu"
+  github: "@Aileen-Luo"
+
+course:
+  time: "Tuesday and Thursday, 9:30--10:50 AM"
+  location: "Pepper Canyon Hall 245"
+  units: 4

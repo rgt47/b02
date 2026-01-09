@@ -3,21 +3,21 @@
 ## University of California, San Diego
 
 **School of Public Health**\
-**Winter Quarter 2026**
+**Winter Quarter {{< var year >}}**
 
 ### Instructor Information
 
--   **Instructor:** Ronald G. Thomas, PhD
--   **Email:** rgthomas@ucsd.edu
--   **GitHub:** @rgt47
--   **Office:** MTF 180b
--   **Office Hours:** by appointment
--   **Teaching Assistant:** Man Luo
--   **TA Email:** maluo@ucsd.edu
--   **TA GitHub:** @Aileen-Luo
--   **Course Time:** Tuesday and Thursday, 9:30--10:50 AM
--   **Location:** Pepper Canyon Hall 245
--   **Units:** 4
+-   **Instructor:** {{< var instructor.name >}}
+-   **Email:** {{< var instructor.email >}}
+-   **GitHub:** {{< var instructor.github >}}
+-   **Office:** {{< var instructor.office >}}
+-   **Office Hours:** {{< var instructor.office_hours >}}
+-   **Teaching Assistant:** {{< var ta.name >}}
+-   **TA Email:** {{< var ta.email >}}
+-   **TA GitHub:** {{< var ta.github >}}
+-   **Course Time:** {{< var course.time >}}
+-   **Location:** {{< var course.location >}}
+-   **Units:** {{< var course.units >}}
 -   **Prerequisites:** PHB 221 and PHB 243A
 
 ### Course Description
