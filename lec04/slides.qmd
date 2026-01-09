@@ -1,0 +1,651 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 4: Version Control with Git and GitHub"
+author: "Dr. Ronald G. Thomas"
+date: "January 15, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    smaller: false
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
+
+## Course Information {.smaller}
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+:::{.notes}
+Welcome to lecture 4 of PHB 243b. Today we cover version control with Git
+and GitHub, essential skills for any modern data scientist or biostatistician.
+Version control tracks every change to your files, enables collaboration
+without conflicts, and provides a complete audit trail of your analytical
+decisions. These skills are expected in both academic research and industry
+positions. By the end of today, you will understand Git fundamentals and
+be ready to use GitHub for your course projects.
+:::
+
+## Lecture 4: Git and GitHub {.subtitle}
+
+## Today's Agenda {.smaller}
+
+1. Why Version Control?
+2. Git Fundamentals
+3. Basic Git Workflow
+4. Introduction to GitHub
+5. Collaboration with GitHub
+6. Best Practices for Biostatistics Projects
+
+:::{.notes}
+We begin by examining why version control matters for biostatistical
+research, moving beyond simple file backups to true change tracking. Then
+we introduce Git, the most widely used version control system, and learn
+its core concepts and commands. We connect Git to GitHub for remote storage
+and collaboration. Finally, we discuss best practices specific to
+biostatistics projects, including what to track and what to exclude. By
+the end, you will have a working mental model of how Git operates and
+practical skills to use it immediately.
+:::
+
+::: {.fragment .question}
+**Question:** How do you currently keep track of different versions of
+your analysis files?
+:::
+
+::: {.fragment .answer}
+**Answer:** "I used to save files like 'analysis_v1.R', 'analysis_v2.R',
+'analysis_final.R', 'analysis_final_revised.R'. Within a week I would have
+dozens of files and no idea which was actually current. Worse, I could not
+remember what changed between versions or why I made those changes."
+:::
+
+## The File Naming Problem {.smaller}
+
+Does this look familiar?
+
+```
+project/
+├── analysis.R
+├── analysis_v2.R
+├── analysis_v2_fixed.R
+├── analysis_final.R
+├── analysis_final_FINAL.R
+├── analysis_final_FINAL_v2.R
+├── analysis_USE_THIS_ONE.R
+└── analysis_backup_jan15.R
+```
+
+Problems:
+
+- Which file is current?
+- What changed between versions?
+- Why were changes made?
+- How do you collaborate?
+
+:::{.notes}
+Nearly every researcher has experienced this chaos. The impulse to preserve
+previous versions is correct—you should never lose work—but manual file
+naming fails completely. You cannot tell what changed between versions,
+and filenames cannot capture the reasoning behind changes. Collaboration
+makes it worse: when two people edit simultaneously, someone's changes get
+lost. This approach also clutters your project with files you will never
+use again but are afraid to delete. Version control solves all these
+problems by tracking changes systematically within a single file.
+:::
+
+::: {.fragment .question}
+**Question:** What happens when two team members independently modify the
+same file and then try to combine their work?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Without version control, someone has to manually compare the
+files line by line and merge the changes by hand. This is tedious and
+error-prone—you might accidentally overwrite important changes. I once lost
+two days of work when a collaborator emailed me their version and I saved
+it over mine, not realizing I had made changes too."
+:::
+
+## What is Version Control? {.smaller}
+
+A system that records changes to files over time:
+
+- **Track changes**: Every modification is recorded
+- **History**: See what changed, when, and by whom
+- **Revert**: Go back to any previous state
+- **Branch**: Explore alternatives safely
+- **Merge**: Combine work from multiple people
+
+:::{.callout-note}
+Think of it as "track changes" for your entire project, but more powerful
+and designed for code and data analysis.
+:::
+
+:::{.notes}
+Version control is a system that manages changes to files over time,
+maintaining a complete history of every modification. Unlike simple
+backups, version control knows exactly what changed in each version, who
+made the change, and when. You can view the project at any point in its
+history or restore previous versions if needed. Branching lets you
+experiment without affecting the main project. Merging combines work from
+different people or branches intelligently. For collaborative biostatistics,
+version control is indispensable—it enables teams to work together without
+stepping on each other's toes.
+:::
+
+::: {.fragment .question}
+**Question:** How is version control different from cloud storage services
+like Dropbox or Google Drive?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Cloud storage syncs files but does not understand them. If two
+people edit simultaneously, you get a conflict file and must resolve it
+manually. Version control is designed for this: it tracks line-by-line
+changes and can often merge automatically. It also captures intent through
+commit messages—cloud storage only knows a file changed, not why."
+:::
+
+## Git: The Version Control Standard {.smaller}
+
+- Created by Linus Torvalds in 2005 (for Linux development)
+- **Distributed**: Everyone has the complete history
+- **Fast**: Most operations are local
+- **Branching**: Cheap and easy to create branches
+- Now the dominant version control system worldwide
+
+Key insight: Git tracks **content**, not files
+
+:::{.notes}
+Git was created by Linus Torvalds, the creator of Linux, when the previous
+version control tool for Linux development became unavailable. He designed
+Git to be fast, distributed, and robust. Distributed means every developer
+has a complete copy of the repository history, not just the current files.
+This makes Git resilient—if any server fails, everyone still has
+everything. Most Git operations work locally without network access,
+making them very fast. Git revolutionized how software is developed and
+has become the universal standard for version control in both software
+development and data science.
+:::
+
+::: {.fragment .question}
+**Question:** What does it mean that Git is "distributed" and why does
+that matter for collaborative research?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Each collaborator has the entire project history on their
+computer, not just the latest version. If the central server crashes, no
+work is lost—anyone can restore the repository from their local copy. It
+also means you can work offline, making commits and viewing history without
+internet access, then sync when reconnected."
+:::
+
+## Core Git Concepts {.smaller}
+
+- **Repository (repo)**: A project tracked by Git
+- **Commit**: A snapshot of your project at a point in time
+- **Branch**: A parallel version of the repository
+- **Merge**: Combining branches together
+- **Remote**: A repository hosted elsewhere (like GitHub)
+
+```
+        ┌─── Feature Branch ───┐
+       /                        \
+main: ●───●───●───●───●───●───●───●
+            commit  commit    merge
+```
+
+:::{.notes}
+Understanding Git requires learning its vocabulary. A repository is simply
+a project folder that Git is tracking. A commit is a snapshot capturing
+the state of all tracked files at a moment in time, along with a message
+explaining what changed. Commits form a chain showing the project's
+evolution. A branch is an independent line of development—you can create
+a branch to try something without affecting the main project. Merging
+combines branches back together. A remote is a copy of your repository
+on another computer, typically a server like GitHub. These concepts form
+the foundation for everything you do in Git.
+:::
+
+::: {.fragment .question}
+**Question:** Why would you create a branch instead of just making changes
+directly to your main code?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Branches let you experiment safely. If I want to try a
+different statistical model, I create a branch and work there. If the
+experiment fails, I delete the branch—the main code is untouched. If it
+succeeds, I merge it in. This is especially important in collaboration:
+each person works on their own branch, so incomplete work never breaks
+the shared code."
+:::
+
+## Basic Git Workflow {.smaller}
+
+```bash
+# 1. Check status - what has changed?
+git status
+
+# 2. Stage changes - prepare for commit
+git add analysis.R
+git add data/cleaned_data.csv
+
+# 3. Commit - save snapshot with message
+git commit -m "Add initial exploratory analysis"
+
+# 4. View history
+git log --oneline
+```
+
+The cycle: **Edit → Stage → Commit → Repeat**
+
+:::{.notes}
+The basic Git workflow follows a simple cycle. First, you make changes to
+your files as normal. When ready to save a checkpoint, you use git status
+to see what has changed. Then git add stages specific files for the next
+commit—this lets you commit related changes together. Finally, git commit
+creates the snapshot with a descriptive message. The staging area is
+powerful because it lets you craft logical commits even if you changed
+many things. Good commits are focused—each captures one logical change
+with a clear message. This makes the history meaningful and useful.
+:::
+
+::: {.fragment .question}
+**Question:** Why does Git have a separate "staging" step instead of
+committing all changes at once?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Staging lets you group related changes into logical commits.
+If I fixed a bug and added a new feature, I can stage and commit them
+separately, making the history clearer. I might also have experimental
+changes I am not ready to commit—staging lets me be selective. This
+precision in recording changes makes the project history more useful."
+:::
+
+## Writing Good Commit Messages {.smaller}
+
+**Good messages explain WHY, not just what:**
+
+```bash
+# Bad - what changed is obvious from the code
+git commit -m "Changed threshold"
+
+# Good - explains the reasoning
+git commit -m "Increase significance threshold to 0.01 per reviewer request"
+
+# Better - follows conventional format
+git commit -m "fix: Correct off-by-one error in bootstrap loop
+
+The loop was running n-1 iterations instead of n, causing
+slight underestimation of standard errors. Fixes #23."
+```
+
+:::{.notes}
+Commit messages are documentation for your future self and collaborators.
+A message like "updated code" is useless—anyone can see code was updated.
+Good messages explain why changes were made: what problem was solved, what
+decision was made, what reviewer requested the change. The conventional
+format uses a short summary line (under 50 characters), optionally followed
+by a blank line and longer explanation. For biostatistics, messages should
+capture analytical decisions: why you chose a particular method, what
+sensitivity analysis revealed, what a collaborator suggested. This creates
+an audit trail of your analytical reasoning.
+:::
+
+::: {.fragment .question}
+**Question:** How detailed should commit messages be for statistical
+analysis code?
+:::
+
+::: {.fragment .answer}
+**Answer:** "For statistical decisions, I err on the side of more detail.
+Instead of 'changed model', I write 'Switch from linear to mixed-effects
+model to account for repeated measures within subjects. ICC = 0.42
+suggests substantial clustering.' Six months later, that context is
+invaluable. The commit history becomes a lab notebook for your analysis."
+:::
+
+## Introduction to GitHub {.smaller}
+
+- **GitHub** hosts Git repositories on the internet
+- Provides collaboration features beyond Git:
+  - Pull requests for code review
+  - Issues for tracking tasks and bugs
+  - Actions for automation
+  - Project boards for organization
+
+:::{.callout-note}
+Git is the tool. GitHub is a service that hosts Git repositories and adds
+collaboration features. Alternatives include GitLab and Bitbucket.
+:::
+
+:::{.notes}
+While Git handles version control locally, GitHub provides cloud hosting
+and collaboration tools. When you push your repository to GitHub, it
+becomes accessible from anywhere and shareable with collaborators. GitHub
+adds features that Git alone does not provide. Pull requests let team
+members review code before merging. Issues track bugs, tasks, and
+discussions. Actions automate testing and deployment. For academic
+research, GitHub provides free unlimited private repositories for
+students and educators. Your course projects will use GitHub for
+submission and collaboration.
+:::
+
+::: {.fragment .question}
+**Question:** What is the difference between Git and GitHub?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Git is software that runs on your computer and tracks changes
+to files. GitHub is a website that hosts Git repositories online. You can
+use Git without GitHub—everything works locally. GitHub adds cloud storage,
+web interface, and collaboration features. The relationship is like R
+versus RStudio: Git is the engine, GitHub is a interface that makes it
+easier to use and adds extra features."
+:::
+
+## Connecting to GitHub {.smaller}
+
+```bash
+# Clone an existing repository
+git clone https://github.com/username/repo.git
+
+# Add a remote to existing local repo
+git remote add origin https://github.com/username/repo.git
+
+# Push local commits to GitHub
+git push origin main
+
+# Pull changes from GitHub
+git pull origin main
+```
+
+:::{.notes}
+Connecting your local Git repository to GitHub involves remotes—references
+to repositories on other computers. Cloning downloads a GitHub repository
+to your computer, automatically setting up the remote connection. For an
+existing local repository, you add a remote pointing to an empty GitHub
+repository, then push your commits. Push sends your local commits to
+GitHub; pull downloads commits others have made. The name "origin" is
+conventional for your primary remote. You can have multiple remotes,
+useful for forking workflows where you contribute to others' projects.
+:::
+
+::: {.fragment .question}
+**Question:** What happens if you try to push but someone else has already
+pushed changes you do not have?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Git rejects the push to prevent you from overwriting their
+changes. You must first pull their changes, merge them with yours locally,
+resolve any conflicts if the same lines were modified, and then push the
+merged result. This ensures no one's work is ever silently lost—Git
+forces you to explicitly handle concurrent modifications."
+:::
+
+## Collaboration Workflow {.smaller}
+
+1. **Pull** latest changes from GitHub
+2. Create a **branch** for your work
+3. Make changes and **commit** regularly
+4. **Push** your branch to GitHub
+5. Open a **pull request** for review
+6. After approval, **merge** into main
+
+```bash
+git pull origin main
+git checkout -b feature/add-survival-analysis
+# ... make changes ...
+git add .
+git commit -m "Add Kaplan-Meier survival analysis"
+git push origin feature/add-survival-analysis
+# Open pull request on GitHub
+```
+
+:::{.notes}
+Professional collaboration follows a branch-based workflow. You start by
+pulling the latest changes to ensure you are current. Then create a branch
+for your specific task—the name should describe what you are doing. Work
+on your branch, committing frequently with meaningful messages. When
+finished, push your branch to GitHub and open a pull request. The pull
+request shows your changes and allows teammates to review before merging.
+This workflow prevents incomplete work from affecting the shared main
+branch and ensures code review happens before changes are accepted.
+:::
+
+::: {.fragment .question}
+**Question:** Why use branches and pull requests instead of everyone
+committing directly to the main branch?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Direct commits to main mean everyone sees work in progress,
+including bugs and incomplete features. Pull requests create a checkpoint
+where code is reviewed before merging. For our course projects, this means
+your teammate can catch errors before they affect the shared analysis. It
+also creates documentation of who reviewed what, important for
+reproducibility and accountability."
+:::
+
+## What to Track with Git {.smaller}
+
+**DO track:**
+
+- Code files (.R, .Rmd, .qmd, .py)
+- Documentation (README.md, .txt)
+- Configuration (renv.lock, .Rprofile)
+- Small data files if necessary
+
+**DO NOT track:**
+
+- Large data files (use .gitignore)
+- Sensitive data (PHI, credentials)
+- Generated output (HTML, PDF—usually)
+- Temporary files (.Rhistory, .DS_Store)
+
+:::{.notes}
+Not everything belongs in Git. Track source files—the inputs to your
+analysis that a human wrote. Code, documentation, and configuration files
+are perfect for Git. Small data files are acceptable, but large datasets
+should be stored elsewhere and documented in your README. Never commit
+sensitive data like patient information or API credentials—once committed,
+they are in the history forever. Generated files like PDFs are usually
+excluded because they can be recreated from source. The .gitignore file
+tells Git which files to ignore, keeping your repository clean.
+:::
+
+::: {.fragment .question}
+**Question:** How do you share large datasets with collaborators if they
+should not go in Git?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Document where the data lives and how to access it in your
+README. For institutional data, reference the secure server location. For
+public data, include download scripts. Some teams use Git LFS (Large File
+Storage) for versioning large files, or cloud storage with clear naming
+conventions. The key is making data access reproducible even if the data
+itself is not in the repository."
+:::
+
+## Summary {.smaller}
+
+1. **Version control** tracks changes, enables collaboration, provides history
+2. **Git** is the standard tool: commits, branches, merges
+3. **GitHub** hosts repositories and adds collaboration features
+4. **Workflow**: Pull → Branch → Commit → Push → Pull Request → Merge
+5. Track code and documentation, not large data or secrets
+
+:::{.notes}
+Today we covered the fundamentals of version control with Git and GitHub.
+Version control solves the chaos of manual file versioning by tracking
+every change systematically. Git provides the core functionality: commits
+for snapshots, branches for parallel work, and merges for combining
+changes. GitHub adds cloud hosting and collaboration tools like pull
+requests. The professional workflow uses branches and code review to
+maintain quality. For your course projects, you will use Git and GitHub
+to collaborate with your teammates and submit your work. Practice these
+skills early—they become second nature quickly and will serve you
+throughout your career.
+:::
+
+## Reference Material {.center}
+
+The following slides are provided as reference material.
+
+## Recommended Reading {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+### Essential Resources
+
+- Bryan J. *Happy Git and GitHub for the useR* [happygitwithr.com](https://happygitwithr.com)
+- Irizarry R. Git and GitHub chapter in *Introduction to Data Science*
+- Perez-Riverol Y, et al. (2016). Ten Simple Rules for Taking Advantage
+  of Git and GitHub. *PLOS Computational Biology* 12(7):e1004947.
+
+### Additional Resources
+
+- [Git documentation](https://git-scm.com/doc)
+- [GitHub Guides](https://guides.github.com/)
+- [GitHub Education](https://education.github.com/) - Free Pro account
+  for students
+
+::: {.fragment .question}
+**Question:** Which resource is best for someone who has never used
+command-line tools before?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Happy Git and GitHub for the useR by Jenny Bryan is written
+specifically for R users and assumes no prior command-line experience. It
+walks through setup step by step with screenshots and troubleshooting tips.
+It also integrates Git with RStudio, which provides a graphical interface
+for common operations. Start there before moving to command-line workflows."
+:::
+
+## Git Commands Reference {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+```bash
+# Setup
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+
+# Daily workflow
+git status              # See what changed
+git add <file>          # Stage changes
+git commit -m "msg"     # Commit with message
+git push                # Send to remote
+git pull                # Get from remote
+
+# Branching
+git branch              # List branches
+git checkout -b name    # Create and switch to branch
+git merge branch        # Merge branch into current
+
+# History
+git log --oneline       # Brief history
+git diff                # See unstaged changes
+git diff --staged       # See staged changes
+```
+
+::: {.fragment .question}
+**Question:** How do you undo a commit you just made but have not pushed?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Use 'git reset --soft HEAD~1' to undo the commit but keep your
+changes staged, or 'git reset HEAD~1' to unstage them too but keep the
+files modified. If you need to completely discard the changes, 'git reset
+--hard HEAD~1' reverts everything—use with caution. Never use reset on
+commits you have already pushed, as this rewrites history others may have."
+:::
+
+## Handling Merge Conflicts {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+When Git cannot automatically merge:
+
+```
+<<<<<<< HEAD
+model <- lm(y ~ x1 + x2, data = df)
+=======
+model <- lm(y ~ x1 + x2 + x3, data = df)
+>>>>>>> feature-branch
+```
+
+Resolution steps:
+
+1. Open the conflicted file
+2. Find the conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
+3. Edit to keep the correct version
+4. Remove the conflict markers
+5. Stage and commit the resolved file
+
+::: {.fragment .question}
+**Question:** How do you decide which version to keep when resolving a
+merge conflict?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Look at what both versions were trying to accomplish. Sometimes
+one is clearly correct; other times you need to combine them. For analysis
+code, check with your collaborator to understand their reasoning. The
+commit messages should explain why changes were made. If unsure, discuss
+before resolving—a wrong merge can introduce subtle bugs that are hard
+to trace later."
+:::

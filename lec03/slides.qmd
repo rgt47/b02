@@ -1,0 +1,673 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 3: Package Management with renv and Docker"
+author: "Dr. Ronald G. Thomas"
+date: "January 13, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    smaller: false
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
+
+## Course Information {.smaller}
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+:::{.notes}
+Welcome to lecture 3 of PHB 243b. Today we dive into two essential tools
+for reproducible research: renv for R package management and Docker for
+containerization. These tools solve the "it works on my machine" problem
+that plagues collaborative data science. By the end of today, you will
+understand why package versions matter and how to capture your computational
+environment for others to reproduce.
+:::
+
+## Lecture 3: renv and Docker {.subtitle}
+
+## Today's Agenda {.smaller}
+
+1. The Dependency Problem in R
+2. Introduction to renv
+3. Core renv Workflow
+4. Introduction to Docker
+5. Combining renv and Docker
+6. Practical Demonstration
+
+:::{.notes}
+We will start by examining why R projects often fail when moved between
+computers, even when the code is identical. Then we introduce renv as a
+solution for managing R package dependencies. After understanding renv, we
+move to Docker, which captures the entire computing environment including
+the operating system and R version. Finally, we demonstrate how combining
+these tools creates truly reproducible analyses that can run anywhere.
+:::
+
+::: {.fragment .question}
+**Question:** Have you ever had R code that worked perfectly on your
+computer but failed on a colleague's machine? What happened?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Last semester, my regression analysis ran fine on my laptop
+but crashed on my advisor's computer. After hours of debugging, we
+discovered I was using dplyr 1.1 while she had dplyr 1.0. A function I
+used had been renamed between versions, and neither of us had documented
+which version we needed."
+:::
+
+## The Dependency Problem {.smaller}
+
+- R packages update frequently, sometimes with breaking changes
+- Your code depends on specific package versions
+- Different computers have different packages installed
+- System libraries and R versions also vary
+- Result: "Dependency hell" and broken analyses
+
+```r
+# This code might work today but fail tomorrow
+library(tidyverse)  # Which version?
+library(survival)   # Compatible with your R version?
+
+# Six months later: "Error: could not find function..."
+```
+
+:::{.notes}
+The dependency problem is one of the most frustrating challenges in
+computational research. R's package ecosystem is vibrant and constantly
+evolving, which is wonderful for innovation but problematic for
+reproducibility. When you write code using tidyverse functions, you are
+implicitly depending on a specific version of dozens of packages. If any
+of these packages changes its interface, your code may break. This is not
+hypothetical—it happens regularly and has caused major reproducibility
+failures in published research.
+:::
+
+::: {.fragment .question}
+**Question:** Why might package authors make breaking changes that cause
+existing code to fail?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Package authors improve their software over time, fixing bugs
+and adding features. Sometimes the original design was flawed, and fixing
+it requires changing how functions work. They face a tradeoff between
+maintaining backward compatibility forever or improving the package. Most
+choose improvement, which is good for the ecosystem but challenging for
+reproducibility."
+:::
+
+## What is renv? {.smaller}
+
+- **renv** = Reproducible ENVironments for R
+- Creates project-specific package libraries
+- Records exact package versions in a lockfile
+- Allows restoration of identical environments
+- Developed by Posit (formerly RStudio)
+
+:::{.callout-note}
+renv isolates each project's packages, so updating packages in one project
+never affects another project.
+:::
+
+:::{.notes}
+The renv package, developed by Kevin Ushey at Posit, solves the package
+versioning problem by giving each R project its own private library of
+packages. Instead of all your projects sharing the same installed packages,
+each project maintains its own collection. When you snapshot your project,
+renv creates a lockfile that records the exact version of every package.
+This lockfile can be shared with collaborators or used to recreate your
+environment months or years later. The name renv stands for reproducible
+environments, and it delivers on that promise.
+:::
+
+::: {.fragment .question}
+**Question:** How is renv different from simply documenting which packages
+your code uses in a README file?
+:::
+
+::: {.fragment .answer}
+**Answer:** "A README requires manual installation and hopes the versions
+are still available. renv automates the entire process—it knows which
+versions you used, where to download them, and how to install them. It also
+handles dependencies: if package A requires a specific version of package B,
+renv manages that automatically. Manual documentation cannot capture this
+complexity reliably."
+:::
+
+## Core renv Workflow {.smaller}
+
+Three essential functions:
+
+```r
+# 1. Initialize renv in your project
+renv::init()
+
+# 2. After installing packages, save the state
+renv::snapshot()
+
+# 3. On another machine, restore the environment
+renv::restore()
+```
+
+Key files created:
+
+- `renv.lock` - JSON file with exact package versions
+- `renv/` - Project-specific package library
+- `.Rprofile` - Activates renv when project opens
+
+:::{.notes}
+The renv workflow centers on three functions. First, renv::init()
+initializes renv for your project, creating the necessary infrastructure.
+This sets up a project-specific library and begins tracking your packages.
+Second, renv::snapshot() captures your current package state into the
+lockfile. You should run this whenever you add or update packages. Third,
+renv::restore() reads the lockfile and installs the exact package versions
+recorded there. Your collaborators run this to get the same packages you
+have. The lockfile is the critical artifact—it should be committed to
+version control and shared with your team.
+:::
+
+::: {.fragment .question}
+**Question:** When should you run renv::snapshot() during a project?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Run snapshot after any package change—installing new packages,
+updating existing ones, or removing packages you no longer need. I also
+run it before committing to Git, ensuring the lockfile stays synchronized
+with my code. Some people snapshot daily as a habit, which catches any
+inadvertent package changes."
+:::
+
+## The renv Lockfile {.smaller}
+
+```json
+{
+  "R": {
+    "Version": "4.4.0",
+    "Repositories": [
+      {"Name": "CRAN", "URL": "https://cloud.r-project.org"}
+    ]
+  },
+  "Packages": {
+    "dplyr": {
+      "Package": "dplyr",
+      "Version": "1.1.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "597b13f9a7f5c2e3f8ab..."
+    }
+  }
+}
+```
+
+:::{.notes}
+The renv.lock file is a JSON document that completely describes your
+package environment. It records the R version used, the repositories
+packages came from, and detailed information about each package including
+its exact version, source, and a hash for verification. This file is
+human-readable, which helps with debugging, but you should never edit it
+manually—always use renv functions to modify it. The lockfile should be
+committed to version control. When a collaborator clones your repository
+and runs renv::restore(), they get exactly the packages listed in this
+file, ensuring reproducibility.
+:::
+
+::: {.fragment .question}
+**Question:** Why does the lockfile include a hash for each package?
+:::
+
+::: {.fragment .answer}
+**Answer:** "The hash verifies that the installed package matches exactly
+what was recorded. If someone modified a package after you snapshotted it,
+or if CRAN replaced a package version, the hash would detect the mismatch.
+This protects against subtle corruption or tampering that could affect
+your analysis without obvious errors."
+:::
+
+## What renv Cannot Do {.smaller}
+
+renv manages R packages but **not**:
+
+- R version itself
+- Operating system
+- System libraries (C/C++ dependencies)
+- Pandoc version (for R Markdown)
+- Other software (Python, databases)
+
+:::{.callout-note}
+For complete reproducibility, you need something that captures the entire
+computing environment. Enter Docker.
+:::
+
+:::{.notes}
+While renv is excellent for package management, it has important
+limitations. It tracks the R version in the lockfile but cannot install
+a different R version for you. If your analysis requires R 4.3 but your
+collaborator has R 4.4, renv will warn them but cannot fix it. Similarly,
+some R packages depend on system libraries like libcurl or libxml2. These
+must be installed separately on each machine. For truly portable
+reproducibility that works regardless of what is installed on the host
+machine, we need containerization technology like Docker.
+:::
+
+::: {.fragment .question}
+**Question:** Can you think of a situation where code might fail even with
+the correct R packages because of system library differences?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Packages that interface with external software often have this
+problem. For example, the sf package for spatial analysis requires the
+GDAL, GEOS, and PROJ libraries. If these system libraries are different
+versions or missing entirely, sf will either fail to install or produce
+different results. I encountered this when my geospatial analysis gave
+slightly different coordinates on Linux versus macOS."
+:::
+
+## Introduction to Docker {.smaller}
+
+- Docker creates **containers**: isolated computing environments
+- A container includes OS, software, libraries, and code
+- Containers run identically on any machine with Docker
+- Like a lightweight virtual machine, but faster
+
+```
+┌─────────────────────────────────┐
+│         Your Computer           │
+│  ┌───────────────────────────┐  │
+│  │     Docker Container      │  │
+│  │  ┌─────────────────────┐  │  │
+│  │  │ Linux + R + Packages│  │  │
+│  │  │ + Your Analysis     │  │  │
+│  │  └─────────────────────┘  │  │
+│  └───────────────────────────┘  │
+└─────────────────────────────────┘
+```
+
+:::{.notes}
+Docker revolutionized software deployment by introducing containers—
+self-contained environments that package everything needed to run an
+application. For data science, a container includes the operating system,
+R installation, all packages, system libraries, and your analysis code.
+When you run a Docker container, it behaves identically regardless of
+the host machine. A container built on your Mac will run the same on a
+Windows PC, a Linux server, or a cloud computing platform. This eliminates
+environment-related bugs and makes sharing analyses trivial.
+:::
+
+::: {.fragment .question}
+**Question:** How is a Docker container different from a virtual machine?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Virtual machines include a complete operating system with its
+own kernel, making them heavy and slow to start. Containers share the host
+machine's kernel and only include the differences from a base image. This
+makes containers lightweight—they start in seconds and use minimal disk
+space. For data science, this efficiency means you can quickly spin up
+reproducible environments without the overhead of full virtualization."
+:::
+
+## The Rocker Project {.smaller}
+
+- **Rocker** provides Docker images for R
+- Pre-built images with R and common tools
+- Base images you can extend for your needs
+
+Common Rocker images:
+
+| Image | Contents |
+|-------|----------|
+| `rocker/r-ver:4.4.0` | R version 4.4.0 only |
+| `rocker/rstudio` | R + RStudio Server |
+| `rocker/tidyverse` | R + RStudio + tidyverse |
+| `rocker/verse` | tidyverse + publishing tools |
+
+:::{.notes}
+The Rocker project, maintained by Carl Boettiger and Dirk Eddelbuettel,
+provides pre-built Docker images specifically for R users. These images
+save tremendous time because you do not need to configure R installation
+from scratch. The r-ver images provide specific R versions, ensuring you
+can always access the exact R version your analysis requires. The rstudio
+image adds RStudio Server, allowing you to use the familiar RStudio
+interface inside a container through your web browser. The tidyverse and
+verse images add common packages, reducing setup time for typical data
+science workflows.
+:::
+
+::: {.fragment .question}
+**Question:** Why might you choose rocker/r-ver over rocker/tidyverse for
+a reproducible analysis?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Starting with the minimal r-ver image and adding only the
+packages you need creates a smaller, more focused container. The tidyverse
+image includes many packages you might not use, increasing image size and
+potential for conflicts. For reproducibility, it is better to explicitly
+install and document every dependency rather than rely on a large
+pre-built image that might change over time."
+:::
+
+## Creating a Dockerfile {.smaller}
+
+```dockerfile
+# Start from R 4.4.0
+FROM rocker/r-ver:4.4.0
+
+# Set working directory
+WORKDIR /workspace
+
+# Install renv
+RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+
+# Copy lockfile and restore packages
+COPY renv.lock /workspace/renv.lock
+RUN R -e "renv::restore()"
+
+# Copy analysis files
+COPY . /workspace
+
+# Default command
+CMD ["R"]
+```
+
+:::{.notes}
+A Dockerfile is a recipe for building a Docker image. Each line is an
+instruction that adds a layer to the image. We start FROM a Rocker base
+image with our desired R version. WORKDIR sets where commands run inside
+the container. RUN executes commands during image building—here we install
+renv and restore packages from our lockfile. COPY transfers files from
+your computer into the image. CMD specifies what runs when the container
+starts. By copying the renv.lock file and running restore, we ensure the
+container has exactly the packages our analysis needs, combining the
+strengths of both renv and Docker.
+:::
+
+::: {.fragment .question}
+**Question:** Why do we copy and restore the renv.lock file before copying
+the rest of our analysis files?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Docker caches each layer, rebuilding only when something
+changes. If we copy all files first, any change to our analysis code
+would invalidate the cache and force package reinstallation. By copying
+the lockfile separately, packages only reinstall when dependencies change.
+This optimization dramatically speeds up rebuilds during development."
+:::
+
+## Running Docker Containers {.smaller}
+
+```bash
+# Build the image
+docker build -t my-analysis:v1 .
+
+# Run interactively with local files mounted
+docker run --rm -it \
+  -v "$(pwd):/workspace" \
+  -w /workspace \
+  my-analysis:v1 \
+  /bin/bash
+```
+
+Key flags:
+
+- `--rm` — Remove container when it exits
+- `-it` — Interactive terminal
+- `-v` — Mount local directory into container
+- `-w` — Set working directory
+
+:::{.notes}
+Building a Docker image compiles your Dockerfile into a reusable artifact.
+The -t flag gives it a name and version tag. Running the container creates
+an instance from the image. The flags control how the container behaves.
+The volume mount (-v) is crucial for development: it connects a directory
+on your computer to a directory inside the container, so changes you make
+persist after the container stops. Without mounting, any files created
+inside the container disappear when it exits. The interactive flags let
+you work inside the container as if it were a remote server.
+:::
+
+::: {.fragment .question}
+**Question:** What happens to files you create inside a container if you
+do not use the -v volume mount?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Without a volume mount, files exist only inside the container's
+filesystem. When the container stops, especially with --rm, those files
+vanish completely. This is actually a feature for reproducibility—containers
+start fresh every time—but during development you need mounts to preserve
+your work. Always mount your working directory when doing interactive
+analysis."
+:::
+
+## Combining renv and Docker {.smaller}
+
+**Best practice workflow:**
+
+1. Develop analysis locally with renv
+2. Run `renv::snapshot()` to capture packages
+3. Create Dockerfile using renv.lock
+4. Build and test Docker image
+5. Share image via DockerHub or registry
+6. Collaborators pull image and run analysis
+
+:::{.callout-note}
+Docker guarantees the OS and R version. renv guarantees the packages.
+Together, they provide complete reproducibility.
+:::
+
+:::{.notes}
+The combination of renv and Docker provides comprehensive reproducibility.
+During development, you work normally with renv managing your packages.
+When ready to share, you create a Dockerfile that builds on a Rocker image
+and restores packages from your lockfile. This Docker image becomes a
+complete, portable artifact containing everything needed to run your
+analysis. Collaborators do not need to install R, packages, or system
+libraries—they just need Docker. They pull your image, run the container,
+and get identical results. This workflow is increasingly expected in
+collaborative research and is standard practice in industry.
+:::
+
+::: {.fragment .question}
+**Question:** In what order should you commit files when setting up a new
+reproducible project with renv and Docker?
+:::
+
+::: {.fragment .answer}
+**Answer:** "First commit the basic project structure and renv.lock after
+initializing renv. This lets collaborators restore packages immediately.
+Add the Dockerfile once your analysis stabilizes—you do not want to rebuild
+images constantly during early development. Finally, document the workflow
+in your README so others know whether to use renv::restore() locally or
+pull your Docker image."
+:::
+
+## Summary {.smaller}
+
+1. **The problem**: R projects break due to package version mismatches
+2. **renv**: Captures exact package versions in a lockfile
+3. **Docker**: Containerizes the entire computing environment
+4. **Together**: Complete, portable reproducibility
+5. **Workflow**: Develop with renv, deploy with Docker
+
+:::{.notes}
+Today we covered two essential tools for reproducible research. The renv
+package solves package management by giving each project its own library
+and recording exact versions in a lockfile. Docker solves environment
+portability by containerizing everything from the operating system up.
+Used together, they eliminate the "works on my machine" problem that has
+plagued computational research. For your course projects, we will use renv
+to manage dependencies. Docker is optional but recommended for sharing
+analyses beyond our class. Next lecture, we cover Git and GitHub for
+version control and collaboration.
+:::
+
+## Reference Material {.center}
+
+The following slides are provided as reference material.
+
+## Recommended Reading {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+### Documentation
+
+- [renv documentation](https://rstudio.github.io/renv/)
+- [Docker documentation](https://docs.docker.com/)
+- [Rocker Project](https://rocker-project.org/)
+
+### Papers and Articles
+
+- Ushey K. (2023). renv: Project Environments for R. R package.
+- Boettiger C, Eddelbuettel D. (2017). An Introduction to Rocker: Docker
+  Containers for R. *The R Journal* 9(2):527-536.
+
+### Books
+
+- Bryan J. *Happy Git and GitHub for the useR* (includes environment setup)
+- Wickham H. *R Packages* (2nd ed.) - Chapter on dependencies
+
+::: {.fragment .question}
+**Question:** Which resource would you recommend for someone completely new
+to Docker?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Start with the Rocker Project website—it is written specifically
+for R users and assumes no Docker knowledge. The official Docker
+documentation is comprehensive but overwhelming for beginners. After
+understanding Rocker basics, the Docker 'Get Started' tutorial fills in
+the conceptual gaps."
+:::
+
+## renv Troubleshooting {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+Common issues and solutions:
+
+```r
+# Check status of renv
+renv::status()
+
+# Update renv itself
+renv::upgrade()
+
+# If restore fails, try cleaning first
+renv::clean()
+renv::restore()
+
+# See what packages are different from lockfile
+renv::status()
+
+# Install specific package version
+renv::install("dplyr@1.1.0")
+```
+
+::: {.fragment .question}
+**Question:** What should you do if renv::restore() fails with a message
+about unavailable packages?
+:::
+
+::: {.fragment .answer}
+**Answer:** "First check if the package was removed from CRAN—this happens
+occasionally with problematic packages. Try the CRAN archive or the
+package's GitHub repository as alternative sources. You can also use
+renv::install() with a specific URL. If the package is truly unavailable,
+you may need to find an alternative and update your code."
+:::
+
+## Docker Commands Reference {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+```bash
+# List images
+docker images
+
+# List running containers
+docker ps
+
+# List all containers (including stopped)
+docker ps -a
+
+# Remove an image
+docker rmi image_name
+
+# Remove all stopped containers
+docker container prune
+
+# Push image to DockerHub
+docker login
+docker push username/image:tag
+
+# Pull image from DockerHub
+docker pull username/image:tag
+```
+
+::: {.fragment .question}
+**Question:** How do you share a Docker image with collaborators who do not
+have DockerHub accounts?
+:::
+
+::: {.fragment .answer}
+**Answer:** "You can save an image to a file with 'docker save -o
+myimage.tar myimage:tag' and share that file directly. Recipients load it
+with 'docker load -i myimage.tar'. This is useful for restricted
+environments or very large images where upload bandwidth is limited.
+However, DockerHub or a private registry is preferred for ongoing
+collaboration."
+:::
