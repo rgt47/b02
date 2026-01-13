@@ -1,0 +1,346 @@
+---
+title: "Federal Funding Agency Requirements for Computational Reproducibility"
+subtitle: "A Review of NIH and NSF Policies on Data Sharing, Software Documentation, and Reproducible Research"
+author: "PHB 243b Course Materials"
+date: "January 2026"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    documentclass: article
+    geometry: margin=1in
+bibliography: references.bib
+---
+
+# Executive Summary
+
+Federal funding agencies have substantially increased their emphasis on research
+reproducibility over the past decade. The National Institutes of Health (NIH)
+and National Science Foundation (NSF) now require explicit plans for data
+management, sharing, and---to varying degrees---documentation of computational
+methods. This brief reviews current policies, identifies specific language from
+agency guidance documents, and discusses implications for biostatisticians and
+computational researchers.
+
+While neither agency currently mandates specific tools such as Docker or renv,
+the requirements for transparency, accessibility, and long-term preservation of
+computational workflows create strong practical incentives for adopting
+containerization and environment management technologies.
+
+
+# NIH Data Management and Sharing Policy
+
+## Policy Overview
+
+The NIH Data Management and Sharing (DMS) Policy (NOT-OD-21-013), effective
+January 25, 2023, represents the most significant expansion of NIH data sharing
+requirements in the agency's history. The policy applies to all research funded
+or conducted by NIH that generates "scientific data," defined as:
+
+> "Recorded factual material commonly accepted in the scientific community as of
+> sufficient quality to validate and replicate research findings."
+> [@NIH_NOT_OD_21_013]
+
+The policy explicitly frames data sharing as essential to reproducibility:
+
+> "Sharing scientific data accelerates biomedical research discovery, enhances
+> research rigor and reproducibility, provides accessibility to high-value
+> datasets, and promotes data reuse for future research studies."
+> [@NIH_DMS_Overview]
+
+## Requirements for Software and Code Documentation
+
+The supplemental guidance (NOT-OD-21-014) specifies that Data Management and
+Sharing Plans must address computational dependencies. Researchers must:
+
+> "State whether specialized tools, software, and/or code are needed to access
+> or manipulate shared scientific data, and if so, provide the name(s) of the
+> needed tool(s) and software and specify how they can be accessed."
+> [@NIH_NOT_OD_21_014]
+
+The guidance further requires researchers to classify tool availability:
+
+- Open source and freely available
+- Generally available for purchase in the marketplace
+- Available exclusively from the research team
+
+Critically, researchers must address sustainability:
+
+> "Plans should note whether such tools are likely to remain available for as
+> long as the scientific data remain available."
+> [@NIH_NOT_OD_21_014]
+
+This sustainability requirement creates implicit pressure for researchers to use
+established, well-maintained tools and to document computational environments in
+reproducible formats.
+
+## Rigor and Reproducibility Requirements
+
+Since 2016, NIH has required grant applications to address four dimensions of
+rigor and reproducibility (NOT-OD-16-011):
+
+1. **Rigor of prior research**: Assessment of the quality of evidence
+   supporting the proposed work
+
+2. **Rigorous experimental design**: NIH expects "strict application of the
+   scientific method to ensure robust and unbiased experimental design,
+   methodology, analysis, interpretation and reporting of results"
+   [@NIH_Rigor_Guidance]
+
+3. **Biological variables**: Consideration of sex and other relevant biological
+   variables
+
+4. **Resource authentication**: Verification of key reagents and materials
+
+For computational research, the "rigorous experimental design" criterion implies
+that methods must be sufficiently documented to allow independent verification.
+
+## Compliance and Monitoring
+
+Beginning October 2024, NIH requires investigators to report compliance with
+their approved DMS Plans as part of annual progress reports. Non-compliance may
+result in:
+
+> "Special award conditions, enforcement actions, or termination. Post-funding
+> non-compliance affects future funding decisions."
+> [@NIH_DMS_Overview]
+
+
+# NSF Data Management and Sharing Requirements
+
+## General Policy Framework
+
+NSF requires a two-page Data Management and Sharing Plan (DMSP) for all research
+proposals. The general guidance specifies that plans must address:
+
+> "The types of data, samples, physical collections, software, curriculum
+> materials and other materials to be produced in the course of the project."
+> [@NSF_DMP_General]
+
+NSF explicitly includes software as a research product requiring management and
+sharing planning.
+
+## Dear Colleague Letter on Reproducibility (NSF 18-053)
+
+In 2018, NSF issued a Dear Colleague Letter emphasizing the agency's commitment
+to reproducibility and replicability. The letter encouraged proposals for:
+
+> "Research infrastructure for reproducibility and replicability...developing
+> and facilitating adoption of cyberinfrastructure tools and/or research methods
+> that enable use of reproducible and replicable practices across one or more
+> science and engineering communities."
+> [@NSF_DCL_18053]
+
+The letter specifically recommended:
+
+> "Use of tools that enable automated capture and recording of experimental and
+> analysis details, such as workflow languages or engines, is encouraged. To
+> allow replication, researchers are encouraged to use interoperable data
+> formats, consider establishing interfaces, and leverage existing open-source
+> analysis environments."
+> [@NSF_DCL_18053]
+
+This language implicitly endorses containerization and environment management
+approaches, though without mandating specific technologies.
+
+## BIO Directorate Requirements
+
+The NSF Directorate for Biological Sciences (BIO) provides the most explicit
+guidance on software and code sharing among NSF directorates. BIO's definition
+of "data" explicitly includes:
+
+> "Software or computer code that is required for replication."
+> [@NSF_BIO_DMP]
+
+Progress reports must document:
+
+> "Evidence of research products and their availability, including, but not
+> limited to: data, publications, samples, physical collections, software and
+> models, as described in any Data Management and Sharing Plan."
+> [@NSF_BIO_DMP]
+
+BIO also requires adherence to FAIR principles:
+
+> "DMSPs should be consistent with the FAIR (Findability, Accessibility,
+> Interoperability, and Reusability) Guiding Principles for scientific data
+> management and stewardship."
+> [@NSF_BIO_DMP]
+
+## Repository Requirements
+
+NSF explicitly discourages reliance on personal infrastructure:
+
+> "Relying on personal or lab websites instead of public repositories may be
+> considered inadequate."
+> [@NSF_BIO_DMP]
+
+Research products require "unique, resolvable, and persistent identifiers (such
+as digital object identifiers [DOIs]; uniform resource locators [URLs], or
+similar)."
+
+
+# The National Academies Report
+
+## Congressional Mandate
+
+The American Innovation and Competitiveness Act of 2017 directed NSF to
+commission a National Academies study on reproducibility. The resulting 2019
+report, *Reproducibility and Replicability in Science*, established influential
+definitions and recommendations that have shaped subsequent agency policies.
+
+## Definitions
+
+The report distinguished reproducibility from replicability:
+
+> "**Reproducibility** is obtaining consistent results using the same input
+> data; computational steps, methods, and code; and conditions of analysis."
+> [@NASEM_2019]
+
+> "**Replicability** is obtaining consistent results across studies aimed at
+> answering the same scientific question, each of which has obtained its own
+> data."
+> [@NASEM_2019]
+
+The committee explicitly focused on computational reproducibility:
+
+> "The committee's definition of reproducibility is focused on computation
+> because of its major and increasing role in science...the abundance of data
+> and widespread use of computation have transformed many disciplines. However,
+> this revolution is not yet uniformly reflected in how scientists use software
+> and how scientific results are published and shared."
+> [@NASEM_2019]
+
+## Key Findings on Computational Reproducibility
+
+The report documented significant failures in computational reproducibility:
+
+> "A number of systematic efforts to reproduce computational results across a
+> variety of fields have failed in more than half of the attempts made---mainly
+> due to insufficient detail on digital artifacts such as data, code, and
+> computational workflow."
+> [@NASEM_2019]
+
+## Recommendations
+
+The report's recommendations for computational reproducibility include:
+
+> "**Recommendation 4-1:** To help ensure the reproducibility of computational
+> results, researchers should convey clear, specific, and complete information
+> about any computational methods and data products that support their published
+> results in order to enable other researchers to repeat the analysis."
+> [@NASEM_2019]
+
+The report also called for infrastructure investment:
+
+> "The NSF should, in harmony with other funders, endorse or create code and
+> data repositories for long-term preservation of digital artifacts. In line
+> with its expressed goal of 'harnessing the data revolution,' NSF should
+> consider funding tools, training, and activities to promote computational
+> reproducibility."
+> [@NASEM_2019]
+
+
+# Implications for Containerization and Environment Management
+
+## Gap Between Policy and Practice
+
+Current federal policies emphasize *outcomes* (reproducibility, transparency,
+long-term accessibility) rather than *methods* (specific tools or technologies).
+Neither NIH nor NSF mandates Docker, renv, or similar tools. However, the
+practical requirements for meeting policy goals strongly favor these
+technologies:
+
+| Policy Requirement | Docker/Container Benefit | renv/Environment Manager Benefit |
+|-------------------|-------------------------|----------------------------------|
+| Tool sustainability | Frozen environments persist | Lockfiles capture exact versions |
+| Long-term accessibility | Images archived in registries | Restoration from lockfiles |
+| Platform independence | Containers run anywhere | Package versions specified |
+| Complete documentation | Dockerfile is executable spec | renv.lock is machine-readable |
+
+## Emerging Best Practices
+
+The NIH requirement to document whether tools "are likely to remain available
+for as long as the scientific data remain available" is particularly relevant.
+Container registries (DockerHub, institutional registries) and CRAN/Bioconductor
+archives provide more robust long-term preservation than ad hoc documentation.
+
+The NSF BIO directorate's explicit inclusion of "software or computer code that
+is required for replication" in the definition of data suggests that code
+sharing requirements will continue to expand across directorates.
+
+## Training Implications
+
+NIGMS has emphasized that graduate training must include:
+
+> "Significant training in quantitative and computational analyses...in-depth
+> training in rigorous experimental design and data interpretation before they
+> embark on their thesis work."
+> [@NIGMS_Training]
+
+This creates opportunities for programs to incorporate containerization and
+environment management into required curricula, preparing students for evolving
+funder expectations.
+
+
+# Conclusions
+
+Federal funding agencies have established clear expectations for data sharing
+and computational transparency, though specific tool requirements remain
+undefined. The key policy statements support the adoption of reproducibility
+tools:
+
+1. **NIH DMS Policy**: Requires documentation of software dependencies and their
+   long-term availability
+
+2. **NIH Rigor and Reproducibility**: Demands sufficient methodological detail
+   for independent verification
+
+3. **NSF DMSP Requirements**: Includes software as a research product requiring
+   sharing plans
+
+4. **NSF BIO Guidance**: Explicitly defines code as "data" for management
+   purposes
+
+5. **National Academies Recommendations**: Calls for infrastructure and training
+   to support computational reproducibility
+
+Researchers who adopt containerization (Docker) and environment management
+(renv) position themselves to meet these requirements efficiently while
+future-proofing their work against increasingly stringent expectations.
+
+
+# References
+
+::: {#refs}
+:::
+
+
+# Appendix: Key Policy Documents
+
+## NIH
+
+- NOT-OD-21-013: Final NIH Policy for Data Management and Sharing
+  <https://grants.nih.gov/grants/guide/notice-files/NOT-OD-21-013.html>
+
+- NOT-OD-21-014: Supplemental Information to the NIH Policy for Data Management
+  and Sharing: Elements of an NIH Data Management and Sharing Plan
+  <https://grants.nih.gov/grants/guide/notice-files/NOT-OD-21-014.html>
+
+- NIH Rigor and Reproducibility Guidance
+  <https://grants.nih.gov/policy-and-compliance/policy-topics/reproducibility/guidance>
+
+## NSF
+
+- NSF Data Management Plan Guidance
+  <https://www.nsf.gov/funding/data-management-plan>
+
+- NSF 18-053: Dear Colleague Letter on Reproducibility and Replicability
+  <https://www.nsf.gov/pubs/2018/nsf18053/nsf18053.jsp>
+
+- NSF BIO Data Management Plan Guidance
+  <https://www.nsf.gov/bio/data-management-plans>
+
+## National Academies
+
+- Reproducibility and Replicability in Science (2019)
+  <https://nap.nationalacademies.org/catalog/25303/reproducibility-and-replicability-in-science>
