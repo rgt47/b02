@@ -249,19 +249,6 @@ Dr.&nbsp;Ronald G. Thomas
 <li><strong>TA</strong>: Man Luo</li>
 <li><strong>TA Email</strong>: maluo@ucsd.edu</li>
 </ul>
-<aside class="notes">
-<p>Welcome to lecture 3 of PHB 243b. Today we dive into two essential tools for reproducible research: renv for R package management and Docker for containerization. These tools solve the “it works on my machine” problem that plagues collaborative data science. By the end of today, you will understand why package versions matter and how to capture your computational environment for others to reproduce.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section id="lecture-3-renv-and-docker" class="slide level2 subtitle">
 <h2>Lecture 3: renv and Docker</h2>
@@ -276,19 +263,6 @@ Dr.&nbsp;Ronald G. Thomas
 <li>Combining renv and Docker</li>
 <li>Practical Demonstration</li>
 </ol>
-<aside class="notes">
-<p>We will start by examining why R projects often fail when moved between computers, even when the code is identical. Then we introduce renv as a solution for managing R package dependencies. After understanding renv, we move to Docker, which captures the entire computing environment including the operating system and R version. Finally, we demonstrate how combining these tools creates truly reproducible analyses that can run anywhere.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> Have you ever had R code that worked perfectly on your computer but failed on a colleague’s machine? What happened?</p>
 </div>
@@ -310,19 +284,6 @@ Dr.&nbsp;Ronald G. Thomas
 <span id="cb1-3"><a href=""></a><span class="fu">library</span>(survival)   <span class="co"># Compatible with your R version?</span></span>
 <span id="cb1-4"><a href=""></a></span>
 <span id="cb1-5"><a href=""></a><span class="co"># Six months later: "Error: could not find function..."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<aside class="notes">
-<p>The dependency problem is one of the most frustrating challenges in computational research. R’s package ecosystem is vibrant and constantly evolving, which is wonderful for innovation but problematic for reproducibility. When you write code using tidyverse functions, you are implicitly depending on a specific version of dozens of packages. If any of these packages changes its interface, your code may break. This is not hypothetical—it happens regularly and has caused major reproducibility failures in published research.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> Why might package authors make breaking changes that cause existing code to fail?</p>
 </div>
@@ -352,19 +313,6 @@ Dr.&nbsp;Ronald G. Thomas
 </div>
 </div>
 </div>
-<aside class="notes">
-<p>The renv package, developed by Kevin Ushey at Posit, solves the package versioning problem by giving each R project its own private library of packages. Instead of all your projects sharing the same installed packages, each project maintains its own collection. When you snapshot your project, renv creates a lockfile that records the exact version of every package. This lockfile can be shared with collaborators or used to recreate your environment months or years later. The name renv stands for reproducible environments, and it delivers on that promise.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> How is renv different from simply documenting which packages your code uses in a README file?</p>
 </div>
@@ -389,19 +337,6 @@ Dr.&nbsp;Ronald G. Thomas
 <li><code>renv/</code> - Project-specific package library</li>
 <li><code>.Rprofile</code> - Activates renv when project opens</li>
 </ul>
-<aside class="notes">
-<p>The renv workflow centers on three functions. First, renv::init() initializes renv for your project, creating the necessary infrastructure. This sets up a project-specific library and begins tracking your packages. Second, renv::snapshot() captures your current package state into the lockfile. You should run this whenever you add or update packages. Third, renv::restore() reads the lockfile and installs the exact package versions recorded there. Your collaborators run this to get the same packages you have. The lockfile is the critical artifact—it should be committed to version control and shared with your team.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> When should you run renv::snapshot() during a project?</p>
 </div>
@@ -428,19 +363,6 @@ Dr.&nbsp;Ronald G. Thomas
 <span id="cb3-15"><a href=""></a>    <span class="fu">}</span></span>
 <span id="cb3-16"><a href=""></a>  <span class="fu">}</span></span>
 <span id="cb3-17"><a href=""></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<aside class="notes">
-<p>The renv.lock file is a JSON document that completely describes your package environment. It records the R version used, the repositories packages came from, and detailed information about each package including its exact version, source, and a hash for verification. This file is human-readable, which helps with debugging, but you should never edit it manually—always use renv functions to modify it. The lockfile should be committed to version control. When a collaborator clones your repository and runs renv::restore(), they get exactly the packages listed in this file, ensuring reproducibility.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> Why does the lockfile include a hash for each package?</p>
 </div>
@@ -471,19 +393,6 @@ Dr.&nbsp;Ronald G. Thomas
 </div>
 </div>
 </div>
-<aside class="notes">
-<p>While renv is excellent for package management, it has important limitations. It tracks the R version in the lockfile but cannot install a different R version for you. If your analysis requires R 4.3 but your collaborator has R 4.4, renv will warn them but cannot fix it. Similarly, some R packages depend on system libraries like libcurl or libxml2. These must be installed separately on each machine. For truly portable reproducibility that works regardless of what is installed on the host machine, we need containerization technology like Docker.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> Can you think of a situation where code might fail even with the correct R packages because of system library differences?</p>
 </div>
@@ -509,19 +418,6 @@ Dr.&nbsp;Ronald G. Thomas
 │  │  └─────────────────────┘  │  │
 │  └───────────────────────────┘  │
 └─────────────────────────────────┘</code></pre>
-<aside class="notes">
-<p>Docker revolutionized software deployment by introducing containers— self-contained environments that package everything needed to run an application. For data science, a container includes the operating system, R installation, all packages, system libraries, and your analysis code. When you run a Docker container, it behaves identically regardless of the host machine. A container built on your Mac will run the same on a Windows PC, a Linux server, or a cloud computing platform. This eliminates environment-related bugs and makes sharing analyses trivial.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> How is a Docker container different from a virtual machine?</p>
 </div>
@@ -563,19 +459,6 @@ Dr.&nbsp;Ronald G. Thomas
 </tr>
 </tbody>
 </table>
-<aside class="notes">
-<p>The Rocker project, maintained by Carl Boettiger and Dirk Eddelbuettel, provides pre-built Docker images specifically for R users. These images save tremendous time because you do not need to configure R installation from scratch. The r-ver images provide specific R versions, ensuring you can always access the exact R version your analysis requires. The rstudio image adds RStudio Server, allowing you to use the familiar RStudio interface inside a container through your web browser. The tidyverse and verse images add common packages, reducing setup time for typical data science workflows.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> Why might you choose rocker/r-ver over rocker/tidyverse for a reproducible analysis?</p>
 </div>
@@ -603,19 +486,6 @@ Dr.&nbsp;Ronald G. Thomas
 <span id="cb5-16"><a href=""></a></span>
 <span id="cb5-17"><a href=""></a><span class="co"># Default command</span></span>
 <span id="cb5-18"><a href=""></a><span class="kw">CMD</span> [<span class="st">"R"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<aside class="notes">
-<p>A Dockerfile is a recipe for building a Docker image. Each line is an instruction that adds a layer to the image. We start FROM a Rocker base image with our desired R version. WORKDIR sets where commands run inside the container. RUN executes commands during image building—here we install renv and restore packages from our lockfile. COPY transfers files from your computer into the image. CMD specifies what runs when the container starts. By copying the renv.lock file and running restore, we ensure the container has exactly the packages our analysis needs, combining the strengths of both renv and Docker.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> Why do we copy and restore the renv.lock file before copying the rest of our analysis files?</p>
 </div>
@@ -641,19 +511,6 @@ Dr.&nbsp;Ronald G. Thomas
 <li><code>-v</code> — Mount local directory into container</li>
 <li><code>-w</code> — Set working directory</li>
 </ul>
-<aside class="notes">
-<p>Building a Docker image compiles your Dockerfile into a reusable artifact. The -t flag gives it a name and version tag. Running the container creates an instance from the image. The flags control how the container behaves. The volume mount (-v) is crucial for development: it connects a directory on your computer to a directory inside the container, so changes you make persist after the container stops. Without mounting, any files created inside the container disappear when it exits. The interactive flags let you work inside the container as if it were a remote server.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> What happens to files you create inside a container if you do not use the -v volume mount?</p>
 </div>
@@ -685,19 +542,6 @@ Dr.&nbsp;Ronald G. Thomas
 </div>
 </div>
 </div>
-<aside class="notes">
-<p>The combination of renv and Docker provides comprehensive reproducibility. During development, you work normally with renv managing your packages. When ready to share, you create a Dockerfile that builds on a Rocker image and restores packages from your lockfile. This Docker image becomes a complete, portable artifact containing everything needed to run your analysis. Collaborators do not need to install R, packages, or system libraries—they just need Docker. They pull your image, run the container, and get identical results. This workflow is increasingly expected in collaborative research and is standard practice in industry.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 <div class="fragment question">
 <p><strong>Question:</strong> In what order should you commit files when setting up a new reproducible project with renv and Docker?</p>
 </div>
@@ -714,19 +558,6 @@ Dr.&nbsp;Ronald G. Thomas
 <li><strong>Together</strong>: Complete, portable reproducibility</li>
 <li><strong>Workflow</strong>: Develop with renv, deploy with Docker</li>
 </ol>
-<aside class="notes">
-<p>Today we covered two essential tools for reproducible research. The renv package solves package management by giving each project its own library and recording exact versions in a lockfile. Docker solves environment portability by containerizing everything from the operating system up. Used together, they eliminate the “works on my machine” problem that has plagued computational research. For your course projects, we will use renv to manage dependencies. Docker is optional but recommended for sharing analyses beyond our class. Next lecture, we cover Git and GitHub for version control and collaboration.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section>
 <section id="reference-material" class="slide level2 center">
 <h2>Reference Material</h2>
