@@ -1,0 +1,97 @@
+---
+title: "GitHub Authentication Guide"
+subtitle: "PHB 243b: Setting Up Secure Access"
+date: "January 15, 2026"
+format:
+  pdf:
+    documentclass: article
+    geometry: margin=0.75in
+    fontsize: 11pt
+    colorlinks: true
+---
+
+GitHub requires **two-factor authentication (2FA)** for all users. After enabling 2FA, you cannot use your password for command-line Git operations. You must use either **SSH keys** (recommended) or **Personal Access Tokens**.
+
+## Step 1: Enable Two-Factor Authentication
+
+1. Go to **Settings** → **Password and authentication** → **Two-factor authentication**
+2. Choose your 2FA method:
+   - **Authenticator app** (recommended): Google Authenticator, Authy, 1Password, etc.
+   - **Security key**: YubiKey or other FIDO2 device
+   - **GitHub Mobile**: Use the GitHub app for push notifications
+   - **Passkey**: Passwordless authentication (newest option)
+3. **Save your recovery codes** in a secure location—you need these if you lose your device
+
+## Step 2: Choose Your Command-Line Authentication Method
+
+### Option A: SSH Keys (Recommended)
+
+SSH keys provide passwordless authentication and work seamlessly with Git.
+
+**Generate a key** (run in Terminal):
+```bash
+ssh-keygen -t ed25519 -C "your_email@ucsd.edu"
+```
+Press Enter to accept the default file location. Optionally set a passphrase.
+
+**Start the SSH agent and add your key**:
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+**Copy your public key**:
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+**Add to GitHub**: Go to **Settings** → **SSH and GPG keys** → **New SSH key**, paste your key.
+
+**Test the connection**:
+```bash
+ssh -T git@github.com
+```
+You should see: "Hi username! You've successfully authenticated..."
+
+**Use SSH URLs** when cloning: `git clone git@github.com:username/repo.git`
+
+### Option B: Personal Access Token (PAT)
+
+Use this if SSH setup is problematic or you prefer HTTPS URLs.
+
+1. Go to **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
+2. Click **Generate new token (classic)**
+3. Set expiration and select scopes: `repo` (full repository access)
+4. Click **Generate token** and **copy it immediately**—you cannot see it again
+5. When Git prompts for password, paste your token instead
+
+**Store your token** using Git Credential Manager to avoid re-entering:
+```bash
+git config --global credential.helper store
+```
+
+## Quick Reference: Which URL Format?
+
+| Method | Clone URL Format |
+|--------|------------------|
+| SSH | `git clone git@github.com:username/repo.git` |
+| HTTPS + PAT | `git clone https://github.com/username/repo.git` |
+
+**Check your remote**: `git remote -v`
+
+**Switch existing repo to SSH**:
+```bash
+git remote set-url origin git@github.com:username/repo.git
+```
+
+## Troubleshooting
+
+- **"Permission denied (publickey)"**: Your SSH key is not added to GitHub or ssh-agent
+- **"Authentication failed"**: Your PAT expired or has wrong scopes; generate a new one
+- **Lost 2FA device**: Use recovery codes at github.com/sessions/recovery
+
+## Resources
+
+- GitHub 2FA setup: <https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa>
+- SSH key guide: <https://docs.github.com/en/authentication/connecting-to-github-with-ssh>
+- Happy Git (R users): <https://happygitwithr.com/https-pat.html>
