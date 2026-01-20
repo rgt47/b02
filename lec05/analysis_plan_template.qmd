@@ -1,0 +1,462 @@
+---
+title: "Statistical Analysis Plan: Palmer Penguins"
+subtitle: "PHB 243b Project 1"
+author: "[Your Names Here]"
+date: last-modified
+# ============================================================
+# RENDERING INSTRUCTIONS
+# ============================================================
+# This document can be rendered as either PDF or slides.
+#
+# Option 1: Render to PDF (recommended for submission)
+#   quarto render analysis_plan_template.qmd --to pdf
+#
+# Option 2: Render to slides (for presentation)
+#   quarto render analysis_plan_template.qmd --to revealjs
+#
+# Option 3: Set a default format by uncommenting ONE line below:
+# format: pdf
+# format: revealjs
+#
+# Option 4: Render both formats at once:
+#   quarto render analysis_plan_template.qmd
+# ============================================================
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+  revealjs:
+    theme: serif
+    slide-number: true
+    smaller: true
+    scrollable: true
+    toc: true
+    toc-depth: 1
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(palmerpenguins)
+library(knitr)
+```
+
+# Introduction
+
+## Background and Rationale
+
+<!--
+PROMPT: Provide 2-3 paragraphs describing:
+- The scientific context (Antarctic penguin ecology, morphometrics)
+- Why this analysis is important or interesting
+- Brief mention of relevant prior work (cite Gorman et al. 2014)
+
+Example opening: "Understanding the relationship between morphometric
+measurements in penguins provides insight into..."
+-->
+
+[Your background text here]
+
+## Research Questions
+
+<!--
+PROMPT: State your primary research question clearly. Consider:
+- What outcome are you trying to explain or predict?
+- What predictors will you examine?
+- Are you interested in species differences?
+
+Be specific. A weak question: "What predicts body mass?"
+A stronger question: "To what extent does flipper length predict body
+mass in Palmer penguins, and does this relationship differ by species?"
+-->
+
+**Primary Research Question:**
+
+[Your primary question here]
+
+**Secondary Questions (if any):**
+
+1. [Secondary question 1]
+2. [Secondary question 2]
+
+## Hypotheses
+
+<!--
+PROMPT: State your hypotheses before looking at the data.
+- What relationships do you expect to find?
+- What is the biological rationale for these expectations?
+- State both null and alternative hypotheses if appropriate.
+-->
+
+[Your hypotheses here]
+
+# Data Description
+
+## Data Source
+
+<!--
+PROMPT: Describe where the data come from. Include:
+- Original data collector (Dr. Kristen Gorman)
+- Research station (Palmer Station LTER, Antarctica)
+- Time period of data collection
+- How you are accessing the data (palmerpenguins R package)
+- Citation for the data
+-->
+
+[Your data source description here]
+
+**Citation:** Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer
+Archipelago (Antarctica) penguin data. R package version 0.1.0.
+
+## Study Population
+
+<!--
+PROMPT: Describe the study population:
+- What species are included?
+- What islands were sampled?
+- What years were data collected?
+- Any inclusion/exclusion criteria?
+-->
+
+[Your study population description here]
+
+## Sample Size
+
+<!--
+PROMPT: Report expected sample size:
+- Total observations in the dataset
+- Expected complete cases after handling missing data
+- Sample size by species (if relevant)
+-->
+
+```{r}
+#| label: sample-size
+penguins |>
+  group_by(species) |>
+  summarise(
+    n_total = n(),
+    n_complete = sum(complete.cases(
+      bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, sex
+    ))
+  ) |>
+  kable(caption = "Sample sizes by species")
+```
+
+[Your interpretation of sample sizes here]
+
+# Variables
+
+## Primary Outcome
+
+<!--
+PROMPT: Define your primary outcome variable:
+- Variable name and units
+- How it was measured
+- Expected range of values
+- Any transformations planned
+-->
+
+| Attribute | Description |
+|-----------|-------------|
+| Variable name | [e.g., body_mass_g] |
+| Definition | [e.g., Body mass in grams] |
+| Type | [Continuous/Categorical] |
+| Units | [e.g., grams] |
+| Expected range | [e.g., 2700-6300 g] |
+| Transformations | [e.g., None / Log] |
+
+## Primary Predictors
+
+<!--
+PROMPT: List and define each predictor variable.
+For each, specify name, units, measurement method, rationale.
+-->
+
+### Predictor 1: [Variable Name]
+
+| Attribute | Description |
+|-----------|-------------|
+| Variable name | [e.g., flipper_length_mm] |
+| Definition | [e.g., Flipper length in mm] |
+| Type | [Continuous/Categorical] |
+| Rationale | [Why include?] |
+
+### Predictor 2: [Variable Name]
+
+| Attribute | Description |
+|-----------|-------------|
+| Variable name | |
+| Definition | |
+| Type | |
+| Rationale | |
+
+### Predictor 3: [Variable Name]
+
+| Attribute | Description |
+|-----------|-------------|
+| Variable name | |
+| Definition | |
+| Type | |
+| Rationale | |
+
+## Effect Modifiers / Covariates
+
+<!--
+PROMPT: List variables that may modify the predictor-outcome
+relationship or that you will adjust for (species, sex, island, year).
+Explain why each is a modifier vs. predictor.
+-->
+
+[Your effect modifiers/covariates here]
+
+# Statistical Methods
+
+## Descriptive Statistics
+
+<!--
+PROMPT: Specify what descriptive statistics you will compute:
+- For continuous variables (mean, SD, median, IQR, range?)
+- For categorical variables (counts, percentages?)
+- Will you stratify by species or other groupings?
+-->
+
+**Continuous variables:** [mean, SD, median, IQR, range]
+
+**Categorical variables:** [frequencies, percentages]
+
+**Stratification:**
+
+- [ ] Overall
+- [ ] By species
+- [ ] By sex
+- [ ] Other: _______________
+
+## Missing Data
+
+<!--
+PROMPT: Describe your approach to missing data:
+- How many observations have missing values?
+- Strategy: complete case analysis, imputation, etc.
+- Justify your choice.
+-->
+
+```{r}
+#| label: missing-data
+penguins |>
+  summarise(across(everything(), ~sum(is.na(.)))) |>
+  pivot_longer(everything(), names_to = "Variable", values_to = "Missing") |>
+  filter(Missing > 0) |>
+  kable(caption = "Variables with missing values")
+```
+
+**Strategy:** [Your strategy and justification here]
+
+## Primary Analysis
+
+<!--
+PROMPT: Describe your primary analysis approach:
+- What statistical method? (e.g., linear regression)
+- Model specification?
+- Sequential model building?
+-->
+
+### Model Specification
+
+**Model 1:** Simple linear regression
+
+$$\text{body\_mass} = \beta_0 + \beta_1 \times \text{flipper\_length} + \epsilon$$
+
+**Model 2:** Multiple regression
+
+$$\text{body\_mass} = \beta_0 + \beta_1 \times \text{flipper} + \beta_2 \times \text{bill\_length} + \epsilon$$
+
+**Model 3:** Species-adjusted
+
+[Your model equation here]
+
+**Model 4:** With interactions
+
+[Your model equation here]
+
+### Model Comparison Criteria
+
+- [ ] R-squared / Adjusted R-squared
+- [ ] RMSE
+- [ ] AIC / BIC
+- [ ] F-tests for nested models
+
+## Significance Level
+
+- **Alpha:** [e.g., 0.05]
+- **Multiple comparison adjustment:** [None / Bonferroni / FDR]
+
+## Diagnostic Checks
+
+| Assumption | Diagnostic Method | If Violated |
+|------------|-------------------|-------------|
+| Linearity | Residual vs. fitted | Transform |
+| Normality | Q-Q plot | |
+| Homoscedasticity | Scale-location plot | |
+| Independence | Study design | |
+| Influential points | Cook's distance | |
+| Multicollinearity | VIF | |
+
+# Planned Results
+
+## Table 1: Sample Characteristics
+
+| Characteristic | Adelie | Chinstrap | Gentoo | Overall |
+|----------------|--------|-----------|--------|---------|
+| **n** | | | | |
+| **Bill length (mm)** | | | | |
+| Mean (SD) | | | | |
+| **Bill depth (mm)** | | | | |
+| Mean (SD) | | | | |
+| **Flipper length (mm)** | | | | |
+| Mean (SD) | | | | |
+| **Body mass (g)** | | | | |
+| Mean (SD) | | | | |
+| **Sex, n (%)** | | | | |
+| Female | | | | |
+| Male | | | | |
+
+## Table 2: Correlation Matrix
+
+| | Bill Length | Bill Depth | Flipper | Body Mass |
+|-------------|-------------|------------|---------|-----------|
+| Bill Length | 1.00 | | | |
+| Bill Depth | | 1.00 | | |
+| Flipper | | | 1.00 | |
+| Body Mass | | | | 1.00 |
+
+## Table 3: Model Comparison
+
+| Term | Model 1 | Model 2 | Model 3 | Model 4 |
+|------|---------|---------|---------|---------|
+| Intercept | | | | |
+| Flipper length | | | | |
+| Bill length | | | | |
+| Bill depth | | | | |
+| Species | | | | |
+| **R-squared** | | | | |
+| **RMSE** | | | | |
+| **AIC** | | | | |
+
+## Planned Figures
+
+### Figure 1: Species Distribution
+
+- **Type:** Bar chart
+- **X-axis:** Species
+- **Y-axis:** Count
+- **Purpose:** Show sample composition
+
+### Figure 2: Predictor vs. Outcome
+
+- **Type:** Scatter plot
+- **X-axis:** Flipper length
+- **Y-axis:** Body mass
+- **Color:** Species
+- **Purpose:** Visualize primary relationship
+
+### Figure 3: Correlation Heatmap
+
+- **Type:** Heatmap
+- **Variables:** All numeric
+- **Purpose:** Show variable relationships
+
+### Figure 4: Model Diagnostics
+
+- **Type:** 2x2 panel (residuals, Q-Q, scale-location, leverage)
+- **Purpose:** Assess model assumptions
+
+# Sensitivity Analyses
+
+<!--
+PROMPT: Describe robustness checks:
+- Alternative missing data handling
+- Excluding outliers
+- Alternative model specifications
+- Stratified analyses
+-->
+
+| Analysis | Rationale | Expected Impact |
+|----------|-----------|-----------------|
+| Exclude outliers | Test robustness | |
+| Multiple imputation | Compare to complete case | |
+| Stratify by species | Check pooling validity | |
+| Log-transform outcome | Address non-normality | |
+
+# Limitations
+
+## Scope and Generalizability
+
+[Results specific to Palmer Archipelago population]
+
+## Causal Inference
+
+[Observational data, cannot establish causation]
+
+## Data Limitations
+
+[Limited time period 2007-2009, potential measurement error]
+
+## Methodological Limitations
+
+[Model assumptions, variable selection]
+
+# Team Responsibilities
+
+| Task | Responsible | Deadline |
+|------|-------------|----------|
+| Data cleaning | | |
+| Descriptive statistics | | |
+| Primary analysis | | |
+| Figures | | |
+| Write-up | | |
+| Review/editing | | |
+
+# References
+
+1. Gorman KB, Williams TD, Fraser WR (2014). Ecological sexual
+   dimorphism and environmental variability within a community
+   of Antarctic penguins (genus *Pygoscelis*). *PLOS ONE* 9(3): e90081.
+
+2. Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer
+   Archipelago (Antarctica) penguin data. R package.
+
+3. [Additional references]
+
+# Appendix: Session Information
+
+```{r}
+#| label: session-info
+#| echo: true
+sessionInfo()
+```
+
+<!--
+CHECKLIST before submitting:
+
+[ ] Clear, specific research question(s)
+[ ] Complete data description with citations
+[ ] All variables defined with units and rationale
+[ ] Detailed statistical methods with model specifications
+[ ] Missing data strategy with justification
+[ ] Table shells showing exactly what will be reported
+[ ] Figure descriptions with clear purposes
+[ ] Sensitivity analyses planned
+[ ] Limitations acknowledged
+[ ] All references cited
+
+Goal: Someone else could execute your plan and get the same results.
+-->

@@ -1,0 +1,275 @@
+---
+title: "Lecture 5: Speaker Notes"
+subtitle: "Statistical Analysis Plans and Project 1"
+author: "Dr. Ronald G. Thomas"
+date: "January 20, 2026"
+format:
+  pdf:
+    toc: false
+    number-sections: false
+    geometry:
+      - margin=0.75in
+    fontsize: 10pt
+    papersize: letter
+---
+
+\newpage
+
+## Slide: Title
+
+- Welcome students to Lecture 5
+- Today marks the transition from foundational skills to applied work
+- We covered reproducibility, renv/Docker, and Git/GitHub
+- Now we put those skills into practice with Project 1
+
+---
+
+## Slide: Course Information
+
+- Remind students of office hours availability
+- TA Man Luo available for project questions
+- Encourage early engagement if struggling with concepts
+
+---
+
+## Slide: Today's Agenda
+
+- Two main topics: (1) analysis plans, (2) Palmer Penguins data
+- Analysis plans are the "contract" for your work
+- Penguins dataset is your first real collaborative project
+- **Discussion prompt:** Ask about their experiences starting
+  analyses without clear plans---what went wrong?
+
+---
+
+## Slide: What is a Statistical Analysis Plan?
+
+- Emphasize PRE-SPECIFICATION---written before seeing data
+- SAPs prevent "data dredging" and p-hacking
+- In clinical trials, SAPs are legally required documents
+- Even for exploratory work, planning improves quality
+- **Key point:** The plan documents your intentions, not your results
+
+---
+
+## Slide: Why Analysis Plans Matter
+
+- Reference the Slade et al. survey: 72.3% rate as essential
+- This is a core professional skill, not just academic exercise
+- FDA requires SAPs for drug approval submissions
+- Journals increasingly require pre-registration
+- **Discussion prompt:** How does a plan help when results
+  disappoint the PI? (Answer: protects the statistician)
+
+---
+
+## Slide: Elements of an Analysis Plan (1)
+
+- Introduction sets context---why does this matter?
+- Research questions must be SPECIFIC and ANSWERABLE
+- Data description: be precise about what you have
+- **Common mistake:** Vague questions like "explore the data"
+- Good questions specify outcome, predictors, and population
+
+---
+
+## Slide: Elements of an Analysis Plan (2)
+
+- Methods section is the heart of the plan
+- Specify exact statistical procedures
+- Pre-specify significance level and any adjustments
+- Results presentation: table shells force clear thinking
+- **Teaching point:** If you can't fill a table shell, you're
+  missing something in your methods
+
+---
+
+## Slide: Meet the Palmer Penguins
+
+- Dr. Kristen Gorman collected data at Palmer Station
+- Three species: Adelie, Chinstrap, Gentoo
+- This replaces the iris dataset for modern teaching
+- Real ecological context: Antarctic climate change
+- **Engagement:** Show enthusiasm---penguins are charismatic!
+
+---
+
+## Slide: Dataset Structure
+
+- Walk through each variable briefly
+- Emphasize units (mm, g) for morphometric measurements
+- Note the factor variables: species, island, sex
+- Year variable allows temporal analysis (but not primary focus)
+- **Key point:** Body mass is typical outcome; species often
+  modifies relationships
+
+---
+
+## Slide: Species Characteristics
+
+- Gentoo are clearly largest---good visual separation
+- Adelie and Chinstrap overlap substantially
+- Unequal sample sizes: Chinstrap smallest group
+- Sexual dimorphism exists but not shown in this plot
+- **Discussion:** What analytical challenges do unequal
+  groups create?
+
+---
+
+## Slide: Key Relationships
+
+- Flipper length is strongest predictor (r = 0.87)
+- Bill depth shows NEGATIVE correlation overall
+- This is Simpson's paradox---crucial teaching moment
+- Within species, bill depth is positively correlated
+- **Spend time here:** Simpson's paradox is counterintuitive
+  but essential to understand
+
+---
+
+## Slide: Data Quality Considerations
+
+- Only 11 missing values (3.2%)---relatively clean data
+- Complete case analysis is reasonable here
+- Discuss when imputation would be preferred
+- Mention potential outliers in morphometric data
+- Year effects: 3 years of data, possible confounding
+
+---
+
+## Slide: Project 1 Analysis Plan Overview
+
+- Present sample research question as MODEL
+- Note it specifies outcome, predictors, and comparison
+- Objectives are numbered and actionable
+- **Critique the question:** Could be more specific about
+  which models, what "vary by species" means exactly
+
+---
+
+## Slide: Sample Plan - Data Description
+
+- Three key elements: source, population, sample size
+- Citation is essential for reproducibility
+- "Expected n ≈ 333" shows you've thought about missingness
+- **Teaching point:** This section should let someone else
+  obtain identical data
+
+---
+
+## Slide: Sample Plan - Variables
+
+- Distinguish outcome, predictors, effect modifiers
+- Effect modifiers suggest interaction terms
+- Predictors have direct effects
+- **Common confusion:** When is species a predictor vs.
+  modifier? Depends on research question
+
+---
+
+## Slide: Sample Plan - Statistical Methods
+
+- Sequential model building is pedagogically valuable
+- Shows contribution of each component
+- Model 1: baseline, Model 2: multiple predictors, etc.
+- Comparison criteria specified in advance
+- **Key point:** Don't just report the "best" model---show
+  the progression
+
+---
+
+## Slide: Sample Plan - Model Evaluation
+
+- R-squared for variance explained
+- RMSE in original units (grams)---interpretable
+- AIC/BIC for model selection
+- Diagnostics: residual plots are fundamental
+- **Emphasis:** Always check assumptions before interpreting
+
+---
+
+## Slide: Sample Plan - Results Presentation
+
+- Table shells are REQUIRED in clinical trials
+- Forces you to think through exactly what you'll report
+- 4-6 figures is appropriate for this project
+- Each figure should answer a specific question
+- **Activity idea:** Have students sketch a table shell
+
+---
+
+## Slide: Sample Plan - Sensitivity Analyses
+
+- Robustness checks test if conclusions depend on choices
+- Compare complete case to imputation
+- Check influence of outliers
+- Stratified vs. pooled models
+- Limitations section shows intellectual honesty
+
+---
+
+## Slide: Key Takeaways
+
+- Write plan BEFORE analyzing
+- Include all four elements: background, data, methods, results
+- Be specific enough for someone else to execute
+- Palmer Penguins: 344 obs, 3 species, r = 0.87 for flipper
+- Simpson's paradox is key insight
+
+---
+
+## Slide: Assignment - Project 1 Plan
+
+- Due Thursday January 22---in-class presentation
+- 15-20 minutes per team
+- ALL members must participate in presentation
+- Submit slides to Canvas BEFORE class
+- Template provided: `analysis_plan_template.qmd`
+- **Encourage:** Start today, don't wait until Wednesday night
+
+---
+
+## Slide: References
+
+- Point students to the annotated bibliography in lec05
+- Gorman et al. for biological context
+- Horst et al. for dataset documentation
+- Slade et al. for professional importance of SAPs
+- ICH E9 for regulatory perspective (optional reading)
+
+---
+
+## General Teaching Notes
+
+**Pacing:**
+
+- Part I (Analysis Plans): ~20 minutes
+- Part II (Palmer Penguins): ~15 minutes
+- Part III (Sample Plan): ~20 minutes
+- Q&A and Assignment: ~5 minutes
+
+**Materials to have ready:**
+
+- Rendered slides (slides.html)
+- Analysis plan template (analysis_plan_template.qmd)
+- Annotated bibliography for reference
+- palmerpenguins_rjournal.pdf for deeper questions
+
+**Anticipated questions:**
+
+1. "How long should the plan be?" → Quality over length; 5-8
+   pages typical for this project
+2. "Can we change the plan later?" → Yes, but document changes
+   and justify them
+3. "What if our results don't match hypotheses?" → That's fine;
+   report what you find, not what you hoped for
+4. "How specific should model equations be?" → Specific enough
+   to code directly from the plan
+
+**Common pitfalls to warn about:**
+
+- Starting analysis before finishing plan
+- Vague research questions
+- Forgetting to specify handling of missing data
+- Not pre-specifying significance level
+- Table shells that don't match methods
