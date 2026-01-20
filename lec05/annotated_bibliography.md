@@ -103,20 +103,21 @@ provides population context for the Chinstrap penguins in the Palmer dataset.
 
 ### 5. Gentoo Population Genetics
 
-**Clucas GV, Younger JL, Kao D, et al. (2014).** Have historical climate
-changes affected Gentoo penguin (*Pygoscelis papua*) populations in
-Antarctica? *PLOS ONE* 9(4): e95375.
+**Peña MF, Poulin E, Dantas GPM, González-Acuña D, Petry MV, Vianna JA
+(2014).** Have historical climate changes affected Gentoo penguin (*Pygoscelis
+papua*) populations in Antarctica? *PLOS ONE* 9(4): e95375.
 https://doi.org/10.1371/journal.pone.0095375
 
 This study examined how climate change over the past 50 years in the West
 Antarctic Peninsula (WAP) has affected Gentoo penguin populations. The
 atmospheric temperature increase and changes in sea-ice dynamics have led to
 population expansion of sub-Antarctic Gentoo penguins and retreat of Adelie
-penguins. Using mitochondrial DNA analysis, researchers traced demographic
-history and found that Gentoo populations show signatures of recent
-expansion. **Relevance:** Explains why Gentoo penguins are the largest
-species in the Palmer dataset and provides genetic context for species
-differences.
+penguins. Using mitochondrial DNA analysis (HVRI and β-fibrinogen intron 7),
+researchers traced demographic history and found signatures of population
+expansion beginning approximately 13,000 BP, suggesting recolonization from
+peri-Antarctic refugia after ice sheet retreat. **Relevance:** Provides
+genetic context for species differences observed in the Palmer dataset and
+demonstrates molecular ecology methods relevant to biostatistics training.
 
 ---
 
@@ -178,13 +179,19 @@ examples.
 
 **Pearl J (2014).** Comment: Understanding Simpson's Paradox. *The American
 Statistician* 68(1): 8-13.
+https://doi.org/10.1080/00031305.2014.876829
 
-The Palmer Penguins dataset contains a well-known example of Simpson's
-Paradox: the overall correlation between bill depth and body mass is
-negative, but within each species the correlation is positive. This occurs
-because Gentoo penguins have larger bodies but shallower bills than Adelie
-penguins. **Relevance:** The dataset provides an accessible teaching example
-for an important statistical phenomenon.
+Pearl's paper provides a causal inference framework for understanding
+Simpson's Paradox, the phenomenon whereby an association between two
+variables reverses sign when conditioned on a third variable. While Pearl's
+paper addresses the paradox theoretically (not the penguin data specifically),
+the Palmer Penguins dataset offers a pedagogically useful illustration: the
+overall correlation between bill depth and body mass is negative, but within
+each species the correlation is positive. This reversal occurs because Gentoo
+penguins have larger bodies but shallower bills than Adelie penguins, and
+species acts as a confounding variable. **Relevance:** Pearl's causal
+framework combined with this accessible dataset provides an effective teaching
+example for confounding and the importance of stratified analysis.
 
 ---
 
@@ -193,21 +200,25 @@ for an important statistical phenomenon.
 ### 10. Species Classification Studies
 
 **Various authors (2020-2025).** Penguin species classification using machine
-learning. Multiple sources including Kaggle notebooks and GitHub
-repositories.
+learning. Multiple sources including Kaggle notebooks and GitHub repositories
+(grey literature).
 
 - https://www.kaggle.com/code/freddymoreno/using-machine-learning-to-classify-penguin-species
 - https://github.com/ketanmakde/DT-RF_Penguin-Data-Antarctica
 - https://github.com/hussaifm/penguins-dataset-R
 
-*Educational implementations of classification algorithms.* Multiple
-tutorials demonstrate species classification using the Palmer dataset with
-decision trees (98.55% accuracy), random forests (100% accuracy), logistic
-regression, k-nearest neighbors, and neural networks. The Gentoo species is
-easily separable based on culmen depth; Adelie and Chinstrap show more
-overlap but can be distinguished by culmen length. **Relevance:** Demonstrates
+*Educational implementations of classification algorithms.* Multiple tutorials
+demonstrate species classification using the Palmer dataset with decision
+trees, random forests, logistic regression, k-nearest neighbors, and neural
+networks. The Gentoo species is easily separable based on culmen depth; Adelie
+and Chinstrap show more overlap but can be distinguished by culmen length.
+Note: Some tutorials report very high accuracy (e.g., 100% for random
+forests), which likely reflects overfitting to small datasets rather than
+generalizable performance; this provides a useful teaching opportunity
+regarding cross-validation and model evaluation. **Relevance:** Demonstrates
 that the dataset supports machine learning education beyond traditional
-statistical methods.
+statistical methods, while also illustrating common pitfalls in model
+assessment.
 
 ---
 
@@ -250,6 +261,141 @@ Station LTER Data Policy.
 
 ---
 
+## Video Tutorials and Screencasts
+
+### 12. TidyTuesday Week 31 (2020): Palmer Penguins
+
+**R for Data Science Online Learning Community (2020).** TidyTuesday 2020
+Week 31: Palmer Penguins. GitHub repository, July 28, 2020.
+https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-28
+
+The Palmer Penguins dataset was featured as the TidyTuesday challenge for Week
+31 of 2020. TidyTuesday is a weekly social data project organized by the R for
+Data Science Online Learning Community, where participants analyze a common
+dataset and share visualizations. This week generated numerous high-quality
+submissions demonstrating diverse approaches to exploratory data analysis and
+visualization with the penguins data. **Relevance:** Provides access to
+community-contributed code examples and visualizations that can serve as
+inspiration for student projects.
+
+---
+
+### 13. Tidymodels Classification Tutorial (Video)
+
+**Silge J (2020).** Get started with tidymodels and #TidyTuesday Palmer
+penguins. Blog post and YouTube screencast, July 28, 2020.
+https://juliasilge.com/blog/palmer-penguins/
+YouTube: https://www.youtube.com/watch?v=z57i2GVcdww
+
+Julia Silge, software engineer at Posit (formerly RStudio) and tidymodels
+maintainer, demonstrates building classification models to predict penguin sex
+from morphometric measurements. The tutorial covers the complete tidymodels
+workflow: data splitting with stratification, recipe specification, model
+fitting (logistic regression and random forest), bootstrap resampling for model
+evaluation, and interpretation of results. A key pedagogical insight: the
+simpler logistic regression model performed comparably to random forest,
+illustrating the principle of parsimony. **Relevance:** Excellent introduction
+to the tidymodels framework using familiar data; demonstrates that simpler
+models often suffice when interpretability matters.
+
+---
+
+### 14. Advanced ggplot2 Visualization
+
+**Scherer C (2020).** TidyTuesday 2020/31: Palmer Penguins visualization.
+GitHub and Twitter, July 28, 2020.
+https://github.com/z3tt/TidyTuesday/blob/main/R/2020_31_PalmerPenguins.Rmd
+https://twitter.com/CedScherer
+
+Cedric Scherer, data visualization specialist, created publication-quality
+visualizations for the Palmer Penguins TidyTuesday challenge, including
+innovative boxplot variants and raincloud plots. His code demonstrates advanced
+ggplot2 techniques: custom themes, color palettes, annotations, and combining
+multiple plot types. Scherer also developed a hands-on tutorial for OutlierConf
+2021 ("ggplot Wizardry") that uses the penguins dataset to teach advanced
+visualization techniques. **Relevance:** Demonstrates professional-quality
+data visualization techniques; code is fully reproducible and well-documented.
+
+---
+
+## R-Bloggers Tutorials
+
+### 15. Basic Data Analysis with palmerpenguins
+
+**R-bloggers (2020).** Basic data analysis with palmerpenguins. July 10, 2020.
+https://www.r-bloggers.com/2020/07/basic-data-analysis-with-palmerpenguins/
+
+An introductory tutorial covering exploratory data analysis routines with the
+penguins dataset, including correlation analysis, parallel coordinate plots,
+and basic classification using support vector machines. The post emphasizes
+that the penguin dataset allows practice with pre-processing workflows typical
+of real-world data. **Relevance:** Provides a straightforward EDA template
+suitable for students beginning their analysis.
+
+---
+
+### 16. Penguins Dataset Overview
+
+**R-bloggers (2020).** Penguins Dataset Overview: iris alternative in R.
+June 17, 2020.
+https://www.r-bloggers.com/2020/06/penguins-dataset-overview-iris-alternative-in-r/
+
+Early coverage of the palmerpenguins package, discussing the motivation for
+moving away from the iris dataset due to Ronald Fisher's eugenicist past. The
+post provides initial visualizations and notes that Allison Horst packaged the
+data under CC-0 license. **Relevance:** Documents the ethical considerations
+that motivated adoption of this dataset in the R community.
+
+---
+
+### 17. Hyperparameter Optimization Tutorial
+
+**R-bloggers (2022).** Hyperparameter Optimization on the Palmer Penguins Data
+Set. November 10, 2022.
+https://www.r-bloggers.com/2022/11/hyperparameter-optimization-on-the-palmer-penguins-data-set/
+
+Demonstrates hyperparameter tuning for classification trees using the mlr3
+framework. The tutorial introduces tuning spaces and automated machine learning
+concepts, optimizing tree depth, minimum split size, and other parameters. Uses
+cross-validation to assess generalization performance. **Relevance:** Extends
+beyond basic modeling to demonstrate principled approaches to model selection
+and tuning.
+
+---
+
+### 18. Classification Comparison: Logistic Regression vs. Random Forest
+
+**R-bloggers (2022).** Classification: Logistic Regression and Random Forest.
+February 2022.
+https://www.r-bloggers.com/2022/02/classification-logistic-regression-and-random-forest/
+
+A comparative tutorial predicting penguin sex using logistic regression and
+random forest algorithms within the tidymodels framework. Key finding: logistic
+regression can outperform more complex tree-based methods on this dataset,
+reinforcing the value of starting with simpler models. The tutorial covers
+stratified splitting, model specification, and performance comparison.
+**Relevance:** Demonstrates that model complexity does not guarantee better
+performance; supports the course emphasis on interpretable models.
+
+---
+
+## Artwork and Teaching Resources
+
+### 19. palmerpenguins Artwork
+
+**Horst A (2020).** Art for teaching with palmerpenguins.
+https://allisonhorst.github.io/palmerpenguins/articles/art.html
+
+Allison Horst created original artwork to accompany the palmerpenguins package,
+including illustrations explaining bill measurement methods (culmen length and
+depth), species identification guides, and the package hex logo featuring all
+three penguin species. The artwork is released under permissive licensing for
+educational use with attribution. **Relevance:** Visual resources that enhance
+teaching effectiveness; particularly useful for explaining measurement methods
+and species differences.
+
+---
+
 ## Summary Table
 
 | Reference | Type | Key Contribution |
@@ -259,6 +405,10 @@ Station LTER Data Policy.
 | Clucas et al. 2014 | Ecology | Climate winners/losers framework |
 | Strycker et al. 2020 | Population ecology | Global Chinstrap census methods |
 | Hill 2020 | Education | Package release, teaching applications |
+| Silge 2020 | Video tutorial | Tidymodels classification workflow |
+| Scherer 2020 | Visualization | Advanced ggplot2 techniques |
+| R-bloggers 2020-2022 | Tutorials | EDA, classification, hyperparameter tuning |
+| Horst 2020 | Artwork | Teaching illustrations |
 
 ---
 

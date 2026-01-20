@@ -5,8 +5,9 @@ author: "Dr. Ronald G. Thomas"
 date: "January 20, 2026"
 format:
   pdf:
-    toc: false
-    number-sections: false
+    toc: true
+    toc-depth: 2
+    number-sections: true
     geometry:
       - margin=0.75in
     fontsize: 10pt
@@ -15,261 +16,836 @@ format:
 
 \newpage
 
-## Slide: Title
+# Part I: Statistical Analysis Plans
 
-- Welcome students to Lecture 5
-- Today marks the transition from foundational skills to applied work
-- We covered reproducibility, renv/Docker, and Git/GitHub
-- Now we put those skills into practice with Project 1
+## Slide: Title and Course Information
 
----
+Welcome students to Lecture 5. This lecture marks an important transition
+in the course---from foundational technical skills (reproducibility,
+version control, containerization) to the intellectual work of
+statistical practice.
 
-## Slide: Course Information
-
-- Remind students of office hours availability
-- TA Man Luo available for project questions
-- Encourage early engagement if struggling with concepts
+Remind students that the skills from Lectures 2-4 are not ends in
+themselves but tools that enable rigorous, reproducible analysis. Today
+we connect those tools to the scientific method through the discipline
+of pre-specification.
 
 ---
 
 ## Slide: Today's Agenda
 
-- Two main topics: (1) analysis plans, (2) Palmer Penguins data
-- Analysis plans are the "contract" for your work
-- Penguins dataset is your first real collaborative project
-- **Discussion prompt:** Ask about their experiences starting
-  analyses without clear plans---what went wrong?
+Frame the lecture around two interconnected themes:
+
+1. **The discipline of pre-specification** (analysis plans)
+2. **The practice of exploratory data analysis** (Palmer Penguins)
+
+These may seem contradictory---how can we "pre-specify" an "exploratory"
+analysis? This tension is productive. Even exploratory work benefits
+from structured thinking about objectives, methods, and presentation.
+The key distinction is between *exploratory* (hypothesis-generating) and
+*confirmatory* (hypothesis-testing) research, not between planned and
+unplanned work.
+
+**Discussion prompt:** Ask students about experiences starting analyses
+without clear plans. Common responses include scope creep, forgotten
+analyses, inconsistent methods across similar questions, and difficulty
+writing up results.
 
 ---
 
 ## Slide: What is a Statistical Analysis Plan?
 
-- Emphasize PRE-SPECIFICATION---written before seeing data
-- SAPs prevent "data dredging" and p-hacking
-- In clinical trials, SAPs are legally required documents
-- Even for exploratory work, planning improves quality
-- **Key point:** The plan documents your intentions, not your results
+### The Philosophy of Pre-Specification
+
+The statistical analysis plan embodies a fundamental principle of the
+scientific method: the separation of hypothesis generation from
+hypothesis testing. This distinction, emphasized by philosophers of
+science from Karl Popper onward, protects against confirmation bias---our
+tendency to see patterns that confirm our expectations.
+
+Pre-specification addresses what Andrew Gelman calls the "garden of
+forking paths"---the many decision points in any analysis where
+researchers could choose different options. When these choices are made
+after seeing the data, even well-intentioned researchers may
+unconsciously select paths that lead to desired results. The SAP
+documents the path before the journey begins.
+
+### Historical Context
+
+The formalization of analysis plans emerged from clinical trials
+regulation. The 1962 Kefauver-Harris Amendment to the US Food, Drug, and
+Cosmetic Act required "substantial evidence" of drug efficacy, which FDA
+interpreted to require pre-specified statistical analyses. The ICH E9
+guideline (1998) codified these requirements internationally.
+
+While observational studies and exploratory analyses have different
+requirements than confirmatory trials, the underlying logic applies
+broadly: documenting analytical intentions before seeing results
+strengthens the credibility of findings.
+
+### Key Points to Emphasize
+
+- The SAP is written BEFORE conducting analysis (ideally before
+  unblinding in trials, before extensive data exploration otherwise)
+- It documents intentions, not results
+- It protects both the integrity of science and the analyst (when
+  results disappoint stakeholders, the pre-specified plan provides
+  justification)
+- Even "exploratory" work benefits from structured planning
 
 ---
 
 ## Slide: Why Analysis Plans Matter
 
-- Reference the Slade et al. survey: 72.3% rate as essential
-- This is a core professional skill, not just academic exercise
-- FDA requires SAPs for drug approval submissions
-- Journals increasingly require pre-registration
-- **Discussion prompt:** How does a plan help when results
-  disappoint the PI? (Answer: protects the statistician)
+### Professional Importance
+
+Reference the Slade et al. (2023) survey findings:
+
+- 72.3% of collaborative biostatisticians rate statistical analysis
+  plans as "absolutely essential"
+- This ranks 4th among 16 team science skills
+- Higher than "learning new statistical methods" (49.2%)
+
+This finding may surprise students who assume technical skills dominate.
+In practice, the ability to structure and communicate analytical
+thinking is equally valued.
+
+### Regulatory Requirements
+
+- **FDA:** Requires SAPs for all pivotal trials; changes after
+  unblinding require strong justification
+- **EMA:** Similar requirements under ICH guidelines
+- **NIH:** Data management and sharing plans now required; analysis
+  plans increasingly expected for funded research
+- **Journals:** Many now require pre-registration or registered reports
+
+### The Replication Crisis Connection
+
+The "replication crisis" in psychology, medicine, and other fields has
+multiple causes, but undocumented analytical flexibility is a major
+contributor. Studies by Simmons, Nelson, and Simonsohn ("False-Positive
+Psychology," 2011) demonstrated how "researcher degrees of freedom"---the
+many choices available during analysis---can inflate false positive rates
+far beyond nominal alpha levels.
+
+Pre-registration and detailed analysis plans are among the key reforms
+proposed to address this crisis. The Open Science Framework
+(osf.io) now hosts over 500,000 pre-registrations.
+
+### Discussion Prompt
+
+"How does having an analysis plan help when results disappoint the PI?"
+
+Expected answer: The plan provides documentation that the analysis was
+conducted as intended, not modified to achieve significance. It shifts
+the conversation from "why didn't you find what we expected?" to "what
+do these pre-specified results tell us?"
+
+This is particularly important for junior statisticians who may face
+pressure to "find something significant." The SAP is professional
+protection.
 
 ---
 
-## Slide: Elements of an Analysis Plan (1)
+## Slide: Elements of an Analysis Plan (Introduction and Data)
 
-- Introduction sets context---why does this matter?
-- Research questions must be SPECIFIC and ANSWERABLE
-- Data description: be precise about what you have
-- **Common mistake:** Vague questions like "explore the data"
-- Good questions specify outcome, predictors, and population
+### The Introduction Section
+
+The introduction serves multiple functions:
+
+1. **Scientific context:** What is known? What gap does this address?
+2. **Motivation:** Why does this question matter?
+3. **Specificity:** Exactly what will be tested/estimated?
+
+A common failure mode is vague research questions. Compare:
+
+- Weak: "We will explore relationships in the penguin data"
+- Better: "We will examine predictors of body mass"
+- Best: "We will quantify the association between flipper length and
+  body mass, assess whether this association differs by species, and
+  compare models with and without species-specific slopes"
+
+The best version specifies the outcome, primary predictor, potential
+effect modifier, and analytical approach.
+
+### The Data Description Section
+
+This section should enable exact replication of data acquisition:
+
+- **Source:** Where did data originate? Who collected it?
+- **Access:** How can others obtain identical data?
+- **Population:** What is the target population? What is the sample?
+- **Inclusion/exclusion:** Any restrictions on observations?
+- **Variables:** Complete list with definitions and units
+
+For the Palmer Penguins data, this means citing both the original
+Gorman et al. (2014) paper and the Horst et al. (2020) R package,
+specifying that we use the `penguins` dataset (not `penguins_raw`),
+and documenting any exclusions (e.g., incomplete cases).
+
+### Discussion Prompt
+
+"How much detail should appear in the plan versus the final report?"
+
+Key distinction: The plan describes what you *expect* and how you *will*
+handle it. The report describes what you *observed* and what you *did*.
+
+Example:
+
+- Plan: "Missing values will be handled by complete case analysis"
+- Report: "Of 344 observations, 11 had missing values for at least one
+  variable and were excluded, yielding an analytic sample of 333"
 
 ---
 
-## Slide: Elements of an Analysis Plan (2)
+## Slide: Elements of an Analysis Plan (Methods and Results)
 
-- Methods section is the heart of the plan
-- Specify exact statistical procedures
-- Pre-specify significance level and any adjustments
-- Results presentation: table shells force clear thinking
-- **Teaching point:** If you can't fill a table shell, you're
-  missing something in your methods
+### The Statistical Methods Section
+
+This is the technical heart of the plan. Key components:
+
+**Descriptive statistics:**
+
+- Specify measures (mean/SD vs. median/IQR)
+- Specify stratification (by species? by sex?)
+- Specify how categorical variables will be summarized
+
+**Primary analysis:**
+
+- State the statistical method explicitly
+- Write model equations where appropriate
+- Specify software and key options (e.g., "robust standard errors")
+
+**Multiple testing:**
+
+- State significance level (typically α = 0.05)
+- If multiple primary outcomes or comparisons, specify adjustment
+  method (Bonferroni, Holm, FDR, or none with justification)
+
+**Sensitivity analyses:**
+
+- What robustness checks will be performed?
+- How will influential observations be handled?
+- What alternative specifications will be examined?
+
+### The Results Presentation Section
+
+**Table shells** are empty tables with headers and row labels that show
+exactly what will be reported. Creating shells forces precise thinking:
+
+- If you can't fill a cell, something is missing from your methods
+- If a cell doesn't match a method, something is inconsistent
+- Shells prevent post-hoc addition of favorable comparisons
+
+**Figure descriptions** should specify:
+
+- Plot type (scatter, box, bar, etc.)
+- Variables on each axis
+- Grouping/coloring variables
+- The question each figure answers
+
+### The Logic of Sequential Model Building
+
+Why build models sequentially rather than jumping to the "full" model?
+
+1. **Understanding:** Shows how each component contributes
+2. **Diagnostics:** Easier to identify where problems arise
+3. **Parsimony:** May find simpler model is adequate
+4. **Pedagogy:** Tells a clearer story
+
+Example sequence for penguin body mass:
+
+- Model 1: body_mass ~ flipper_length (R² ≈ 0.76)
+- Model 2: + bill_length + bill_depth (R² ≈ 0.78)
+- Model 3: + species (R² ≈ 0.87)
+- Model 4: + species × flipper_length (R² ≈ 0.88)
+
+The jump from Model 2 to Model 3 reveals that species explains
+substantial variance beyond morphometric predictors---a key insight
+obscured if we started with Model 4.
 
 ---
+
+\newpage
+
+# Part II: The Palmer Penguins Dataset
 
 ## Slide: Meet the Palmer Penguins
 
-- Dr. Kristen Gorman collected data at Palmer Station
-- Three species: Adelie, Chinstrap, Gentoo
-- This replaces the iris dataset for modern teaching
-- Real ecological context: Antarctic climate change
-- **Engagement:** Show enthusiasm---penguins are charismatic!
+### Scientific Context
+
+The Palmer Penguins data come from research on Pygoscelis penguin
+ecology at Palmer Station, Antarctica---part of the US Antarctic Program
+and the Long Term Ecological Research (LTER) network. Dr. Kristen Gorman
+collected morphometric measurements as part of research on sexual
+dimorphism and foraging ecology.
+
+The three species occupy overlapping but distinct ecological niches:
+
+- **Adelie** (*Pygoscelis adeliae*): Most ice-dependent, circumpolar
+  distribution, declining in warming regions
+- **Chinstrap** (*Pygoscelis antarcticus*): Named for distinctive
+  marking, historically benefited from reduced sea ice, now declining
+- **Gentoo** (*Pygoscelis papua*): Most generalist, expanding range
+  southward as climate warms
+
+This context matters: the penguins are not just teaching data but
+subjects of ongoing ecological research with conservation implications.
+
+### Why Replace Iris?
+
+The iris dataset (Fisher, 1936) has been a statistical teaching staple
+for nearly 90 years. Why replace it?
+
+1. **Historical concerns:** The iris data appeared in the *Annals of
+   Eugenics*, inextricably linking it to that field's troubled history.
+   While Fisher's statistical contributions are foundational, using
+   data from that context in modern teaching is increasingly questioned.
+
+2. **Pedagogical limitations:** Iris has perfectly balanced groups (50
+   each), no missing values, and one species (setosa) that is trivially
+   separable. Real data is messier.
+
+3. **Contextual clarity:** "Sepal width" is meaningful to botanists but
+   confusing to most students. "Flipper length" is immediately intuitive.
+
+4. **Topical relevance:** Climate change, Antarctic ecology, and
+   conservation are engaging contemporary topics.
+
+The Horst et al. (2022) R Journal paper documents this transition and
+demonstrates that penguins works as a near drop-in replacement for
+common iris use cases.
 
 ---
 
 ## Slide: Dataset Structure
 
-- Walk through each variable briefly
-- Emphasize units (mm, g) for morphometric measurements
-- Note the factor variables: species, island, sex
-- Year variable allows temporal analysis (but not primary focus)
-- **Key point:** Body mass is typical outcome; species often
-  modifies relationships
+### Variable Overview
+
+Walk through each variable, emphasizing measurement context:
+
+- **species:** Three levels; unequal sample sizes (teaching opportunity)
+- **island:** Three islands in Palmer Archipelago; confounded with
+  species (Chinstrap only on Dream, Gentoo mostly on Biscoe)
+- **bill_length_mm:** Culmen length; measured with calipers
+- **bill_depth_mm:** Culmen depth; measured with calipers
+- **flipper_length_mm:** Flipper length; measured with ruler
+- **body_mass_g:** Measured with spring scale; most variable measurement
+- **sex:** Determined by molecular sexing (Gorman et al. used P2/P8
+  primers); some uncertainty coded as NA
+- **year:** 2007, 2008, 2009; allows assessment of temporal trends
+
+### Measurement Considerations
+
+In ecological field research, measurement error is unavoidable:
+
+- Body mass varies with recent feeding, hydration, breeding stage
+- Bill measurements depend on positioning and observer
+- Flipper length is most reliable (rigid structure)
+
+These considerations affect interpretation: we should not over-interpret
+small differences, and measurement error attenuates correlations.
 
 ---
 
 ## Slide: Species Characteristics
 
-- Gentoo are clearly largest---good visual separation
-- Adelie and Chinstrap overlap substantially
-- Unequal sample sizes: Chinstrap smallest group
-- Sexual dimorphism exists but not shown in this plot
-- **Discussion:** What analytical challenges do unequal
-  groups create?
+### Visual Inspection
+
+The box plot reveals several features:
+
+1. **Gentoo separation:** Clearly larger, minimal overlap with others
+2. **Adelie-Chinstrap overlap:** Similar central tendency, but different
+   shapes (Chinstrap slightly more variable)
+3. **Within-species variation:** Substantial spread within each species,
+   partly explained by sex
+
+### Sample Size Implications
+
+Unequal sample sizes have analytical consequences:
+
+- Chinstrap (n=68) estimates are less precise than Adelie (n=152)
+- In regression, smaller groups contribute less to overall fit
+- In classification, naive models can achieve 44% accuracy by always
+   predicting the most common class
+
+This is a teaching opportunity: real data rarely has balanced designs.
+
+### Sexual Dimorphism
+
+Not shown in this plot but important: within each species, males are
+substantially larger than females. This creates Simpson's paradox
+opportunities even within species (males have larger flippers AND larger
+mass).
 
 ---
 
 ## Slide: Key Relationships
 
-- Flipper length is strongest predictor (r = 0.87)
-- Bill depth shows NEGATIVE correlation overall
-- This is Simpson's paradox---crucial teaching moment
-- Within species, bill depth is positively correlated
-- **Spend time here:** Simpson's paradox is counterintuitive
-  but essential to understand
+### The Flipper-Mass Relationship
+
+The correlation of r = 0.87 between flipper length and body mass is
+remarkably strong for biological data. This reflects fundamental
+allometric scaling: larger animals have proportionally larger appendages.
+
+The relationship appears approximately linear across the observed range,
+supporting linear regression. However, note:
+
+- Some heteroscedasticity (variance increases with predicted value)
+- Species form distinct clusters along the regression line
+- The single regression line may not capture species-specific slopes
+
+### Simpson's Paradox: A Teaching Moment
+
+The negative correlation between bill depth and body mass (r = -0.47)
+is counterintuitive. Within any species, we would expect positive
+correlation (larger penguins have larger bills in all dimensions).
+
+The paradox arises because:
+
+- Gentoo: Largest bodies, shallowest bills
+- Adelie: Smaller bodies, deepest bills
+- Chinstrap: Intermediate on both
+
+When we aggregate across species, the between-species pattern dominates
+the within-species pattern, reversing the sign.
+
+This is a profound lesson about confounding and the ecological fallacy.
+Conclusions about individuals cannot be drawn from aggregate data when
+subgroups differ systematically.
+
+**Historical note:** Simpson's paradox is named for Edward Simpson's
+1951 paper, though the phenomenon was noted earlier by Udny Yule (1903)
+and Karl Pearson. It appears in many contexts: Berkeley graduate
+admissions, kidney stone treatments, baseball batting averages.
 
 ---
 
 ## Slide: Data Quality Considerations
 
-- Only 11 missing values (3.2%)---relatively clean data
-- Complete case analysis is reasonable here
-- Discuss when imputation would be preferred
-- Mention potential outliers in morphometric data
-- Year effects: 3 years of data, possible confounding
+### Missing Data Patterns
+
+The 11 missing observations (3.2%) are relatively few, but their pattern
+matters:
+
+- Are they missing completely at random (MCAR)?
+- Missing at random (MAR)?
+- Missing not at random (MNAR)?
+
+For these data, missing sex values likely reflect failed molecular
+sexing (some samples degraded), which is plausibly MCAR. Missing
+morphometric values may indicate penguins that escaped measurement
+(possibly more active/aggressive individuals---MNAR?).
+
+With only 3.2% missing, the choice between complete case analysis and
+imputation is unlikely to substantially affect conclusions. Complete
+case analysis is simpler and interpretable; imputation would be
+preferred if missingness were higher or clearly patterned.
+
+### Temporal Considerations
+
+Data span three years (2007-2009). Potential concerns:
+
+- Year-to-year variation in environmental conditions
+- Possible observer effects if different researchers measured in
+  different years
+- Autocorrelation if same individuals measured multiple years (unlikely
+  given breeding colony dynamics)
+
+For this teaching exercise, we treat observations as independent and
+ignore year effects. A more thorough analysis might include year as
+a covariate or random effect.
 
 ---
 
+\newpage
+
+# Part III: Sample Analysis Plan
+
 ## Slide: Project 1 Analysis Plan Overview
 
-- Present sample research question as MODEL
-- Note it specifies outcome, predictors, and comparison
-- Objectives are numbered and actionable
-- **Critique the question:** Could be more specific about
-  which models, what "vary by species" means exactly
+### Formulating Research Questions
+
+A well-formed research question has several characteristics:
+
+1. **Specific:** Names the outcome, predictors, and population
+2. **Answerable:** Can be addressed with available data
+3. **Relevant:** Connects to scientific or practical concerns
+4. **Falsifiable:** Could, in principle, yield negative results
+
+Compare formulations:
+
+- "What predicts body mass?" (too vague)
+- "Is flipper length associated with body mass?" (yes/no question;
+  we know the answer is yes)
+- "What proportion of variance in body mass is explained by flipper
+  length, and does this vary by species?" (specific, quantitative,
+  addresses heterogeneity)
+
+### From Questions to Hypotheses
+
+Pre-specified hypotheses strengthen the scientific inference. For
+exploratory work, hypotheses may be tentative, but stating expectations
+clarifies thinking:
+
+- H1: Flipper length will be positively associated with body mass
+  (biological rationale: allometric scaling)
+- H2: The association will differ by species (rationale: species have
+  different body plans and ecological niches)
+- H3: Adding bill dimensions will improve prediction beyond flipper
+  length alone (rationale: additional morphometric information)
+
+Note: These are scientific hypotheses, not formal null hypotheses. The
+statistical formulation (H0: β = 0 vs. H1: β ≠ 0) is mechanical; the
+scientific question is whether and how much flipper length predicts
+body mass.
 
 ---
 
 ## Slide: Sample Plan - Data Description
 
-- Three key elements: source, population, sample size
-- Citation is essential for reproducibility
-- "Expected n ≈ 333" shows you've thought about missingness
-- **Teaching point:** This section should let someone else
-  obtain identical data
+### Documentation Standards
+
+The data description should enable exact replication. Key elements:
+
+**Citation chain:**
+
+- Horst et al. (2020) for the R package
+- Gorman et al. (2014) for original data collection
+- Palmer LTER for data repository
+
+**Data version:**
+
+- Package version (palmerpenguins 0.1.0)
+- Date of access
+- Any modifications from original
+
+**Population definition:**
+
+- Target: Pygoscelis penguins in Palmer Archipelago
+- Sample: Birds captured and measured at breeding colonies
+- Inclusion: Complete morphometric measurements
+- Exclusion: Observations with missing outcome or key predictors
+
+### Sample Size Reporting
+
+Report both total N and analytic N:
+
+- Total observations: 344
+- Complete cases: 333
+- By species: Adelie 146, Chinstrap 68, Gentoo 119
+
+The reduction from 344 to 333 should be explained (missingness pattern)
+and justified (complete case analysis appropriate here).
 
 ---
 
 ## Slide: Sample Plan - Variables
 
-- Distinguish outcome, predictors, effect modifiers
-- Effect modifiers suggest interaction terms
-- Predictors have direct effects
-- **Common confusion:** When is species a predictor vs.
-  modifier? Depends on research question
+### Variable Classification
+
+Careful classification guides model specification:
+
+**Outcome (dependent variable):**
+
+- body_mass_g: The quantity we want to explain/predict
+- Continuous, approximately normally distributed within species
+
+**Predictors (independent variables):**
+
+- flipper_length_mm: Primary predictor, biological rationale clear
+- bill_length_mm, bill_depth_mm: Secondary predictors
+
+**Effect modifiers:**
+
+- species: May change the predictor-outcome relationship
+- sex: Confounds body mass; may modify other relationships
+
+**Potential confounders:**
+
+- island: Confounded with species; limited variation for adjustment
+- year: Temporal variation; treat as nuisance or sensitivity analysis
+
+### The Predictor vs. Effect Modifier Distinction
+
+This distinction guides model specification:
+
+- **Predictor:** Include as main effect; interpret coefficient
+- **Effect modifier:** Include as interaction; interpret how it
+  changes the focal relationship
+
+If species is a predictor: "Gentoo penguins are 1400g heavier than
+Adelie, controlling for flipper length."
+
+If species is an effect modifier: "A 1mm increase in flipper length
+is associated with 50g increase in body mass for Adelie, but 55g for
+Gentoo."
+
+The research question determines the appropriate framing.
 
 ---
 
 ## Slide: Sample Plan - Statistical Methods
 
-- Sequential model building is pedagogically valuable
-- Shows contribution of each component
-- Model 1: baseline, Model 2: multiple predictors, etc.
-- Comparison criteria specified in advance
-- **Key point:** Don't just report the "best" model---show
-  the progression
+### The Logic of Model Comparison
+
+We specify a sequence of nested models:
+
+**Model 1:** Simple linear regression
+$$\text{mass} = \beta_0 + \beta_1 \cdot \text{flipper} + \varepsilon$$
+
+This establishes the baseline relationship. R² tells us variance
+explained by flipper length alone.
+
+**Model 2:** Multiple regression
+$$\text{mass} = \beta_0 + \beta_1 \cdot \text{flipper} + \beta_2 \cdot \text{bill\_length} + \beta_3 \cdot \text{bill\_depth} + \varepsilon$$
+
+Does adding bill dimensions improve prediction? Compare R² to Model 1.
+
+**Model 3:** Species adjustment
+$$\text{mass} = \beta_0 + \beta_1 \cdot \text{flipper} + \beta_2 \cdot \text{Chinstrap} + \beta_3 \cdot \text{Gentoo} + \varepsilon$$
+
+The change in R² from Model 1 to Model 3 shows how much species
+explains beyond flipper length.
+
+**Model 4:** Interaction
+$$\text{mass} = \beta_0 + \beta_1 \cdot \text{flipper} + \beta_2 \cdot \text{Chinstrap} + \beta_3 \cdot \text{Gentoo} + \beta_4 \cdot \text{flipper} \times \text{Chinstrap} + \beta_5 \cdot \text{flipper} \times \text{Gentoo} + \varepsilon$$
+
+Do species-specific slopes improve fit? F-test compares to Model 3.
+
+### Model Selection Criteria
+
+Multiple criteria provide complementary information:
+
+- **R²:** Proportion of variance explained (always increases with
+  more predictors)
+- **Adjusted R²:** Penalizes for complexity (can decrease)
+- **AIC/BIC:** Information criteria balancing fit and parsimony
+- **RMSE:** Prediction error in original units (grams)
+- **F-test:** For nested model comparison (requires pre-specification)
+
+No single criterion is "best." Consistent signals across criteria
+strengthen conclusions; conflicting signals require judgment.
 
 ---
 
-## Slide: Sample Plan - Model Evaluation
+## Slide: Sample Plan - Model Evaluation and Diagnostics
 
-- R-squared for variance explained
-- RMSE in original units (grams)---interpretable
-- AIC/BIC for model selection
-- Diagnostics: residual plots are fundamental
-- **Emphasis:** Always check assumptions before interpreting
+### Assumption Checking
+
+Linear regression assumptions, in order of importance for inference:
+
+1. **Linearity:** Is E[Y|X] a linear function of X?
+   - Check: Residuals vs. fitted plot; should show no pattern
+   - Violation consequence: Biased estimates
+
+2. **Independence:** Are observations independent?
+   - Check: Study design; here, likely satisfied
+   - Violation consequence: Incorrect standard errors
+
+3. **Homoscedasticity:** Is Var(ε) constant?
+   - Check: Scale-location plot; residual spread should be constant
+   - Violation consequence: Inefficient estimates, incorrect SEs
+
+4. **Normality:** Are errors normally distributed?
+   - Check: Q-Q plot of residuals
+   - Violation consequence: Invalid inference in small samples
+   - Note: Least important with n > 100 (CLT)
+
+### Influential Observations
+
+Beyond assumptions, check for influential points:
+
+- **Leverage:** Observations far from X centroid
+- **Residual:** Observations far from fitted value
+- **Influence:** Leverage × residual (Cook's distance)
+
+High-influence points disproportionately affect estimates. Sensitivity
+analysis: refit excluding influential observations; if conclusions
+change, report both.
 
 ---
 
 ## Slide: Sample Plan - Results Presentation
 
-- Table shells are REQUIRED in clinical trials
-- Forces you to think through exactly what you'll report
-- 4-6 figures is appropriate for this project
-- Each figure should answer a specific question
-- **Activity idea:** Have students sketch a table shell
+### Table Shell Philosophy
+
+Creating table shells BEFORE analysis serves multiple purposes:
+
+1. **Forces precision:** Can't create a shell for a vague analysis
+2. **Reveals gaps:** Empty cells indicate missing methods
+3. **Prevents cherry-picking:** Can't add favorable comparisons post-hoc
+4. **Streamlines writing:** Results section nearly writes itself
+
+In clinical trials, table shells are required by regulation. The
+discipline applies equally to academic research.
+
+### Figure Planning
+
+Each figure should answer a specific question:
+
+- Figure 1 (species distribution): What is our sample composition?
+- Figure 2 (scatter plot): What is the primary relationship?
+- Figure 3 (correlation matrix): How do variables interrelate?
+- Figure 4 (diagnostics): Are model assumptions satisfied?
+
+Avoid decorative figures that don't inform. Every figure should earn
+its place by conveying information not easily stated in text.
 
 ---
 
 ## Slide: Sample Plan - Sensitivity Analyses
 
-- Robustness checks test if conclusions depend on choices
-- Compare complete case to imputation
-- Check influence of outliers
-- Stratified vs. pooled models
-- Limitations section shows intellectual honesty
+### The Role of Sensitivity Analysis
+
+Sensitivity analyses assess robustness---whether conclusions depend on
+analytical choices. They address the question: "Would we reach the same
+conclusion if we had made different reasonable decisions?"
+
+Key sensitivities for this analysis:
+
+1. **Missing data:** Complete case vs. multiple imputation
+2. **Outliers:** Full data vs. excluding influential points
+3. **Model specification:** Pooled vs. stratified by species
+4. **Transformation:** Untransformed vs. log(body_mass)
+
+### Interpretation
+
+If all sensitivity analyses yield similar conclusions, findings are
+robust. If conclusions change, report the range of results and discuss
+which specification is most credible.
+
+Example: "The association between flipper length and body mass was
+significant in both complete case analysis (β = 49.7, p < 0.001) and
+multiple imputation analysis (β = 50.1, p < 0.001), suggesting
+robustness to missing data handling."
 
 ---
 
-## Slide: Key Takeaways
+## Slide: Limitations
 
-- Write plan BEFORE analyzing
-- Include all four elements: background, data, methods, results
-- Be specific enough for someone else to execute
-- Palmer Penguins: 344 obs, 3 species, r = 0.87 for flipper
-- Simpson's paradox is key insight
+### Scope and Generalizability
+
+Results apply to:
+
+- Pygoscelis penguins (three species)
+- Palmer Archipelago region
+- Years 2007-2009
+
+Generalization to other penguin genera, other Antarctic regions, or
+future time periods requires caution. Climate change may alter
+relationships over time.
+
+### Causal Inference
+
+Observational data cannot establish causation. We observe that flipper
+length is associated with body mass, but this does not mean changing
+flipper length would change mass. The association reflects common
+causes (genetics, environment, development) rather than direct effect.
+
+Causal language ("affects," "influences," "determines") should be
+avoided. Use associational language ("is associated with," "predicts,"
+"is correlated with").
+
+### Measurement Limitations
+
+- Body mass varies with feeding and breeding status
+- Bill measurements depend on observer technique
+- Sex determination has some uncertainty
+
+These introduce measurement error that attenuates observed associations.
+True relationships may be stronger than estimated.
 
 ---
 
-## Slide: Assignment - Project 1 Plan
+\newpage
 
-- Due Thursday January 22---in-class presentation
-- 15-20 minutes per team
-- ALL members must participate in presentation
-- Submit slides to Canvas BEFORE class
-- Template provided: `analysis_plan_template.qmd`
-- **Encourage:** Start today, don't wait until Wednesday night
+# Teaching Notes and Logistics
 
----
+## Pacing Guide
 
-## Slide: References
+- **Part I (Analysis Plans):** 20-25 minutes
+  - Emphasize the scientific method connection
+  - Use discussion prompts to engage students
+- **Part II (Palmer Penguins):** 15-20 minutes
+  - Show enthusiasm for the data context
+  - Spend extra time on Simpson's paradox
+- **Part III (Sample Plan):** 20 minutes
+  - Walk through as a model for their work
+  - Highlight table shells and figure planning
+- **Assignment and Q&A:** 5-10 minutes
 
-- Point students to the annotated bibliography in lec05
-- Gorman et al. for biological context
-- Horst et al. for dataset documentation
-- Slade et al. for professional importance of SAPs
-- ICH E9 for regulatory perspective (optional reading)
+## Materials Checklist
 
----
+- [ ] Rendered slides (slides.html)
+- [ ] Analysis plan template (analysis_plan_template.qmd)
+- [ ] Annotated bibliography (annotated_bibliography.md)
+- [ ] Palmer penguins R Journal PDF
+- [ ] RStudio open with palmerpenguins loaded (for live demos if needed)
 
-## General Teaching Notes
+## Anticipated Questions and Responses
 
-**Pacing:**
+**Q: How long should the analysis plan be?**
 
-- Part I (Analysis Plans): ~20 minutes
-- Part II (Palmer Penguins): ~15 minutes
-- Part III (Sample Plan): ~20 minutes
-- Q&A and Assignment: ~5 minutes
+A: Quality matters more than length. For this project, 5-8 pages is
+typical. The template provides structure; fill it substantively but
+concisely.
 
-**Materials to have ready:**
+**Q: Can we change the plan after we start analysis?**
 
-- Rendered slides (slides.html)
-- Analysis plan template (analysis_plan_template.qmd)
-- Annotated bibliography for reference
-- palmerpenguins_rjournal.pdf for deeper questions
+A: Yes, but document all changes with justification. This is called a
+"protocol amendment" in clinical trials. The key is transparency: readers
+should know what was pre-specified and what was modified.
 
-**Anticipated questions:**
+**Q: What if our results don't match our hypotheses?**
 
-1. "How long should the plan be?" → Quality over length; 5-8
-   pages typical for this project
-2. "Can we change the plan later?" → Yes, but document changes
-   and justify them
-3. "What if our results don't match hypotheses?" → That's fine;
-   report what you find, not what you hoped for
-4. "How specific should model equations be?" → Specific enough
-   to code directly from the plan
+A: Report what you find, not what you hoped. Negative or unexpected
+results are scientifically valuable. The plan protects you: "We
+pre-specified this analysis and these are the results."
 
-**Common pitfalls to warn about:**
+**Q: How specific should model equations be?**
 
-- Starting analysis before finishing plan
-- Vague research questions
-- Forgetting to specify handling of missing data
-- Not pre-specifying significance level
-- Table shells that don't match methods
+A: Specific enough that someone could code directly from the plan.
+Include variable names, functional form, and any transformations.
+
+**Q: Should we include code in the plan?**
+
+A: Not typically. The plan describes what you will do conceptually;
+the code implements it. However, specifying software and key options
+(e.g., "using lm() in R" or "robust standard errors via HC3") is
+appropriate.
+
+## Common Pitfalls to Warn About
+
+1. **Starting analysis before finishing the plan:** Resist the
+   temptation. Planning feels slower but saves time overall.
+
+2. **Vague research questions:** "Explore the data" is not a plan.
+   Specify exactly what you will examine.
+
+3. **Forgetting missing data:** Every plan should address how
+   missingness will be handled.
+
+4. **No significance level specified:** State α = 0.05 (or your
+   chosen level) explicitly.
+
+5. **Table shells that don't match methods:** If you plan a
+   species-stratified analysis, your Table 1 should be stratified.
+
+6. **Overpromising sensitivity analyses:** Only promise what you
+   will actually do. A shorter list, fully executed, is better than
+   an ambitious list left incomplete.
+
+## Connections to Future Lectures
+
+This lecture establishes patterns that will recur:
+
+- **Lecture 6 (Plan Presentations):** Students present their plans;
+  use the elements discussed today as evaluation criteria
+- **Lecture 7 (Test 1):** May include questions about SAP components,
+  Simpson's paradox, model building logic
+- **Lecture 8 (Report Presentations):** Assess whether executed
+  analysis matches the pre-specified plan
+
+The discipline of pre-specification, learned here with penguins, applies
+to all four projects and to students' future professional work.
