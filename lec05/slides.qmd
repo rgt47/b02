@@ -10,7 +10,7 @@ format:
     code-fold: false
     code-tools: true
     highlight-style: github
-    smaller: false
+    smaller: true
     css: ../custom.css
     title-slide-attributes:
       data-background-image: "../ucsdlibrary.jpeg"
@@ -22,29 +22,29 @@ format:
 .question {
   background-color: #e6f7ff;
   border-left: 5px solid #1890ff;
-  padding: 10px 15px;
-  margin-top: 20px;
+  padding: 8px 12px;
+  margin-top: 15px;
   border-radius: 5px;
 }
 
 .answer {
   background-color: #f6ffed;
   border-left: 5px solid #52c41a;
-  padding: 10px 15px;
-  margin-top: 10px;
+  padding: 8px 12px;
+  margin-top: 8px;
   border-radius: 5px;
 }
 
 .plan-element {
   background-color: #fff7e6;
   border-left: 5px solid #fa8c16;
-  padding: 10px 15px;
-  margin-top: 10px;
+  padding: 8px 12px;
+  margin-top: 8px;
   border-radius: 5px;
 }
 </style>
 
-## Course Information {.smaller}
+## Course Information
 
 - **Instructor**: Dr. Ronald G. Thomas
 - **Email**: rgthomas@ucsd.edu
@@ -55,7 +55,7 @@ format:
 
 ## Lecture 5: Analysis Plans and Project 1 {.subtitle}
 
-## Today's Agenda {.smaller}
+## Today's Agenda
 
 1. What is a Statistical Analysis Plan (SAP)?
 2. Essential Elements of an Analysis Plan
@@ -64,21 +64,22 @@ format:
 5. Sample Analysis Plan for Project 1
 
 ::: {.fragment .question}
-**Question:** Have you ever started an analysis and realized partway through
-that you were not sure what question you were trying to answer?
+**Question:** Have you ever started an analysis and realized
+partway through that you were unsure what question you were
+trying to answer?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "In my first consulting project, I spent two weeks building models
-before realizing the client wanted descriptive statistics, not predictions.
-A clear analysis plan would have prevented that wasted effort and the awkward
-conversation that followed."
+**Answer:** "In my first consulting project, I spent two weeks
+building models before realizing the client wanted descriptive
+statistics, not predictions. A clear analysis plan would have
+prevented that wasted effort."
 :::
 
 
 # Part I: Statistical Analysis Plans
 
-## What is a Statistical Analysis Plan? {.smaller}
+## What is a Statistical Analysis Plan?
 
 A **Statistical Analysis Plan (SAP)** is a document that specifies:
 
@@ -88,28 +89,26 @@ A **Statistical Analysis Plan (SAP)** is a document that specifies:
 - Decisions made *before* seeing the data
 
 :::{.callout-note}
-The SAP is written before conducting the analysis. It prevents data dredging
-and documents your analytical intentions.
+The SAP is written before conducting the analysis. It prevents
+data dredging and documents your analytical intentions.
 :::
 
 ::: {.fragment .question}
-**Question:** Why is it important to write the analysis plan before looking
-at the data?
+**Question:** Why is it important to write the plan before
+looking at the data?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Writing the plan first prevents confirmation bias and p-hacking.
-If you decide your methods after seeing the data, you might unconsciously
-choose approaches that give significant results. Pre-specification makes your
-analysis more credible and reproducible."
+**Answer:** "Writing the plan first prevents confirmation bias
+and p-hacking. If you decide methods after seeing data, you might
+unconsciously choose approaches that give significant results."
 :::
 
-## Why Analysis Plans Matter {.smaller}
+## Why Analysis Plans Matter
 
 **Professional importance:**
 
-- 72.3% of collaborative biostatisticians rate SAPs as "absolutely essential"
-  (Slade et al., 2023)
+- 72.3% of biostatisticians rate SAPs as "absolutely essential"
 - Required for FDA submissions and clinical trials
 - Expected in peer-reviewed publications
 
@@ -121,17 +120,16 @@ analysis more credible and reproducible."
 - Creates audit trail for reproducibility
 
 ::: {.fragment .question}
-**Question:** How does having an analysis plan help when working in a team?
+**Question:** How does an analysis plan help in team settings?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "The plan serves as a contract between team members. Everyone
-knows what analyses will be performed and how. When the statistician and the
-PI agree on the plan upfront, there are no surprises when the results come
-in---even if they are not what the PI hoped for."
+**Answer:** "The plan serves as a contract between team members.
+Everyone knows what analyses will be performed. When statistician
+and PI agree upfront, there are no surprises when results arrive."
 :::
 
-## Elements of an Analysis Plan {.smaller}
+## Elements of an Analysis Plan
 
 ::: {.plan-element}
 **1. Introduction and Background**
@@ -150,19 +148,17 @@ in---even if they are not what the PI hoped for."
 :::
 
 ::: {.fragment .question}
-**Question:** How much detail about the data should appear in the plan versus
-in the final report?
+**Question:** How much detail should appear in the plan vs. the
+final report?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "The plan should describe what data you expect to have and how
-you will handle it. The report describes what you actually observed. For
-example, the plan says 'missing values will be handled by multiple
-imputation'; the report says 'of 344 observations, 11 had missing values
-which were imputed using...'"
+**Answer:** "The plan describes what you *expect* and how you will
+handle it. The report describes what you *observed*. Plan: 'missing
+values handled by imputation.' Report: '11 of 344 were imputed.'"
 :::
 
-## Elements of an Analysis Plan (continued) {.smaller}
+## Elements of an Analysis Plan (continued)
 
 ::: {.plan-element}
 **3. Statistical Methods**
@@ -171,7 +167,7 @@ which were imputed using...'"
 - Primary analysis methods
 - Secondary/sensitivity analyses
 - Handling of missing data
-- Significance level and multiple testing adjustments
+- Significance level and multiple testing
 :::
 
 ::: {.plan-element}
@@ -183,54 +179,51 @@ which were imputed using...'"
 :::
 
 ::: {.fragment .question}
-**Question:** Should the analysis plan specify exact table shells?
+**Question:** Should the plan specify exact table shells?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Yes, creating table shells forces you to think through exactly
-what you will report. It also helps identify gaps---if you cannot fill a cell
-in your planned table, you may be missing a variable or analysis. In clinical
-trials, table shells are required before unblinding."
+**Answer:** "Yes. Table shells force you to think through exactly
+what you will report. They also identify gaps---if you cannot fill
+a cell, you may be missing a variable. In trials, shells are required."
 :::
 
 
 # Part II: Palmer Penguins Dataset
 
-## Meet the Palmer Penguins {.smaller}
+## Meet the Palmer Penguins
 
 :::: {.columns}
 
-::: {.column width="60%"}
-- Data collected at **Palmer Station, Antarctica**
-- Three penguin species: Adelie, Chinstrap, Gentoo
-- Morphometric measurements: bill, flipper, body mass
+::: {.column width="55%"}
+- Data from **Palmer Station, Antarctica**
+- Three species: Adelie, Chinstrap, Gentoo
+- Measurements: bill, flipper, body mass
 - Collected by Dr. Kristen Gorman (2007--2009)
 
 :::{.callout-note}
-The palmerpenguins dataset is an excellent teaching alternative to
-the classic iris dataset, with real ecological context and modern
-data science applications.
+The palmerpenguins dataset is an excellent teaching
+alternative to the classic iris dataset.
 :::
 :::
 
-::: {.column width="40%"}
+::: {.column width="45%"}
 ![](figures/species-distribution.png){width="100%"}
 :::
 
 ::::
 
 ::: {.fragment .question}
-**Question:** Why might palmerpenguins be preferable to iris for teaching?
+**Question:** Why might penguins be preferable to iris?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "The iris dataset has problematic historical associations and
-unrealistic properties (e.g., one species is linearly separable). Penguins
-have real ecological context, meaningful missing data, and variables that
-behave like real biological measurements."
+**Answer:** "Iris has problematic historical associations and
+unrealistic properties. Penguins have real ecological context,
+meaningful missing data, and realistic variable behavior."
 :::
 
-## Dataset Structure {.smaller}
+## Dataset Structure
 
 **344 observations, 8 variables:**
 
@@ -246,18 +239,16 @@ behave like real biological measurements."
 | `year` | Integer | 2007, 2008, 2009 |
 
 ::: {.fragment .question}
-**Question:** Which variable would you expect to be the primary outcome in
-most analyses of this dataset?
+**Question:** Which variable is typically the primary outcome?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Body mass is often the outcome of interest because it indicates
-penguin health and condition. Flipper length, bill dimensions, species, and
-sex are natural predictors. However, the research question determines the
-outcome---species classification analyses would use species as the outcome."
+**Answer:** "Body mass indicates penguin health and condition.
+Flipper length, bill dimensions, and species are natural predictors.
+However, classification analyses use species as the outcome."
 :::
 
-## Species Characteristics {.smaller}
+## Species Characteristics
 
 :::: {.columns}
 
@@ -283,19 +274,16 @@ outcome---species classification analyses would use species as the outcome."
 ::::
 
 ::: {.fragment .question}
-**Question:** What analytical challenge does the unequal species distribution
-present?
+**Question:** What challenge does unequal species distribution present?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "With Chinstrap having only 68 observations compared to 152 for
-Adelie, species-specific estimates for Chinstrap will have wider confidence
-intervals. In classification tasks, a naive model could achieve 44% accuracy
-by always predicting Adelie. Class imbalance must be addressed in model
-evaluation."
+**Answer:** "Chinstrap has only 68 obs vs. 152 for Adelie, so
+species-specific estimates have wider CIs. In classification,
+a naive model achieves 44% by always predicting Adelie."
 :::
 
-## Key Relationships {.smaller}
+## Key Relationships
 
 :::: {.columns}
 
@@ -307,31 +295,29 @@ evaluation."
 **Correlations with body mass:**
 
 | Variable | r |
-|----------|---|
+|----------|-----|
 | Flipper length | 0.87 |
 | Bill length | 0.60 |
 | Bill depth | -0.47 |
 
-**Note:** The negative correlation with bill depth
-reflects Simpson's paradox---within species, the
-correlation is positive.
+**Note:** Negative correlation with bill
+depth reflects Simpson's paradox---within
+species, correlation is positive.
 :::
 
 ::::
 
 ::: {.fragment .question}
-**Question:** Why might bill depth show a negative correlation with body mass
-overall but positive within species?
+**Question:** Why negative overall but positive within species?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Gentoo penguins are largest but have shallow bills; Adelie have
-deep bills but smaller bodies. Aggregating across species reverses the
-within-species relationship. This is Simpson's paradox---a reminder that
-aggregate relationships can mislead when subgroups differ systematically."
+**Answer:** "Gentoo are largest but have shallow bills; Adelie
+have deep bills but smaller bodies. Aggregating reverses the
+within-species relationship. Classic Simpson's paradox."
 :::
 
-## Data Quality Considerations {.smaller}
+## Data Quality Considerations
 
 **Missing data:**
 
@@ -347,80 +333,77 @@ aggregate relationships can mislead when subgroups differ systematically."
 - Year effects (temporal confounding)
 
 ::: {.fragment .question}
-**Question:** When might you choose complete case analysis over imputation?
+**Question:** When choose complete case over imputation?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Complete case analysis is acceptable when missing data are few,
-likely missing completely at random (MCAR), and you have sufficient sample
-size. With only 3% missing and 333 complete cases, complete case analysis is
-reasonable here. Imputation adds complexity that may not be warranted for
-an exploratory teaching dataset."
+**Answer:** "Complete case is acceptable when missing data are few,
+likely MCAR, and sample size is sufficient. With only 3% missing
+and n=333 complete, imputation may add unwarranted complexity."
 :::
 
 
 # Part III: Sample Analysis Plan
 
-## Project 1 Analysis Plan: Overview {.smaller}
+## Project 1 Analysis Plan: Overview
 
 **Research Question:**
 
-> What is the relationship between morphometric measurements and body mass
-> in Palmer penguins, and how do these relationships vary by species?
+> What is the relationship between morphometric measurements
+> and body mass in Palmer penguins, and how do these
+> relationships vary by species?
 
 **Objectives:**
 
-1. Characterize the Palmer penguins dataset through exploratory analysis
+1. Characterize the dataset through exploratory analysis
 2. Identify the strongest predictors of body mass
-3. Develop and evaluate regression models for body mass prediction
+3. Develop and evaluate regression models
 4. Assess whether species-specific models improve prediction
 
 ::: {.fragment .question}
-**Question:** Is this research question specific enough for an analysis plan?
+**Question:** Is this research question specific enough?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "It provides clear direction but could be more specific. A
-stronger version might state: 'We will quantify the proportion of variance
-in body mass explained by flipper length, bill dimensions, and species using
-linear regression, comparing models with and without species interaction
-terms.'"
+**Answer:** "It provides direction but could be more specific:
+'We will quantify variance in body mass explained by flipper
+length, bill dimensions, and species using linear regression,
+comparing models with and without interaction terms.'"
 :::
 
-## Sample Plan: Data Description {.smaller}
+## Sample Plan: Data Description
 
 ::: {.plan-element}
 **Data Source**
 
-Palmer penguins dataset from the `palmerpenguins` R package (Horst et al.,
-2020). Original data collected by Dr. Kristen Gorman at Palmer Station LTER.
+Palmer penguins from `palmerpenguins` R package (Horst et al.,
+2020). Original data by Dr. Kristen Gorman at Palmer Station LTER.
 :::
 
 ::: {.plan-element}
 **Study Population**
 
-Adult penguins of three species (Adelie, Chinstrap, Gentoo) from three
-islands in the Palmer Archipelago, Antarctica, 2007--2009.
+Adult penguins of three species from three islands in the
+Palmer Archipelago, Antarctica, 2007--2009.
 :::
 
 ::: {.plan-element}
 **Sample Size**
 
-344 observations; analyses will use complete cases (expected n ≈ 333).
+344 observations; analyses use complete cases (expected n = 333).
 :::
 
 ::: {.fragment .question}
-**Question:** What information about the data source builds credibility?
+**Question:** What data source info builds credibility?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Citing the original collector, the research station, and the
-time period establishes data provenance. Referencing the R package ensures
-others can access identical data. This documentation enables reproducibility
-and helps readers assess data quality and generalizability."
+**Answer:** "Citing collector, station, and time period establishes
+provenance. Referencing the R package ensures reproducibility.
+This helps readers assess data quality and generalizability."
 :::
 
-## Sample Plan: Variables {.smaller}
+## Sample Plan: Variables
 
 ::: {.plan-element}
 **Primary Outcome**
@@ -431,9 +414,9 @@ and helps readers assess data quality and generalizability."
 ::: {.plan-element}
 **Primary Predictors**
 
-- `flipper_length_mm`: Flipper length in millimeters (continuous)
-- `bill_length_mm`: Bill length in millimeters (continuous)
-- `bill_depth_mm`: Bill depth in millimeters (continuous)
+- `flipper_length_mm`: Flipper length (mm)
+- `bill_length_mm`: Bill length (mm)
+- `bill_depth_mm`: Bill depth (mm)
 :::
 
 ::: {.plan-element}
@@ -444,54 +427,52 @@ and helps readers assess data quality and generalizability."
 :::
 
 ::: {.fragment .question}
-**Question:** Why distinguish between "predictors" and "effect modifiers"?
+**Question:** Why distinguish predictors from effect modifiers?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Predictors are variables we expect to have direct associations
-with the outcome. Effect modifiers change the relationship between predictors
-and outcome---the effect of flipper length on body mass may differ between
-species. This distinction guides model specification: effect modifiers
+**Answer:** "Predictors have direct associations with outcome.
+Effect modifiers change the predictor-outcome relationship.
+This distinction guides model specification: effect modifiers
 suggest interaction terms."
 :::
 
-## Sample Plan: Statistical Methods {.smaller}
+## Sample Plan: Statistical Methods
 
 ::: {.plan-element}
 **Descriptive Statistics**
 
-- Continuous variables: mean, SD, median, IQR, range
-- Categorical variables: frequencies and percentages
+- Continuous: mean, SD, median, IQR, range
+- Categorical: frequencies and percentages
 - Summaries overall and stratified by species
 :::
 
 ::: {.plan-element}
 **Primary Analysis**
 
-1. Simple linear regression: body mass ~ flipper length
-2. Multiple regression: body mass ~ flipper length + bill length + bill depth
-3. Species-adjusted model: add species as covariate
-4. Interaction model: add species × flipper length interaction
+1. Simple regression: body mass ~ flipper length
+2. Multiple regression: + bill length + bill depth
+3. Species-adjusted model: add species covariate
+4. Interaction model: add species x flipper interaction
 :::
 
 ::: {.fragment .question}
-**Question:** Why build models sequentially rather than starting with the
-most complex model?
+**Question:** Why build models sequentially?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Sequential model building shows how each component contributes
-to prediction. If R² jumps from 0.76 to 0.87 when adding species, we learn
-that species explains substantial additional variance. Starting complex
-obscures which variables matter and why."
+**Answer:** "Sequential building shows how each component
+contributes. If R-squared jumps from 0.76 to 0.87 when adding
+species, we learn species explains substantial variance.
+Starting complex obscures which variables matter."
 :::
 
-## Sample Plan: Model Evaluation {.smaller}
+## Sample Plan: Model Evaluation
 
 ::: {.plan-element}
 **Model Comparison**
 
-- R² and adjusted R² for variance explained
+- R-squared and adjusted R-squared for variance explained
 - RMSE for prediction error in original units
 - AIC/BIC for model selection
 - F-tests for nested model comparison
@@ -502,29 +483,28 @@ obscures which variables matter and why."
 
 - Residual plots for linearity and homoscedasticity
 - Q-Q plots for normality of residuals
-- Leverage and Cook's distance for influential observations
+- Leverage and Cook's distance for influential points
 - Variance inflation factors for multicollinearity
 :::
 
 ::: {.fragment .question}
-**Question:** Which diagnostic check is most important for linear regression?
+**Question:** Which diagnostic is most important?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Residual plots are fundamental---they reveal violations of
-linearity, constant variance, and independence simultaneously. A well-behaved
-residual plot (random scatter around zero) suggests the model assumptions
-are reasonable. Patterns indicate problems that formal tests might miss."
+**Answer:** "Residual plots reveal linearity, constant variance,
+and independence violations simultaneously. Random scatter around
+zero suggests reasonable assumptions. Patterns indicate problems."
 :::
 
-## Sample Plan: Results Presentation {.smaller}
+## Sample Plan: Results Presentation
 
 ::: {.plan-element}
 **Tables**
 
 1. Table 1: Sample characteristics by species
 2. Table 2: Correlation matrix of morphometric variables
-3. Table 3: Regression model comparison (coefficients, SE, R²)
+3. Table 3: Regression model comparison (coefficients, SE, R-squared)
 :::
 
 ::: {.plan-element}
@@ -538,57 +518,54 @@ are reasonable. Patterns indicate problems that formal tests might miss."
 :::
 
 ::: {.fragment .question}
-**Question:** How many figures are appropriate for a short analysis report?
+**Question:** How many figures for a short report?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Quality over quantity. Each figure should answer a specific
-question or convey information not easily expressed in text. For a course
-project, 4--6 well-designed figures are typically sufficient. More risks
-overwhelming readers; fewer may leave gaps in the narrative."
+**Answer:** "Quality over quantity. Each figure should answer
+a specific question. For course projects, 4--6 well-designed
+figures are sufficient. More overwhelms; fewer leaves gaps."
 :::
 
-## Sample Plan: Sensitivity Analyses {.smaller}
+## Sample Plan: Sensitivity Analyses
 
 ::: {.plan-element}
 **Robustness Checks**
 
-1. Compare complete case analysis to multiple imputation
-2. Assess influence of potential outliers (exclude, compare results)
-3. Stratified models by species (vs. pooled with interaction)
-4. Alternative model specifications (log-transformed body mass)
+1. Compare complete case to multiple imputation
+2. Assess influence of outliers (exclude, compare)
+3. Stratified models vs. pooled with interaction
+4. Alternative specifications (log-transformed body mass)
 :::
 
 ::: {.plan-element}
 **Scope Limitations**
 
 - Results specific to Palmer Archipelago population
-- Cannot establish causal relationships (observational data)
-- Temporal trends not primary focus (limited to 2007--2009)
+- Cannot establish causal relationships (observational)
+- Temporal trends not primary focus (2007--2009 only)
 :::
 
 ::: {.fragment .question}
-**Question:** When should you actually perform sensitivity analyses versus
-just planning them?
+**Question:** When perform sensitivity analyses?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Sensitivity analyses test whether conclusions depend on
-analytical choices. If your primary analysis shows flipper length predicts
-body mass, check whether this holds after removing outliers or using
-imputation. Perform planned sensitivity analyses; add others if reviewers
-or results raise concerns."
+**Answer:** "Sensitivity analyses test whether conclusions depend
+on analytical choices. If primary analysis shows flipper predicts
+mass, check if this holds after removing outliers. Perform planned
+analyses; add others if reviewers raise concerns."
 :::
 
 
 # Summary and Next Steps
 
-## Key Takeaways {.smaller}
+## Key Takeaways
 
 **Analysis Plans:**
 
 1. Write the plan *before* analyzing data
-2. Include: background, data description, methods, presentation plan
+2. Include: background, data description, methods, presentation
 3. Be specific enough that someone else could execute your plan
 
 **Palmer Penguins:**
@@ -604,7 +581,7 @@ or results raise concerns."
 - Focus on clarity and justification of methods
 
 
-## Assignment: Project 1 Plan {.smaller}
+## Assignment: Project 1 Plan
 
 **Due Thursday, January 22 (in-class presentation)**
 
@@ -617,35 +594,31 @@ Your analysis plan should include:
 5. Sensitivity analyses
 
 :::{.callout-note}
-You may work in teams as assigned. All team members must contribute to the
+Work in assigned teams. All members must contribute to the
 presentation. Submit slides to Canvas before class.
 :::
 
 ::: {.fragment .question}
-**Question:** How should team members divide the work on the analysis plan?
+**Question:** How should team members divide work?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Divide by section, not by task type. One person owns the data
-description, another the methods, etc. Then review each other's sections.
-This ensures everyone understands the full plan while allowing efficient
-parallel work. Meet to reconcile sections before the presentation."
+**Answer:** "Divide by section, not task type. One person owns data
+description, another methods, etc. Review each other's sections.
+This ensures everyone understands while allowing parallel work."
 :::
 
 
-## References {.smaller}
+## References
 
-- Gorman KB, Williams TD, Fraser WR (2014). Ecological sexual dimorphism and
-  environmental variability within a community of Antarctic penguins (genus
-  *Pygoscelis*). *PLOS ONE* 9(3): e90081.
+- Gorman KB, Williams TD, Fraser WR (2014). Ecological sexual
+  dimorphism and environmental variability within a community
+  of Antarctic penguins. *PLOS ONE* 9(3): e90081.
 
-- Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago
-  (Antarctica) penguin data. R package.
-  https://allisonhorst.github.io/palmerpenguins/
+- Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer
+  Archipelago (Antarctica) penguin data. R package.
 
-- Slade E, et al. (2023). Essential team science skills for biostatisticians
-  on collaborative research teams. *Journal of Clinical and Translational
-  Science* 7: e243, 1--9.
+- Slade E, et al. (2023). Essential team science skills for
+  biostatisticians. *J Clin Transl Sci* 7: e243, 1--9.
 
-- International Council for Harmonisation (2017). ICH E9(R1): Statistical
-  Principles for Clinical Trials: Addendum on Estimands.
+- ICH E9(R1) (2017). Statistical Principles for Clinical Trials.
