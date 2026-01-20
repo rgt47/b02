@@ -208,7 +208,7 @@ alternative to the classic iris dataset.
 :::
 
 ::: {.column width="45%"}
-![](figures/species-distribution.png){width="100%"}
+![](figures/species-distribution.png){width="95%" fig-align="center"}
 :::
 
 ::::
@@ -253,16 +253,16 @@ However, classification analyses use species as the outcome."
 :::: {.columns}
 
 ::: {.column width="50%"}
-![](figures/species-comparison.png){width="100%"}
+![](figures/species-comparison.png){width="95%" fig-align="center"}
 :::
 
 ::: {.column width="50%"}
 **Key observations:**
 
-- Gentoo penguins are substantially larger
-- Adelie and Chinstrap have similar body mass
-- Species differ in morphometric proportions
-- Sexual dimorphism present within species
+- Gentoo are substantially larger
+- Adelie/Chinstrap similar mass
+- Species differ in proportions
+- Sexual dimorphism present
 
 **Sample sizes:**
 
@@ -287,11 +287,11 @@ a naive model achieves 44% by always predicting Adelie."
 
 :::: {.columns}
 
-::: {.column width="55%"}
-![](figures/flipper-body-mass-relationship.png){width="100%"}
+::: {.column width="45%"}
+![](figures/flipper-body-mass-relationship.png){width="100%" fig-align="center"}
 :::
 
-::: {.column width="45%"}
+::: {.column width="55%"}
 **Correlations with body mass:**
 
 | Variable | r |
@@ -300,9 +300,8 @@ a naive model achieves 44% by always predicting Adelie."
 | Bill length | 0.60 |
 | Bill depth | -0.47 |
 
-**Note:** Negative correlation with bill
-depth reflects Simpson's paradox---within
-species, correlation is positive.
+Simpson's paradox: negative overall,
+positive within species.
 :::
 
 ::::
