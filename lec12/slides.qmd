@@ -1,0 +1,741 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 12: Reproducible ADNI Analysis with renv and Docker"
+author: "Dr. Ronald G. Thomas"
+date: "February 12, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    smaller: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.do-this {
+  background-color: #fff7e6;
+  border-left: 5px solid #fa8c16;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.checkpoint {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.warning-box {
+  background-color: #fff2f0;
+  border-left: 5px solid #ff4d4f;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.concept-box {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+</style>
+
+## Course Information
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+
+## Lecture 12: Reproducible ADNI Analysis {.subtitle}
+
+## Today's Session
+
+**Goal:** Set up a fully reproducible ADNI analysis environment using renv
+and Docker
+
+This is a **follow-along walkthrough**. We will:
+
+1. Review renv and Docker concepts
+2. Create an rrtools compendium for ADNI analysis
+3. Initialize renv for package management
+4. Create a Dockerfile for containerization
+5. Build and test the Docker image
+6. Push to GitHub and DockerHub
+
+::: {.warning-box}
+**Keep up with each step.** Raise your hand if you get stuck.
+:::
+
+
+# Part I: Concepts Review
+
+## Why renv + Docker?
+
+::: {.concept-box}
+**The Reproducibility Problem:**
+
+- Your code works on your machine
+- Collaborator gets different results (or errors)
+- Six months later, packages have updated and code breaks
+:::
+
+**Solution: Two layers of reproducibility**
+
+| Tool | What it locks | Analogy |
+|------|---------------|---------|
+| renv | R package versions | Recipe ingredients list |
+| Docker | R version, OS, system libraries | The entire kitchen |
+
+## renv: Package Version Control
+
+```
+renv::init()      # Start tracking packages
+renv::snapshot()  # Save current package versions to renv.lock
+renv::restore()   # Install packages from renv.lock
+```
+
+The `renv.lock` file records exact versions:
+
+```json
+{
+  "Packages": {
+    "dplyr": {
+      "Package": "dplyr",
+      "Version": "1.1.4",
+      "Source": "Repository"
+    }
+  }
+}
+```
+
+## Docker: Environment Containerization
+
+A **Docker image** packages everything needed to run your analysis:
+
+- Operating system (e.g., Ubuntu)
+- R version (e.g., R 4.4.0)
+- System libraries (e.g., libcurl, libxml2)
+- Your R packages (via renv)
+
+A **container** is a running instance of an image.
+
+```bash
+docker build -t myimage .     # Build image from Dockerfile
+docker run myimage            # Run a container
+```
+
+
+# Part II: Software Setup
+
+## Step 1: Verify Docker Installation
+
+::: {.do-this}
+**DO THIS:** Open Terminal (Mac) or Command Prompt (Windows)
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+docker --version
+```
+
+::: {.checkpoint}
+**Checkpoint:** You should see something like `Docker version 24.0.0` or
+higher
+:::
+
+::: {.warning-box}
+**If Docker is not installed:** Download from
+[docker.com/get-started](https://www.docker.com/get-started)
+:::
+
+## Step 2: Verify Docker Hub Account
+
+::: {.do-this}
+**DO THIS:** Log in to Docker Hub
+:::
+
+```{bash}
+#| echo: true
+#| eval: false
+docker login
+```
+
+Enter your Docker Hub username and password when prompted.
+
+::: {.checkpoint}
+**Checkpoint:** You see `Login Succeeded`
+:::
+
+If you don't have an account, create one at
+[hub.docker.com](https://hub.docker.com)
+
+## Step 3: Verify R Packages
+
+::: {.do-this}
+**DO THIS:** In R, verify required packages are installed
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+install.packages("renv")
+library(renv)
+library(rrtools)
+library(usethis)
+```
+
+::: {.checkpoint}
+**Checkpoint:** All packages load without errors
+:::
+
+
+# Part III: Create Research Compendium
+
+## Step 4: Navigate to Projects Folder
+
+::: {.do-this}
+**DO THIS:** Set your working directory
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+setwd("~/Documents")
+```
+
+::: {.warning-box}
+Choose a location you can find later. Avoid Dropbox/OneDrive during initial
+creation.
+:::
+
+## Step 5: Create ADNI Compendium
+
+::: {.do-this}
+**DO THIS:** Create your project (use YOUR name)
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+rrtools::use_compendium("adni.yourname")
+```
+
+Replace `yourname` with your actual name (e.g., `adni.jsmith`).
+
+A new RStudio window will open automatically.
+
+::: {.checkpoint}
+**Checkpoint:** New RStudio window with your project name in the title bar
+:::
+
+## Step 6: Add Analysis Structure
+
+::: {.do-this}
+**DO THIS:** In the NEW RStudio window, run:
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+rrtools::use_analysis()
+```
+
+When prompted, choose option **1** (analysis/paper/paper.Rmd).
+
+::: {.checkpoint}
+**Checkpoint:** You now have an `analysis/` folder with subfolders
+:::
+
+## Step 7: Verify Folder Structure
+
+::: {.do-this}
+**DO THIS:** Check your project structure
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+fs::dir_tree()
+```
+
+You should see:
+
+```
+adni.yourname/
++-- DESCRIPTION
++-- analysis/
+|   +-- data/
+|   |   +-- raw_data/
+|   |   +-- derived_data/
+|   +-- figures/
+|   +-- paper/
+|       +-- paper.Rmd
++-- R/
+```
+
+
+# Part IV: Add ADNI Data
+
+## Step 8: Download ADNI Data
+
+::: {.do-this}
+**DO THIS:** Download the course ADNI dataset from Canvas
+:::
+
+1. Go to Canvas > Files > data
+2. Download `adni_baseline.csv`
+3. Save to your project's `analysis/data/raw_data/` folder
+
+::: {.warning-box}
+**Important:** ADNI data requires a Data Use Agreement. The course dataset
+is a pre-approved teaching subset.
+:::
+
+## Step 9: Verify Data
+
+::: {.do-this}
+**DO THIS:** Read and inspect the data
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+adni <- read.csv("analysis/data/raw_data/adni_baseline.csv")
+dim(adni)
+head(adni)
+```
+
+::: {.checkpoint}
+**Checkpoint:** Data loads successfully with expected dimensions
+:::
+
+
+# Part V: Initialize renv
+
+## Step 10: Initialize renv
+
+::: {.do-this}
+**DO THIS:** Initialize renv for package management
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+renv::init()
+```
+
+This creates:
+
+- `renv/` folder (project library)
+- `renv.lock` (lockfile with package versions)
+- `.Rprofile` (auto-activates renv)
+
+::: {.checkpoint}
+**Checkpoint:** You see "renv activated" message
+:::
+
+## Step 11: Install Analysis Packages
+
+::: {.do-this}
+**DO THIS:** Install packages needed for ADNI analysis
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+install.packages("tidyverse")
+install.packages("survival")
+install.packages("tableone")
+install.packages("ggfortify")
+```
+
+These packages will be installed into your project library.
+
+## Step 12: Snapshot Package Versions
+
+::: {.do-this}
+**DO THIS:** Record the installed package versions
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+renv::snapshot()
+```
+
+::: {.checkpoint}
+**Checkpoint:** `renv.lock` now contains all package versions
+:::
+
+You can view the lockfile:
+
+```{r}
+#| echo: true
+#| eval: false
+file.edit("renv.lock")
+```
+
+
+# Part VI: Create Dockerfile
+
+## Step 13: Understanding the Dockerfile
+
+A Dockerfile is a recipe for building a Docker image. Our Dockerfile will:
+
+1. Start from a base R image (rocker/r-ver)
+2. Install system dependencies
+3. Copy renv files
+4. Restore packages from renv.lock
+5. Set up the working directory
+
+## Step 14: Create Dockerfile
+
+::: {.do-this}
+**DO THIS:** Create a new file called `Dockerfile` (no extension)
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+file.create("Dockerfile")
+file.edit("Dockerfile")
+```
+
+## Step 15: Add Dockerfile Contents
+
+::: {.do-this}
+**DO THIS:** Copy this content into your Dockerfile
+:::
+
+```dockerfile
+FROM rocker/r-ver:4.4.0
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /workspace
+
+# Install renv
+RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+
+# Copy renv files
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+COPY .Rprofile .Rprofile
+
+# Restore packages
+RUN R -e "renv::restore()"
+
+# Default command
+CMD ["/bin/bash"]
+```
+
+Save the file.
+
+## Step 16: Create .dockerignore
+
+::: {.do-this}
+**DO THIS:** Create a .dockerignore file to exclude unnecessary files
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+writeLines(c(
+  "analysis/data/raw_data/*",
+  "analysis/figures/*",
+  ".git",
+  ".Rhistory",
+  ".RData",
+  "*.html",
+  "*.pdf"
+), ".dockerignore")
+```
+
+This keeps your image small and avoids including sensitive data.
+
+
+# Part VII: Build and Test Docker Image
+
+## Step 17: Build Docker Image
+
+::: {.do-this}
+**DO THIS:** Open Terminal in your project directory and build the image
+:::
+
+```{bash}
+#| echo: true
+#| eval: false
+docker build -t yourusername/adni-analysis:v1 .
+```
+
+Replace `yourusername` with your Docker Hub username.
+
+::: {.warning-box}
+This may take 10-15 minutes the first time as packages are installed.
+:::
+
+::: {.checkpoint}
+**Checkpoint:** Build completes with "Successfully built" message
+:::
+
+## Step 18: Test the Container
+
+::: {.do-this}
+**DO THIS:** Run the container interactively
+:::
+
+```{bash}
+#| echo: true
+#| eval: false
+docker run --rm -it -v "$(pwd):/workspace" yourusername/adni-analysis:v1
+```
+
+This mounts your local files into the container.
+
+## Step 19: Verify Inside Container
+
+::: {.do-this}
+**DO THIS:** Inside the container, start R and test
+:::
+```{r}
+#| echo: true
+#| eval: false
+R
+library(tidyverse)
+library(survival)
+sessionInfo()
+```
+
+::: {.checkpoint}
+**Checkpoint:** All packages load, versions match renv.lock
+:::
+
+Type `quit()` then `exit` to leave the container.
+
+
+# Part VIII: Version Control and Publishing
+
+## Step 20: Initialize Git
+
+::: {.do-this}
+**DO THIS:** Initialize Git for version control
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_git()
+```
+
+When prompted:
+
+- Say **Yes** to commit
+- Say **Yes** to restart RStudio
+
+## Step 21: Connect to GitHub
+
+::: {.do-this}
+**DO THIS:** Create GitHub repository and push
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_github(private = FALSE)
+```
+
+::: {.checkpoint}
+**Checkpoint:** Browser opens to your new GitHub repository
+:::
+
+## Step 22: Push Docker Image to DockerHub
+
+::: {.do-this}
+**DO THIS:** Push your image to Docker Hub
+:::
+
+```{bash}
+#| echo: true
+#| eval: false
+docker push yourusername/adni-analysis:v1
+```
+
+::: {.checkpoint}
+**Checkpoint:** Image is now available on Docker Hub
+:::
+
+
+# Part IX: Final Verification
+
+## Step 23: Verify Complete Setup
+
+::: {.do-this}
+**DO THIS:** Check your final project structure
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+fs::dir_tree(recurse = 2)
+```
+
+Expected structure:
+
+```
+adni.yourname/
++-- DESCRIPTION
++-- Dockerfile
++-- .dockerignore
++-- NAMESPACE
++-- .Rprofile
++-- renv.lock
++-- renv/
++-- analysis/
+|   +-- data/
+|   |   +-- raw_data/
+|   |   |   +-- adni_baseline.csv
+|   |   +-- derived_data/
+|   +-- figures/
+|   +-- paper/
+|       +-- paper.Rmd
++-- R/
+```
+
+## Step 24: Test Collaborator Workflow
+
+Simulate what a collaborator would do:
+
+```{bash}
+#| echo: true
+#| eval: false
+# Clone repository (in a different location)
+git clone https://github.com/yourusername/adni.yourname.git
+cd adni.yourname
+
+# Pull Docker image
+docker pull yourusername/adni-analysis:v1
+
+# Run analysis in container
+docker run --rm -it -v "$(pwd):/workspace" yourusername/adni-analysis:v1
+```
+
+::: {.checkpoint}
+**Checkpoint:** Collaborator can reproduce your exact environment
+:::
+
+
+## Completion Checklist
+
+You should now have:
+
+- [ ] rrtools research compendium created
+- [ ] ADNI data in `analysis/data/raw_data/`
+- [ ] renv initialized with `renv.lock`
+- [ ] Dockerfile created and tested
+- [ ] Docker image built and pushed to DockerHub
+- [ ] Project pushed to GitHub
+- [ ] Collaborator workflow verified
+
+
+## The Reproducibility Stack
+
+```
++------------------------------------------+
+|           Your Analysis Code             |
++------------------------------------------+
+|              R Packages                  |
+|         (locked by renv.lock)            |
++------------------------------------------+
+|     R Version + System Libraries         |
+|         (locked by Dockerfile)           |
++------------------------------------------+
+|           Operating System               |
+|       (rocker/r-ver base image)          |
++------------------------------------------+
+```
+
+
+## Next Steps
+
+Before February 17 (P2 Plan Presentation):
+
+1. **Fill in your ADNI analysis plan** using the template
+2. **Add unit tests** for your analysis functions
+3. **Commit and push** changes regularly
+4. **Rebuild Docker image** if you add new packages
+
+Your ADNI analysis plan presentation is on **February 17**.
+
+
+## Summary
+
+Today you learned to:
+
+1. Create a research compendium with rrtools
+2. Use renv to lock R package versions
+3. Create a Dockerfile for full environment reproducibility
+4. Build and push Docker images
+5. Enable seamless collaboration via GitHub + DockerHub
+
+This workflow ensures your ADNI analysis is **reproducible** across any
+machine, any time.
+
+
+## Troubleshooting Reference
+
+### "Docker daemon not running"
+
+Start Docker Desktop application.
+
+### "renv::restore() fails in Docker"
+
+Check that `renv.lock` and `renv/activate.R` are properly copied.
+
+### "Permission denied" during docker build
+
+On Mac/Linux:
+
+```bash
+sudo docker build -t myimage .
+```
+
+### "Package installation fails in Docker"
+
+Add missing system dependencies to the Dockerfile `apt-get install` line.
+
+
+## Questions?
+
+- **Office hours:** By appointment
+- **Email:** rgthomas@ucsd.edu or maluo@ucsd.edu
+- **Canvas:** Post in discussion board

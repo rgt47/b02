@@ -1,0 +1,474 @@
+---
+title: "Lecture 12 Speaker Notes"
+subtitle: "ADNI Analysis with renv and Docker Walkthrough"
+author: "Dr. Ronald G. Thomas"
+date: "February 12, 2026"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=1in
+---
+
+# Pre-Lecture Preparation
+
+## 30 Minutes Before Class
+
+1. **Test classroom technology**
+   - Projector displays RStudio and Terminal clearly
+   - Increase font sizes in both applications
+
+2. **Verify Docker is running**
+   ```bash
+   docker info
+   docker images
+   ```
+
+3. **Prepare your demo environment**
+   ```bash
+   # Clean slate
+   cd ~/Desktop
+   rm -rf adni.demo
+   ```
+
+4. **Pre-pull base Docker image** (saves time during class)
+   ```bash
+   docker pull rocker/r-ver:4.4.0
+   ```
+
+5. **Have ADNI data accessible**
+   - Copy `adni_baseline.csv` to an easy location
+   - Or have Canvas open to the data file
+
+6. **Test GitHub and DockerHub authentication**
+   ```r
+   usethis::gh_token_help()
+   ```
+   ```bash
+   docker login
+   ```
+
+## Timing Plan (80 minutes)
+
+| Part | Content | Duration | Cumulative |
+|------|---------|----------|------------|
+| I | Concepts Review | 10 min | 10 min |
+| II | Software Setup (Steps 1-3) | 5 min | 15 min |
+| III | Create Compendium (Steps 4-7) | 10 min | 25 min |
+| IV | Add Data (Steps 8-9) | 5 min | 30 min |
+| V | Initialize renv (Steps 10-12) | 15 min | 45 min |
+| VI | Create Dockerfile (Steps 13-16) | 10 min | 55 min |
+| VII | Build/Test Docker (Steps 17-19) | 15 min | 70 min |
+| VIII | Version Control (Steps 20-22) | 5 min | 75 min |
+| IX | Verification (Steps 23-24) | 5 min | 80 min |
+
+
+# Lecture Delivery
+
+## Opening (2 minutes)
+
+> "Today we're adding two critical layers to our reproducibility toolkit:
+> renv for package management and Docker for environment containerization.
+> By the end of class, you'll have an ADNI analysis environment that any
+> collaborator can reproduce exactly on any machine."
+
+**Set expectations:**
+
+- This is more complex than Lecture 6
+- Docker build takes time - we'll use waiting productively
+- TA will help with Docker issues
+
+## Part I: Concepts Review (10 minutes)
+
+### The Reproducibility Problem
+
+Start with a story:
+
+> "Imagine you've completed your ADNI analysis. Six months later, a
+> reviewer asks for a revision. You run your code and get different
+> results - or worse, errors. Package updates have broken your analysis."
+
+### Two-Layer Solution
+
+Draw on whiteboard or show slide:
+
+```
+Your Code
+   ↓
+R Packages (renv locks versions)
+   ↓
+R + System Libraries (Docker locks everything)
+   ↓
+Operating System (Docker base image)
+```
+
+**Key point:** renv alone isn't enough because:
+
+- R version can change
+- System libraries can change
+- OS updates can break things
+
+### Quick Conceptual Questions
+
+Ask students:
+
+- "What does renv::snapshot() do?"
+- "What's the difference between a Docker image and container?"
+
+
+## Part II: Software Setup (5 minutes)
+
+### Step 1: Docker Verification
+
+**Demo first:**
+
+```bash
+docker --version
+docker info
+```
+
+**Common issues:**
+
+- Docker Desktop not running
+- Docker not installed (rare if prerequisites done)
+
+### Steps 2-3: Docker Hub and R Packages
+
+Quick verification - most should already have this from prerequisites.
+
+
+## Part III: Create Compendium (10 minutes)
+
+### Steps 4-7: Same as Lecture 6
+
+This should be familiar from Project 1. Move quickly but verify everyone
+has the structure.
+
+**Key difference from Lecture 6:**
+
+> "This time we're naming it `adni.yourname` instead of `penguins.yourname`"
+
+
+## Part IV: Add Data (5 minutes)
+
+### Steps 8-9: ADNI Data
+
+**Important reminder:**
+
+> "ADNI data requires a Data Use Agreement. The dataset on Canvas is a
+> pre-approved teaching subset. Never share ADNI data outside approved
+> channels."
+
+Walk through Canvas download if needed.
+
+
+## Part V: Initialize renv (15 minutes)
+
+### Step 10: renv::init()
+
+**Demo first**, explain what's created:
+
+```r
+renv::init()
+```
+
+Show the new files:
+
+- `renv/` folder - project-specific library
+- `renv.lock` - the lockfile (JSON format)
+- `.Rprofile` - auto-activates renv
+
+**Open renv.lock and explain the structure:**
+
+```r
+file.edit("renv.lock")
+```
+
+> "This JSON file records the exact version of every package. When someone
+> runs renv::restore(), they get these exact versions."
+
+### Step 11: Install Packages
+
+**Install one at a time, explain each:**
+
+```r
+install.packages("tidyverse")   # Data manipulation
+install.packages("survival")    # Survival analysis for ADNI
+install.packages("tableone")    # Baseline characteristics
+install.packages("ggfortify")   # Survival plots
+```
+
+**This takes time** - use it to:
+
+- Answer questions
+- Preview Docker concepts
+- Discuss ADNI analysis approaches
+
+### Step 12: Snapshot
+
+```r
+renv::snapshot()
+```
+
+**Show the updated renv.lock:**
+
+> "Notice how it now includes all 150+ packages including dependencies"
+
+
+## Part VI: Create Dockerfile (10 minutes)
+
+### Steps 13-15: Dockerfile Creation
+
+**Explain each line as you type:**
+
+```dockerfile
+# Start from Rocker's R image with specific version
+FROM rocker/r-ver:4.4.0
+
+# Install system libraries needed by R packages
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \  # For httr, curl packages
+    libssl-dev \            # For openssl package
+    libxml2-dev \           # For xml2 package
+    ...
+
+# Set working directory inside container
+WORKDIR /workspace
+
+# Install renv
+RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+
+# Copy renv files (not the actual packages!)
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+
+# Restore packages from lockfile
+RUN R -e "renv::restore()"
+
+# Default command when container starts
+CMD ["/bin/bash"]
+```
+
+### Step 16: .dockerignore
+
+**Explain why we exclude files:**
+
+> "We don't want to include raw data in the image - it should stay local.
+> We also exclude .git to keep the image small."
+
+
+## Part VII: Build and Test (15 minutes)
+
+### Step 17: Build Image
+
+**This is the longest step.** Start the build:
+
+```bash
+docker build -t yourusername/adni-analysis:v1 .
+```
+
+**While it builds:**
+
+- Explain what's happening at each step
+- Answer questions about Dockerfiles
+- Discuss how this enables collaboration
+
+### Step 18-19: Test Container
+
+**Once built, run interactively:**
+
+```bash
+docker run --rm -it -v "$(pwd):/workspace" yourusername/adni-analysis:v1
+```
+
+**Explain the flags:**
+
+- `--rm` - Remove container when done
+- `-it` - Interactive terminal
+- `-v "$(pwd):/workspace"` - Mount local files
+
+**Inside container:**
+
+```r
+R
+library(tidyverse)
+library(survival)
+sessionInfo()
+```
+
+**Show that versions match renv.lock**
+
+
+## Part VIII: Version Control (5 minutes)
+
+### Steps 20-22: Git, GitHub, DockerHub
+
+Move quickly - similar to Lecture 6.
+
+**Key addition:**
+
+```bash
+docker push yourusername/adni-analysis:v1
+```
+
+> "Now anyone can pull your exact environment from DockerHub"
+
+
+## Part IX: Verification (5 minutes)
+
+### Steps 23-24: Final Checks
+
+**Simulate collaborator workflow:**
+
+```bash
+# In a different directory
+git clone https://github.com/username/adni.yourname.git
+cd adni.yourname
+docker pull username/adni-analysis:v1
+docker run --rm -it -v "$(pwd):/workspace" username/adni-analysis:v1
+```
+
+> "This is exactly what a collaborator would do. They get your code from
+> GitHub and your environment from DockerHub."
+
+
+## Closing (3 minutes)
+
+**Recap the reproducibility stack:**
+
+> "You now have three layers of reproducibility:
+> 1. Your code is on GitHub
+> 2. Your package versions are locked in renv.lock
+> 3. Your entire environment is containerized in Docker
+>
+> A collaborator can reproduce your exact analysis environment with
+> three commands: git clone, docker pull, docker run."
+
+**Assign homework:**
+
+> "Before February 17, fill in your ADNI analysis plan. If you add new
+> packages, run renv::snapshot() and rebuild your Docker image."
+
+
+# Troubleshooting Guide
+
+## Docker Issues
+
+### "Cannot connect to Docker daemon"
+
+Docker Desktop not running. Start the application.
+
+### "docker build fails at apt-get"
+
+Network issue. Try:
+
+```bash
+docker build --network=host -t myimage .
+```
+
+### "Permission denied"
+
+On Linux:
+
+```bash
+sudo usermod -aG docker $USER
+# Then log out and back in
+```
+
+Or use sudo:
+
+```bash
+sudo docker build -t myimage .
+```
+
+### "No space left on device"
+
+Clean up old images:
+
+```bash
+docker system prune -a
+```
+
+### Build is very slow
+
+Pre-pull the base image:
+
+```bash
+docker pull rocker/r-ver:4.4.0
+```
+
+## renv Issues
+
+### "renv::restore() fails in Docker"
+
+Check that files are not in `.dockerignore`:
+
+- `renv.lock`
+- `renv/activate.R`
+- `.Rprofile`
+
+### "Package not available"
+
+Add repository to renv:
+
+```r
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+renv::restore()
+```
+
+### "Binary not available"
+
+Package needs compilation. Add system dependencies to Dockerfile.
+
+
+## Common Package System Dependencies
+
+| R Package | System Library |
+|-----------|----------------|
+| curl, httr | libcurl4-openssl-dev |
+| openssl | libssl-dev |
+| xml2 | libxml2-dev |
+| systemfonts | libfontconfig1-dev |
+| textshaping | libharfbuzz-dev, libfribidi-dev |
+| ragg | libfreetype6-dev, libpng-dev |
+| haven | (none - pure R) |
+| readxl | (none - pure R) |
+
+
+# Post-Lecture
+
+## Immediate Follow-up
+
+1. Post slides and speaker notes to Canvas
+2. Announcement reminding about:
+   - ADNI analysis plan due February 17
+   - Rebuild Docker if adding packages
+   - Office hours available
+
+## Common Post-Class Questions
+
+**"My Docker build takes forever"**
+
+- Pre-pull base image
+- Use Docker layer caching (don't change early Dockerfile lines)
+- Consider using a pre-built image with common packages
+
+**"Can I use a different base image?"**
+
+- Yes, rocker/tidyverse includes tidyverse pre-installed
+- But locks you to their package versions
+
+**"How do I add a new package after building?"**
+
+1. Install in R: `install.packages("newpkg")`
+2. Update lockfile: `renv::snapshot()`
+3. Rebuild image: `docker build -t user/image:v2 .`
+4. Push: `docker push user/image:v2`
+
+**"Is Docker required for the course?"**
+
+- Encouraged but not strictly required
+- renv alone provides good reproducibility
+- Docker adds OS-level reproducibility
