@@ -67,7 +67,7 @@ This is a **follow-along walkthrough**. We will:
 3. Export Palmer Penguins data to CSV
 4. Copy the analysis plan template from Lecture 5
 5. Write two unit tests with testthat
-6. Initialize Git, renv, and push to GitHub
+6. Initialize Git and push to GitHub
 
 ::: {.warning-box}
 **Keep up with each step.** Raise your hand if you get stuck.
@@ -106,7 +106,6 @@ You need R version 4.0 or higher.
 install.packages("remotes")
 install.packages("devtools")
 install.packages("usethis")
-install.packages("renv")
 install.packages("testthat")
 install.packages("palmerpenguins")
 install.packages("tidyverse")
@@ -143,7 +142,6 @@ remotes::install_github("benmarwick/rrtools")
 library(rrtools)
 library(devtools)
 library(usethis)
-library(renv)
 library(testthat)
 library(palmerpenguins)
 library(tidyverse)
@@ -509,44 +507,7 @@ When prompted:
 - Say **Yes** to commit
 - Say **Yes** to restart RStudio
 
-## Step 20: Initialize renv
-
-::: {.do-this}
-**DO THIS:** Lock your package versions
-:::
-
-```{r}
-#| echo: true
-#| eval: false
-renv::init()
-```
-
-Then snapshot:
-
-```{r}
-#| echo: true
-#| eval: false
-renv::snapshot()
-```
-
-::: {.checkpoint}
-**Checkpoint:** `renv.lock` file exists in your project root
-:::
-
-## Step 21: Commit renv Files
-
-::: {.do-this}
-**DO THIS:** Stage and commit the renv files
-:::
-
-In RStudio Git pane (top right):
-
-1. Check boxes next to `renv.lock`, `renv/`, `.Rprofile`
-2. Click **Commit**
-3. Enter message: "Initialize renv for package management"
-4. Click **Commit**
-
-## Step 22: Connect to GitHub
+## Step 20: Connect to GitHub
 
 ::: {.do-this}
 **DO THIS:** Create GitHub repository and push
@@ -570,7 +531,7 @@ If you get a PAT error, run:
 
 # Part VII: Final Verification
 
-## Step 23: Verify Project Structure
+## Step 21: Verify Project Structure
 
 ::: {.do-this}
 **DO THIS:** Check your final project structure
@@ -587,9 +548,11 @@ You should have:
 ```
 penguins.yourname/
 ├── DESCRIPTION
+├── NAMESPACE
 ├── analysis/
 │   ├── data/
-│   │   ├── raw_data/penguins.csv
+│   │   ├── raw_data/
+│   │   │   └── penguins.csv
 │   │   └── derived_data/
 │   ├── figures/
 │   └── paper/
@@ -597,16 +560,14 @@ penguins.yourname/
 │       └── paper.Rmd
 ├── R/
 │   └── clean-data.R
-├── tests/
-│   ├── testthat/
-│   │   ├── test-clean-data.R
-│   │   └── test-data-validation.R
-│   └── testthat.R
-├── renv.lock
-└── renv/
+└── tests/
+    ├── testthat.R
+    └── testthat/
+        ├── test-clean-data.R
+        └── test-data-validation.R
 ```
 
-## Step 24: Run Final Test
+## Step 22: Run Final Test
 
 ::: {.do-this}
 **DO THIS:** Verify everything works together
@@ -636,7 +597,6 @@ You should now have:
 - [ ] Helper function in `R/clean-data.R`
 - [ ] Two passing unit tests in `tests/testthat/`
 - [ ] Git initialized with commits
-- [ ] renv initialized with lockfile
 - [ ] Project pushed to GitHub
 
 ## Next Steps
@@ -657,7 +617,7 @@ Today you learned to:
 2. Export data to a standardized location
 3. Use templates for analysis documentation
 4. Write unit tests with testthat
-5. Integrate Git, renv, and GitHub
+5. Integrate Git and GitHub
 
 This workflow ensures your analysis is **reproducible**, **testable**,
 and **version controlled**.
@@ -687,11 +647,10 @@ gitcreds::gitcreds_set()
 - Make sure you saved all files
 - Run `devtools::load_all()` before `devtools::test()`
 
-### "renv::restore() fails"
+### "could not find function"
 
 ```{r}
 #| echo: true
 #| eval: false
-renv::clean()
-renv::restore()
+devtools::load_all()
 ```

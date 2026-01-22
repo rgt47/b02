@@ -54,8 +54,8 @@ format:
 | III | Add Data (Steps 9-10) | 5 min | 30 min |
 | IV | Add Template (Steps 11-12) | 5 min | 35 min |
 | V | Unit Tests (Steps 13-18) | 20 min | 55 min |
-| VI | Version Control (Steps 19-22) | 15 min | 70 min |
-| VII | Verification (Steps 23-24) | 10 min | 80 min |
+| VI | Version Control (Steps 19-20) | 15 min | 70 min |
+| VII | Verification (Steps 21-22) | 10 min | 80 min |
 
 
 # Lecture Delivery
@@ -94,7 +94,6 @@ R.version.string
 install.packages("remotes")
 install.packages("devtools")
 install.packages("usethis")
-install.packages("renv")
 install.packages("testthat")
 install.packages("palmerpenguins")
 install.packages("tidyverse")
@@ -124,7 +123,6 @@ remotes::install_github("benmarwick/rrtools")
 library(rrtools)
 library(devtools)
 library(usethis)
-library(renv)
 library(testthat)
 library(palmerpenguins)
 library(tidyverse)
@@ -391,34 +389,7 @@ usethis::use_git()
 
 **After restart**, briefly show the Git pane in RStudio.
 
-### Step 20: Initialize renv
-
-```r
-renv::init()
-```
-
-Then:
-
-```r
-renv::snapshot()
-```
-
-**Explain:**
-
-> "The `renv.lock` file now contains the exact version of every package
-> you're using. Anyone who clones your repository can run `renv::restore()`
-> to get the identical environment."
-
-### Step 21: Commit renv Files
-
-Walk through the RStudio Git pane:
-
-1. Check boxes next to `renv.lock`, `renv/`, `.Rprofile`
-2. Click Commit
-3. Enter message: "Initialize renv for package management"
-4. Click Commit button
-
-### Step 22: Connect to GitHub
+### Step 20: Connect to GitHub
 
 ```r
 usethis::use_github(private = FALSE)
@@ -439,7 +410,7 @@ usethis::use_github(private = FALSE)
 
 ## Part VII: Final Verification (10 minutes)
 
-### Step 23: Verify Structure
+### Step 21: Verify Structure
 
 ```r
 fs::dir_tree(recurse = 2)
@@ -447,7 +418,7 @@ fs::dir_tree(recurse = 2)
 
 Walk through the expected structure.
 
-### Step 24: Run Final Check
+### Step 22: Run Final Check
 
 ```r
 devtools::check()
@@ -472,7 +443,7 @@ devtools::check()
 
 > "You now have a complete reproducible research project. The data is
 > in a standard location, you have tests to verify your code works,
-> your package versions are locked, and everything is on GitHub."
+> and everything is on GitHub."
 
 **Assign homework:**
 
@@ -557,23 +528,6 @@ Check:
 - Working directory is project root
 - Data file was saved to correct location
 - Path in test matches actual path
-
-## renv Issues
-
-### "renv::restore() fails"
-
-```r
-renv::clean()
-renv::restore()
-```
-
-### "Package not found in lockfile"
-
-```r
-install.packages("package_name")
-renv::snapshot()
-```
-
 
 # Post-Lecture
 

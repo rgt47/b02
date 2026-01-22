@@ -13,8 +13,8 @@ check_package <- function(pkg) {
 }
 
 cat("1. Checking required packages:\n")
-required_pkgs <- c("devtools", "usethis", "renv", "remotes",
-                   "palmerpenguins", "tidyverse", "fs", "jsonlite")
+required_pkgs <- c("devtools", "usethis", "remotes", "testthat",
+                   "palmerpenguins", "tidyverse", "fs")
 
 results <- sapply(required_pkgs, check_package)
 

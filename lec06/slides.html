@@ -260,7 +260,7 @@ Dr.&nbsp;Ronald G. Thomas
 <li>Export Palmer Penguins data to CSV</li>
 <li>Copy the analysis plan template from Lecture 5</li>
 <li>Write two unit tests with testthat</li>
-<li>Initialize Git, renv, and push to GitHub</li>
+<li>Initialize Git and push to GitHub</li>
 </ol>
 <div class="warning-box">
 <p><strong>Keep up with each step.</strong> Raise your hand if you get stuck.</p>
@@ -293,10 +293,9 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
 <span id="cb2-2"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
 <span id="cb2-3"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"usethis"</span>)</span>
-<span id="cb2-4"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"renv"</span>)</span>
-<span id="cb2-5"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"testthat"</span>)</span>
-<span id="cb2-6"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"palmerpenguins"</span>)</span>
-<span id="cb2-7"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"testthat"</span>)</span>
+<span id="cb2-5"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"palmerpenguins"</span>)</span>
+<span id="cb2-6"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This may take a few minutes. Wait for all installations to complete.</p>
 </section>
@@ -321,10 +320,9 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">library</span>(rrtools)</span>
 <span id="cb4-2"><a href=""></a><span class="fu">library</span>(devtools)</span>
 <span id="cb4-3"><a href=""></a><span class="fu">library</span>(usethis)</span>
-<span id="cb4-4"><a href=""></a><span class="fu">library</span>(renv)</span>
-<span id="cb4-5"><a href=""></a><span class="fu">library</span>(testthat)</span>
-<span id="cb4-6"><a href=""></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb4-7"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-4"><a href=""></a><span class="fu">library</span>(testthat)</span>
+<span id="cb4-5"><a href=""></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb4-6"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
 <p><strong>Checkpoint:</strong> All packages load without error messages</p>
@@ -618,42 +616,13 @@ Dr.&nbsp;Ronald G. Thomas
 <li>Say <strong>Yes</strong> to restart RStudio</li>
 </ul>
 </section>
-<section id="step-20-initialize-renv" class="slide level2">
-<h2>Step 20: Initialize renv</h2>
-<div class="do-this">
-<p><strong>DO THIS:</strong> Lock your package versions</p>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>renv<span class="sc">::</span><span class="fu">init</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Then snapshot:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div class="checkpoint">
-<p><strong>Checkpoint:</strong> <code>renv.lock</code> file exists in your project root</p>
-</div>
-</section>
-<section id="step-21-commit-renv-files" class="slide level2">
-<h2>Step 21: Commit renv Files</h2>
-<div class="do-this">
-<p><strong>DO THIS:</strong> Stage and commit the renv files</p>
-</div>
-<p>In RStudio Git pane (top right):</p>
-<ol type="1">
-<li>Check boxes next to <code>renv.lock</code>, <code>renv/</code>, <code>.Rprofile</code></li>
-<li>Click <strong>Commit</strong></li>
-<li>Enter message: “Initialize renv for package management”</li>
-<li>Click <strong>Commit</strong></li>
-</ol>
-</section>
-<section id="step-22-connect-to-github" class="slide level2">
-<h2>Step 22: Connect to GitHub</h2>
+<section id="step-20-connect-to-github" class="slide level2">
+<h2>Step 20: Connect to GitHub</h2>
 <div class="do-this">
 <p><strong>DO THIS:</strong> Create GitHub repository and push</p>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_github</span>(<span class="at">private =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_github</span>(<span class="at">private =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="warning-box">
 <p>If you get a PAT error, run: <code>usethis::create_github_token()</code> then <code>gitcreds::gitcreds_set()</code></p>
@@ -667,20 +636,22 @@ Dr.&nbsp;Ronald G. Thomas
 <h1>Part VII: Final Verification</h1>
 
 </section>
-<section id="step-23-verify-project-structure" class="slide level2">
-<h2>Step 23: Verify Project Structure</h2>
+<section id="step-21-verify-project-structure" class="slide level2">
+<h2>Step 21: Verify Project Structure</h2>
 <div class="do-this">
 <p><strong>DO THIS:</strong> Check your final project structure</p>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(<span class="at">recurse =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(<span class="at">recurse =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You should have:</p>
 <pre><code>penguins.yourname/
 ├── DESCRIPTION
+├── NAMESPACE
 ├── analysis/
 │   ├── data/
-│   │   ├── raw_data/penguins.csv
+│   │   ├── raw_data/
+│   │   │   └── penguins.csv
 │   │   └── derived_data/
 │   ├── figures/
 │   └── paper/
@@ -688,21 +659,19 @@ Dr.&nbsp;Ronald G. Thomas
 │       └── paper.Rmd
 ├── R/
 │   └── clean-data.R
-├── tests/
-│   ├── testthat/
-│   │   ├── test-clean-data.R
-│   │   └── test-data-validation.R
-│   └── testthat.R
-├── renv.lock
-└── renv/</code></pre>
+└── tests/
+    ├── testthat.R
+    └── testthat/
+        ├── test-clean-data.R
+        └── test-data-validation.R</code></pre>
 </section>
-<section id="step-24-run-final-test" class="slide level2">
-<h2>Step 24: Run Final Test</h2>
+<section id="step-22-run-final-test" class="slide level2">
+<h2>Step 22: Run Final Test</h2>
 <div class="do-this">
 <p><strong>DO THIS:</strong> Verify everything works together</p>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This runs a comprehensive check. Some warnings are OK, but there should be no errors.</p>
 <div class="checkpoint">
@@ -720,7 +689,6 @@ Dr.&nbsp;Ronald G. Thomas
 <li><label><input type="checkbox">Helper function in <code>R/clean-data.R</code></label></li>
 <li><label><input type="checkbox">Two passing unit tests in <code>tests/testthat/</code></label></li>
 <li><label><input type="checkbox">Git initialized with commits</label></li>
-<li><label><input type="checkbox">renv initialized with lockfile</label></li>
 <li><label><input type="checkbox">Project pushed to GitHub</label></li>
 </ul>
 </section>
@@ -742,7 +710,7 @@ Dr.&nbsp;Ronald G. Thomas
 <li>Export data to a standardized location</li>
 <li>Use templates for analysis documentation</li>
 <li>Write unit tests with testthat</li>
-<li>Integrate Git, renv, and GitHub</li>
+<li>Integrate Git and GitHub</li>
 </ol>
 <p>This workflow ensures your analysis is <strong>reproducible</strong>, <strong>testable</strong>, and <strong>version controlled</strong>.</p>
 </section>
@@ -750,12 +718,12 @@ Dr.&nbsp;Ronald G. Thomas
 <h2>Troubleshooting Reference</h2>
 <h3 id="rrtools-not-found">“rrtools not found”</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"benmarwick/rrtools"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"benmarwick/rrtools"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <h3 id="github-pat-not-found">“GitHub PAT not found”</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">create_github_token</span>()</span>
-<span id="cb31-2"><a href=""></a>gitcreds<span class="sc">::</span><span class="fu">gitcreds_set</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">create_github_token</span>()</span>
+<span id="cb29-2"><a href=""></a>gitcreds<span class="sc">::</span><span class="fu">gitcreds_set</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <h3 id="test-failed">“Test failed”</h3>
 <ul>
@@ -763,10 +731,9 @@ Dr.&nbsp;Ronald G. Thomas
 <li>Make sure you saved all files</li>
 <li>Run <code>devtools::load_all()</code> before <code>devtools::test()</code></li>
 </ul>
-<h3 id="renvrestore-fails">“renv::restore() fails”</h3>
+<h3 id="could-not-find-function">“could not find function”</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>renv<span class="sc">::</span><span class="fu">clean</span>()</span>
-<span id="cb32-2"><a href=""></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 </section></section>

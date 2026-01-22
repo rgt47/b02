@@ -8,7 +8,6 @@ Follow this checklist to verify you completed each step of the walkthrough.
 - [ ] `remotes` package installed
 - [ ] `devtools` package installed
 - [ ] `usethis` package installed
-- [ ] `renv` package installed
 - [ ] `testthat` package installed
 - [ ] `palmerpenguins` package installed
 - [ ] `tidyverse` package installed
@@ -116,10 +115,6 @@ test_that("clean_penguins removes rows with missing values", {
 
 - [ ] Git initialized: `usethis::use_git()`
 - [ ] Initial commit made
-- [ ] renv initialized: `renv::init()`
-- [ ] Packages snapshot taken: `renv::snapshot()`
-- [ ] `renv.lock` file exists
-- [ ] renv files committed (renv.lock, renv/, .Rprofile)
 - [ ] GitHub repository created: `usethis::use_github(private = FALSE)`
 - [ ] Browser opened to your new repository
 
@@ -136,8 +131,6 @@ Your project should look like this:
 penguins.yourname/
 ├── DESCRIPTION
 ├── NAMESPACE
-├── .Rprofile
-├── renv.lock
 ├── analysis/
 │   ├── data/
 │   │   ├── raw_data/
@@ -149,8 +142,6 @@ penguins.yourname/
 │       └── paper.Rmd
 ├── R/
 │   └── clean-data.R
-├── renv/
-│   └── ...
 └── tests/
     ├── testthat.R
     └── testthat/
@@ -191,13 +182,6 @@ gitcreds::gitcreds_set()
 
 ```r
 devtools::load_all()
-```
-
-### "renv::restore() fails"
-
-```r
-renv::clean()
-renv::restore()
 ```
 
 ## Questions?
