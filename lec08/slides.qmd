@@ -1,0 +1,625 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 8: Testing Data Analysis Workflows"
+author: "Dr. Ronald G. Thomas"
+date: "January 29, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    smaller: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, warning = FALSE,
+                      message = FALSE)
+```
+
+## Course Information
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+
+## Today's Topics
+
+1. Why test data analysis code?
+2. Types of tests for data science
+3. The testthat framework
+4. Data validation tests
+5. Reproducibility tests
+6. Testing analysis scripts
+7. Continuous integration
+
+
+# Part I: Why Test Data Analysis Code?
+
+## The Testing Gap in Data Science
+
+Traditional software engineering has embraced testing for decades.
+
+Data science often lags behind:
+
+- "It's just exploratory analysis"
+- "The results look reasonable"
+- "I checked it manually"
+
+**Problem:** These approaches don't scale and don't protect against
+regression.
+
+## What Can Go Wrong?
+
+**Data problems:**
+
+- Column types change between data pulls
+- Missing values appear in unexpected places
+- IDs don't match across tables
+
+**Code problems:**
+
+- Function behavior changes with package updates
+- Edge cases cause silent failures
+- Copy-paste errors accumulate
+
+**Analysis problems:**
+
+- Results change when re-run
+- Different random seeds give different answers
+- Collaborator can't reproduce your findings
+
+## Two Goals of Testing
+
+1. **Computational Reproducibility**
+   - Another researcher can run your code and get identical results
+   - Tests verify the computational pipeline works
+
+2. **Result Correctness**
+   - The results generated are accurate and meaningful
+   - Tests validate expected properties of outputs
+
+
+# Part II: Types of Tests for Data Analysis
+
+## Testing Taxonomy
+
+| Test Type | What It Checks | When to Use |
+|-----------|---------------|-------------|
+| Unit tests | Individual functions | Helper functions, utilities |
+| Data validation | Data quality | After loading, after transforms |
+| Integration | Full pipeline | Before finalizing analysis |
+| Reproducibility | Same results | Random processes, cross-platform |
+
+## Unit Tests
+
+Test individual functions in isolation:
+
+```{r}
+test_that("outlier detection function works", {
+  test_data <- c(1, 2, 3, 100, 4, 5)
+  outliers <- detect_outliers(test_data, method = "iqr")
+
+  expect_equal(outliers, 100)
+  expect_length(outliers, 1)
+})
+```
+
+**Key principle:** Test with known inputs and expected outputs.
+
+## Data Validation Tests
+
+Ensure data meets quality requirements:
+
+```{r}
+test_that("data meets quality standards", {
+  data <- read.csv("analysis/data/raw_data/penguins.csv")
+
+  # Check structure
+  expect_equal(ncol(data), 8)
+  expect_true(all(c("species", "body_mass_g") %in% names(data)))
+
+  # Check ranges
+  expect_true(all(data$body_mass_g > 0, na.rm = TRUE))
+  expect_true(all(data$body_mass_g < 10000, na.rm = TRUE))
+})
+```
+
+## Integration Tests
+
+Test complete workflows:
+
+```{r}
+test_that("analysis pipeline runs successfully", {
+  expect_no_error({
+    raw_data <- load_raw_data()
+    clean_data <- clean_data(raw_data)
+    model <- fit_model(clean_data)
+    results <- generate_results(model)
+  })
+
+  expect_s3_class(results, "data.frame")
+  expect_true(nrow(results) > 0)
+})
+```
+
+## Reproducibility Tests
+
+Verify results are deterministic:
+
+```{r}
+test_that("bootstrap analysis is reproducible", {
+  set.seed(42)
+  results1 <- bootstrap_analysis(data, n_boots = 1000)
+
+  set.seed(42)
+  results2 <- bootstrap_analysis(data, n_boots = 1000)
+
+  expect_equal(results1$estimate, results2$estimate)
+  expect_equal(results1$ci_lower, results2$ci_lower)
+})
+```
+
+
+# Part III: The testthat Framework
+
+## testthat Basics
+
+```{r}
+library(testthat)
+
+test_that("description of what we're testing", {
+  # Arrange: set up test data
+  x <- c(1, 2, 3, 4, 5)
+
+  # Act: run the code
+  result <- mean(x)
+
+  # Assert: check expectations
+  expect_equal(result, 3)
+})
+```
+
+**Structure:** Arrange → Act → Assert
+
+## Common Expectations
+
+```{r}
+# Equality
+expect_equal(result, expected)          # Allows tolerance
+expect_identical(result, expected)      # Exact match
+
+# Logical
+expect_true(condition)
+expect_false(condition)
+
+# Types and classes
+expect_type(x, "double")
+expect_s3_class(model, "lm")
+
+# Errors and warnings
+expect_error(bad_function())
+expect_warning(risky_function())
+expect_no_error(safe_function())
+```
+
+## Test File Organization
+
+```
+tests/
+├── testthat.R              # Test runner
+└── testthat/
+    ├── helper-test-data.R  # Shared test utilities
+    ├── test-data-loading.R
+    ├── test-data-cleaning.R
+    ├── test-models.R
+    └── test-visualization.R
+```
+
+**Convention:** Test files start with `test-`.
+
+## Helper Functions
+
+Create reusable test utilities in `helper-*.R`:
+
+```{r}
+# helper-test-data.R
+create_test_penguins <- function(n = 50) {
+  data.frame(
+    species = sample(c("Adelie", "Chinstrap", "Gentoo"), n,
+                     replace = TRUE),
+    bill_length_mm = rnorm(n, mean = 44, sd = 5),
+    body_mass_g = rnorm(n, mean = 4200, sd = 800)
+  )
+}
+
+expect_valid_model <- function(model) {
+  expect_s3_class(model, "lm")
+  expect_true(length(coef(model)) > 0)
+  expect_true(!any(is.na(coef(model))))
+}
+```
+
+## Running Tests
+
+```{r}
+# Run all tests
+devtools::test()
+
+# Run specific test file
+testthat::test_file("tests/testthat/test-data-cleaning.R")
+
+# Run tests matching a pattern
+testthat::test_dir("tests/testthat", filter = "model")
+```
+
+**Output:**
+
+```
+✔ | F W  S  OK | Context
+✔ |          3 | data-cleaning
+✔ |          5 | models
+✔ |          2 | visualization
+```
+
+
+# Part IV: Data Validation Tests
+
+## The assertr Package
+
+Pipeline-friendly assertions:
+
+```{r}
+library(assertr)
+
+penguins |>
+  verify(nrow(.) > 300) |>
+  verify(ncol(.) == 8) |>
+  assert(within_bounds(0, 10000), body_mass_g) |>
+  assert(in_set("Adelie", "Chinstrap", "Gentoo"), species) |>
+  insist(within_n_sds(3), bill_length_mm)
+```
+
+**Fails loudly** if any assertion is violated.
+
+## Custom Validation Rules
+
+```{r}
+validate_penguin_data <- function(data) {
+  test_that("penguin data validation", {
+    # Required columns exist
+    required_cols <- c("species", "island", "bill_length_mm",
+                       "bill_depth_mm", "flipper_length_mm",
+                       "body_mass_g", "sex", "year")
+    expect_true(all(required_cols %in% names(data)))
+
+    # Species are valid
+    valid_species <- c("Adelie", "Chinstrap", "Gentoo")
+    expect_true(all(data$species %in% valid_species))
+
+    # Measurements are positive
+    expect_true(all(data$bill_length_mm > 0, na.rm = TRUE))
+    expect_true(all(data$body_mass_g > 0, na.rm = TRUE))
+
+    # Years are reasonable
+    expect_true(all(data$year >= 2007 & data$year <= 2009))
+  })
+}
+```
+
+## Testing Data Transformations
+
+```{r}
+test_that("clean_penguins removes missing values correctly", {
+  # Create test data with known missing pattern
+  test_data <- data.frame(
+    species = c("Adelie", "Gentoo", "Chinstrap"),
+    bill_length_mm = c(39.1, NA, 46.5),
+    body_mass_g = c(3750, 4500, NA)
+  )
+
+  # Apply cleaning function
+  cleaned <- clean_penguins(test_data)
+
+  # Verify results
+  expect_equal(nrow(cleaned), 1)
+  expect_equal(cleaned$species, "Adelie")
+  expect_false(any(is.na(cleaned)))
+})
+```
+
+
+# Part V: Reproducibility Tests
+
+## Seed Management
+
+```{r}
+test_that("cross-validation is reproducible", {
+  data <- create_test_penguins(100)
+
+  set.seed(123)
+  cv1 <- perform_cv(data, folds = 5)
+
+  set.seed(123)
+  cv2 <- perform_cv(data, folds = 5)
+
+  # Results should be identical
+  expect_equal(cv1$fold_assignments, cv2$fold_assignments)
+  expect_equal(cv1$rmse, cv2$rmse)
+})
+```
+
+**Golden rule:** Always document and test your seeds.
+
+## Testing Against Known Results
+
+```{r}
+test_that("regression coefficients match expected values", {
+  data(penguins, package = "palmerpenguins")
+  clean_data <- na.omit(penguins)
+
+  model <- lm(body_mass_g ~ flipper_length_mm, data = clean_data)
+  coefs <- coef(model)
+
+  # Test against pre-computed values
+  expect_equal(coefs["(Intercept)"], -5780.83, tolerance = 0.1)
+  expect_equal(coefs["flipper_length_mm"], 49.69, tolerance = 0.01)
+})
+```
+
+**Note:** Store expected values from verified runs.
+
+## Package Version Testing
+
+```{r}
+test_that("analysis uses expected package versions", {
+  # Check critical package versions
+  expect_true(packageVersion("dplyr") >= "1.0.0")
+  expect_true(packageVersion("ggplot2") >= "3.4.0")
+
+  # Or check renv lockfile is synchronized
+  if (requireNamespace("renv", quietly = TRUE)) {
+    status <- renv::status()
+    expect_true(status$synchronized)
+  }
+})
+```
+
+
+# Part VI: Testing Analysis Scripts
+
+## Script Execution Tests
+
+```{r}
+test_that("analysis scripts run without error", {
+  scripts <- c(
+    "scripts/01_load_data.R",
+    "scripts/02_clean_data.R",
+    "scripts/03_fit_models.R",
+    "scripts/04_create_figures.R"
+  )
+
+  for (script in scripts) {
+    expect_true(file.exists(script))
+    expect_no_error(
+      source(script, local = new.env()),
+      info = paste("Failed:", script)
+    )
+  }
+})
+```
+
+## Output Validation
+
+```{r}
+test_that("scripts produce expected outputs", {
+  # Run data cleaning script
+  source("scripts/02_clean_data.R", local = new.env())
+
+  # Check output was created
+  expect_true(file.exists("analysis/data/derived_data/penguins_clean.rds"))
+
+  # Validate output
+  clean_data <- readRDS("analysis/data/derived_data/penguins_clean.rds")
+  expect_true(nrow(clean_data) > 300)
+  expect_false(any(is.na(clean_data)))
+})
+```
+
+## Testing Rmarkdown Rendering
+
+```{r}
+test_that("report renders successfully", {
+  report_path <- "analysis/paper/paper.Rmd"
+
+  # Check file exists
+  expect_true(file.exists(report_path))
+
+  # Test rendering (skip if LaTeX not available)
+  skip_if_not_installed("tinytex")
+
+  output_dir <- tempdir()
+  expect_no_error({
+    rmarkdown::render(report_path,
+                     output_dir = output_dir,
+                     quiet = TRUE)
+  })
+})
+```
+
+
+# Part VII: Continuous Integration
+
+## GitHub Actions for R
+
+`.github/workflows/test-analysis.yml`:
+
+```yaml
+name: Test Analysis
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: r-lib/actions/setup-r@v2
+    - uses: r-lib/actions/setup-r-dependencies@v2
+
+    - name: Run tests
+      run: |
+        testthat::test_dir('tests/testthat')
+      shell: Rscript {0}
+```
+
+## Automated Quality Checks
+
+```yaml
+    - name: Data validation
+      run: |
+        source('tests/validate_data.R')
+      shell: Rscript {0}
+
+    - name: Reproducibility check
+      run: |
+        source('tests/reproducibility_check.R')
+      shell: Rscript {0}
+```
+
+**Benefit:** Tests run automatically on every push.
+
+
+# Part VIII: Best Practices
+
+## Testing Philosophy
+
+1. **Test early, not just at the end**
+   - Write tests during exploration, not after
+
+2. **Test behavior, not implementation**
+   - Focus on what the function should do
+
+3. **Use meaningful test names**
+   - `"model returns valid coefficients"` not `"test model"`
+
+4. **Test edge cases**
+   - Empty data, missing values, extreme values
+
+## Common Pitfalls
+
+::: {.columns}
+::: {.column width="50%"}
+**Avoid:**
+
+- Testing implementation details
+- Overly specific tests
+- Ignoring random elements
+- Skipping integration tests
+:::
+
+::: {.column width="50%"}
+**Instead:**
+
+- Test observable behavior
+- Allow flexibility
+- Always set seeds
+- Test full workflows
+:::
+:::
+
+## Testing Checklist for Projects
+
+- [ ] Data loading tests (file exists, correct dimensions)
+- [ ] Data validation tests (ranges, types, missing patterns)
+- [ ] Function unit tests (known inputs/outputs)
+- [ ] Model tests (coefficients, diagnostics)
+- [ ] Reproducibility tests (seeds, package versions)
+- [ ] Integration tests (full pipeline runs)
+- [ ] Output tests (files created, correct format)
+
+
+## Applying to Project 1
+
+Your penguins project should include:
+
+```
+tests/
+└── testthat/
+    ├── test-data-validation.R    # Already created in Lecture 6
+    ├── test-clean-data.R         # Already created in Lecture 6
+    ├── test-models.R             # Add: test your regression models
+    └── test-reproducibility.R    # Add: verify seeds, check results
+```
+
+## Example: Testing Your Regression
+
+```{r}
+test_that("body mass model has expected properties", {
+  data <- read.csv("analysis/data/raw_data/penguins.csv")
+  clean_data <- na.omit(data)
+
+  model <- lm(body_mass_g ~ flipper_length_mm + species,
+              data = clean_data)
+
+  # Model structure
+  expect_s3_class(model, "lm")
+  expect_equal(length(coef(model)), 4)  # Intercept + 3 predictors
+
+  # Model quality
+  r_squared <- summary(model)$r.squared
+  expect_true(r_squared > 0.8)  # Should explain >80% variance
+
+  # Residuals are reasonable
+  expect_true(mean(resid(model)) < 1e-10)  # ~0
+})
+```
+
+
+## Summary
+
+Today we covered:
+
+1. **Why testing matters** for reproducible research
+2. **Types of tests**: unit, data validation, integration, reproducibility
+3. **The testthat framework** for R
+4. **Data validation** with assertr and custom rules
+5. **Reproducibility testing** with seeds and known results
+6. **Script testing** for analysis pipelines
+7. **Continuous integration** with GitHub Actions
+
+## Assignment
+
+Before Tuesday, February 3:
+
+1. Add at least **two new tests** to your Project 1 repository
+2. Tests should cover your regression analysis
+3. Run `devtools::test()` and verify all tests pass
+4. Commit and push to GitHub
+
+**Tuesday**: Project 1 Report presentations
+
+
+## Questions?
+
+- **Office hours:** By appointment
+- **Email:** rgthomas@ucsd.edu or maluo@ucsd.edu
+- **Canvas:** Post in discussion board
+
+## References
+
+- Wickham, H. (2011). testthat: Get started with testing. *The R Journal*.
+- Wilson, G. et al. (2017). Good enough practices in scientific computing.
+  *PLOS Computational Biology*.
+- Poldrack, R.A. (2019). Reproducible data analysis. *Stanford Psychology
+  Guide*.
+- van der Loo, M. & de Jonge, E. (2021). Data validation infrastructure
+  for R. *Journal of Statistical Software*.
