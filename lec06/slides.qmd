@@ -1,0 +1,692 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 6: Setting Up a Reproducible Research Compendium"
+author: "Dr. Ronald G. Thomas"
+date: "January 22, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    highlight-style: github
+    smaller: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 8px 12px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 8px 12px;
+  margin-top: 8px;
+  border-radius: 5px;
+}
+
+.walkthrough {
+  background-color: #fff7e6;
+  border-left: 5px solid #fa8c16;
+  padding: 8px 12px;
+  margin-top: 8px;
+  border-radius: 5px;
+}
+
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
+
+## Course Information
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+
+## Lecture 6: rrtools + GitHub Walkthrough {.subtitle}
+
+## Today's Agenda
+
+1. What is a Research Compendium?
+2. The rrtools Package
+3. Live Walkthrough: Creating a Compendium
+4. Connecting to GitHub
+5. Organizing Your Penguins Analysis
+6. Lab Time: Set Up Your Project
+
+::: {.fragment .question}
+**Question:** You have learned about renv, Git, and GitHub individually.
+How do you combine them into a coherent project structure?
+:::
+
+::: {.fragment .answer}
+**Answer:** "rrtools provides a template that integrates all these tools
+into a standardized research compendium structure. Instead of manually
+creating folders and configuration files, rrtools scaffolds everything
+according to established best practices."
+:::
+
+
+# Part I: Research Compendia
+
+## What is a Research Compendium?
+
+A **research compendium** is a bundle containing:
+
+- Data (raw and processed)
+- Code (analysis scripts and functions)
+- Documentation (README, methods narrative)
+- Output (figures, tables, reports)
+
+All organized in a standardized, reproducible structure.
+
+:::{.callout-note}
+The compendium concept comes from Gentleman and Temple Lang (2007):
+research should be distributed as a complete, executable package.
+:::
+
+::: {.fragment .question}
+**Question:** How is a research compendium different from just organizing
+your files into folders?
+:::
+
+::: {.fragment .answer}
+**Answer:** "A compendium follows conventions that others in the field
+recognize. When I open someone's compendium, I know where to find the raw
+data, where the analysis scripts live, and how to reproduce their results.
+Ad-hoc folder structures require reading documentation just to navigate
+the project."
+:::
+
+## The rrtools Package
+
+**rrtools** = Reproducible Research tools
+
+Created by Ben Marwick to:
+
+- Scaffold standardized project structures
+- Integrate R package development tools
+- Connect with version control (Git/GitHub)
+- Support literate programming (R Markdown)
+
+```{r}
+#| echo: true
+#| eval: false
+# Install rrtools from GitHub
+remotes::install_github("benmarwick/rrtools")
+```
+
+## rrtools Project Structure
+
+```
+myproject/
+├── DESCRIPTION          # Project metadata
+├── LICENSE              # Usage terms
+├── README.Rmd           # Project overview (renders to README.md)
+├── analysis/
+│   ├── paper/
+│   │   └── paper.Rmd    # Main analysis document
+│   ├── data/
+│   │   ├── raw_data/    # Unmodified original data
+│   │   └── derived_data/# Processed data from scripts
+│   ├── figures/         # Generated plots
+│   └── supplementary-materials/
+├── R/                   # Custom functions
+└── man/                 # Function documentation
+```
+
+::: {.fragment .question}
+**Question:** Why does rrtools include a DESCRIPTION file like an R package?
+:::
+
+::: {.fragment .answer}
+**Answer:** "The DESCRIPTION file lets you use R's package infrastructure
+for dependency management. You can declare which packages your analysis
+requires, and collaborators can install them with a single command. It
+also provides structured metadata about authors, license, and project
+description."
+:::
+
+
+# Part II: Live Walkthrough
+
+## Prerequisites Check
+
+Before we begin, verify you have:
+
+```{r}
+#| echo: true
+#| eval: false
+# Check R version (need 4.0+)
+R.version.string
+
+# Check for required packages
+c("devtools", "usethis", "renv", "remotes") %in%
+  rownames(installed.packages())
+
+# Install rrtools if needed
+remotes::install_github("benmarwick/rrtools")
+```
+
+Also verify:
+
+- Git is installed: `git --version` in terminal
+- GitHub account is configured
+- GitHub PAT is set up (from Lecture 4)
+
+## Step 1: Create the Compendium
+
+::: {.walkthrough}
+**LIVE DEMO**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+library(rrtools)
+
+# Create a new compendium
+# Use your team name or "penguins" for the project
+rrtools::use_compendium("penguins")
+```
+
+This creates:
+
+- New directory with package structure
+- DESCRIPTION file with placeholder metadata
+- Opens new RStudio project
+
+::: {.fragment .question}
+**Question:** What happens if you already have a folder with that name?
+:::
+
+::: {.fragment .answer}
+**Answer:** "rrtools will stop and warn you. It never overwrites existing
+directories. Either choose a different name or remove the existing folder
+first. This protects you from accidentally destroying work."
+:::
+
+## Step 2: Edit DESCRIPTION
+
+::: {.walkthrough}
+**LIVE DEMO**
+:::
+
+Open DESCRIPTION and update:
+
+```
+Package: penguins
+Title: Palmer Penguins Analysis for PHB 243b Project 1
+Version: 0.0.1
+Authors@R:
+    c(person(given = "Your",
+             family = "Name",
+             role = c("aut", "cre"),
+             email = "yourname@ucsd.edu"),
+      person(given = "Teammate",
+             family = "Name",
+             role = "aut",
+             email = "teammate@ucsd.edu"))
+Description: Statistical analysis of morphometric measurements in three
+    penguin species from the Palmer Archipelago, Antarctica.
+License: MIT + file LICENSE
+```
+
+## Step 3: Add Analysis Structure
+
+::: {.walkthrough}
+**LIVE DEMO**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Add the analysis folder structure
+rrtools::use_analysis()
+```
+
+Choose option when prompted:
+
+- **1**: `analysis/paper/paper.Rmd` - for writing a paper
+- **2**: `analysis/paper/paper.qmd` - for Quarto documents
+- **3**: `vignettes/paper.Rmd` - package vignette style
+
+For this course, choose option **1** or **2** based on your preference.
+
+## Step 4: Initialize Git
+
+::: {.walkthrough}
+**LIVE DEMO**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Initialize Git repository
+usethis::use_git()
+```
+
+This will:
+
+- Create `.git/` directory
+- Create `.gitignore` with sensible defaults
+- Offer to make initial commit
+
+Say **yes** to the initial commit.
+
+::: {.fragment .question}
+**Question:** What files should NOT be committed to Git?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Large data files, sensitive information, and generated output.
+The .gitignore file rrtools creates excludes common culprits like .Rhistory,
+.RData, and the renv library folder. You may need to add entries for large
+datasets specific to your project."
+:::
+
+## Step 5: Initialize renv
+
+::: {.walkthrough}
+**LIVE DEMO**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Initialize renv for package management
+renv::init()
+```
+
+This creates:
+
+- `renv.lock` - lockfile for exact package versions
+- `renv/` - project-specific library
+- `.Rprofile` - activates renv on project load
+
+```{r}
+#| echo: true
+#| eval: false
+# Install packages you need
+install.packages(c("palmerpenguins", "tidyverse", "ggplot2"))
+
+# Snapshot the state
+renv::snapshot()
+```
+
+## Step 6: Connect to GitHub
+
+::: {.walkthrough}
+**LIVE DEMO**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Create GitHub repository and push
+usethis::use_github(private = FALSE)
+```
+
+This will:
+
+- Create a new repository on GitHub
+- Add GitHub as remote origin
+- Push your local commits
+- Open the repository in your browser
+
+:::{.callout-note}
+For team projects, one person creates the repo, then adds teammates as
+collaborators via Settings > Collaborators on GitHub.
+:::
+
+## Step 7: Add README
+
+::: {.walkthrough}
+**LIVE DEMO**
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Create README.Rmd (will render to README.md)
+rrtools::use_readme_rmd()
+```
+
+Edit `README.Rmd` to include:
+
+- Project title and description
+- Team members
+- How to reproduce the analysis
+- Data source citation
+
+```{r}
+#| echo: true
+#| eval: false
+# Render README
+rmarkdown::render("README.Rmd")
+```
+
+
+# Part III: Organizing Your Analysis
+
+## Adding Raw Data
+
+Place your data in `analysis/data/raw_data/`:
+
+```{r}
+#| echo: true
+#| eval: false
+# For Palmer Penguins, you can save from the package
+library(palmerpenguins)
+
+write.csv(penguins,
+          "analysis/data/raw_data/penguins.csv",
+          row.names = FALSE)
+```
+
+:::{.callout-important}
+Raw data files should NEVER be modified. All transformations happen in
+code, with results saved to `derived_data/`.
+:::
+
+## Creating Analysis Scripts
+
+Organize scripts in `analysis/` with numbered prefixes:
+
+```
+analysis/
+├── 01_data_preparation.R
+├── 02_exploratory_analysis.R
+├── 03_statistical_models.R
+├── 04_generate_figures.R
+└── paper/
+    └── paper.Rmd
+```
+
+Each script should:
+
+- Load required packages at top
+- Read from `raw_data/` or previous script's output
+- Write results to `derived_data/` or `figures/`
+
+## Writing Custom Functions
+
+Place reusable functions in `R/` directory:
+
+```{r}
+#| echo: true
+#| eval: false
+# R/summarize_species.R
+#' Summarize penguin measurements by species
+#'
+#' @param data A data frame containing penguin measurements
+#' @return A summary data frame with means and SDs by species
+summarize_species <- function(data) {
+  data |>
+    dplyr::group_by(species) |>
+    dplyr::summarise(
+      n = dplyr::n(),
+      mean_mass = mean(body_mass_g, na.rm = TRUE),
+      sd_mass = sd(body_mass_g, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+```
+
+Load with `devtools::load_all()` or source directly.
+
+## The Paper Document
+
+`analysis/paper/paper.Rmd` is your main analysis narrative:
+
+```yaml
+---
+title: "Morphometric Analysis of Palmer Penguins"
+author: "Team Name"
+output:
+  bookdown::pdf_document2:
+    toc: false
+---
+```
+
+Include:
+
+- Introduction and research questions
+- Methods description
+- Results with inline R code
+- Discussion and conclusions
+
+::: {.fragment .question}
+**Question:** Should you put all your code in paper.Rmd or in separate scripts?
+:::
+
+::: {.fragment .answer}
+**Answer:** "Separate scripts for data preparation and heavy computation,
+with paper.Rmd loading the results. This keeps the paper document readable
+and allows you to run time-consuming analyses once, saving results for the
+paper to load quickly."
+:::
+
+
+# Part IV: Workflow Best Practices
+
+## Daily Workflow
+
+```bash
+# Start of work session
+git pull                    # Get teammate changes
+renv::restore()             # Ensure packages match
+
+# During work
+# ... write code, run analyses ...
+
+# End of work session
+renv::snapshot()            # Capture any new packages
+git add -A
+git commit -m "Add species comparison analysis"
+git push
+```
+
+## Commit Message Guidelines
+
+Write clear, informative commit messages:
+
+```
+# Good
+git commit -m "Add body mass comparison by species and sex"
+git commit -m "Fix missing data handling in correlation analysis"
+git commit -m "Update figure 2 with colorblind-friendly palette"
+
+# Bad
+git commit -m "Update"
+git commit -m "Fixed stuff"
+git commit -m "WIP"
+```
+
+## Collaboration Tips
+
+For team projects:
+
+1. **Assign file ownership** - Each person owns specific scripts
+2. **Pull before you push** - Always `git pull` before starting work
+3. **Communicate conflicts** - If Git reports a merge conflict, talk to
+   your teammate before resolving
+4. **Use branches** - For major changes, create a branch and merge via
+   pull request
+
+```bash
+# Create a branch for new analysis
+git checkout -b add-regression-models
+
+# ... do work, commit ...
+
+# Push branch to GitHub
+git push -u origin add-regression-models
+```
+
+
+# Part V: Lab Time
+
+## Your Task
+
+Set up your Project 1 compendium:
+
+1. Create compendium with `rrtools::use_compendium("p1_teamname")`
+2. Edit DESCRIPTION with your team info
+3. Add analysis structure with `rrtools::use_analysis()`
+4. Initialize Git and renv
+5. Connect to GitHub
+6. Add Palmer Penguins data to `raw_data/`
+7. Create initial analysis script
+8. Push to GitHub
+
+:::{.callout-note}
+One team member creates the repository, then adds others as collaborators.
+All team members should clone the repo and verify `renv::restore()` works.
+:::
+
+## Checklist for Today
+
+- [ ] Compendium created with rrtools
+- [ ] DESCRIPTION file updated with team info
+- [ ] Git initialized with initial commit
+- [ ] renv initialized and snapshot taken
+- [ ] GitHub repository created
+- [ ] All team members added as collaborators
+- [ ] All team members can clone and restore environment
+- [ ] Raw data added to `analysis/data/raw_data/`
+- [ ] Initial script created
+
+## Summary
+
+1. **Research compendia** organize reproducible analyses
+2. **rrtools** scaffolds standardized project structure
+3. **Workflow**: rrtools + renv + Git + GitHub
+4. **Organization**: numbered scripts, raw/derived data separation
+5. **Collaboration**: pull before push, clear commits, communicate
+
+## Reference Material {.center}
+
+The following slides are provided as reference material.
+
+## Quick Reference: rrtools Commands {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Create new compendium
+rrtools::use_compendium("projectname")
+
+# Add analysis folder structure
+rrtools::use_analysis()
+
+# Add README template
+rrtools::use_readme_rmd()
+
+# Add Travis CI for automated testing (optional)
+rrtools::use_travis()
+
+# Add Dockerfile for containerization (optional)
+rrtools::use_dockerfile()
+```
+
+## Quick Reference: Useful usethis Functions {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+# Git and GitHub
+usethis::use_git()
+usethis::use_github()
+usethis::use_github_action()
+
+# Project setup
+usethis::use_mit_license()
+usethis::use_readme_md()
+usethis::use_testthat()
+
+# Package dependencies
+usethis::use_package("dplyr")
+usethis::use_pipe()  # Adds |> to your package
+```
+
+## Troubleshooting Common Issues {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+**"cannot open file 'DESCRIPTION'"**
+
+- You're not in the compendium directory
+- Use `setwd()` or open the .Rproj file
+
+**"GitHub PAT not found"**
+
+- Run `usethis::create_github_token()`
+- Then `gitcreds::gitcreds_set()`
+
+**"renv::restore() fails"**
+
+- Check internet connection
+- Try `renv::clean()` then `renv::restore()`
+- Check if package was removed from CRAN
+
+**"merge conflict in paper.Rmd"**
+
+- Don't panic - open the file and look for `<<<<<<<` markers
+- Discuss with teammate which version to keep
+- Remove conflict markers, save, commit
+
+## Recommended Reading {.smaller .reference-only}
+
+::: {.reference-stamp}
+REFERENCE ONLY
+:::
+
+### Papers
+
+- Marwick B, Boettiger C, Mullen L. (2018). Packaging Data Analytical Work
+  Reproducibly Using R (and Friends). *The American Statistician* 72(1):80-88.
+- Wilson G, et al. (2017). Good enough practices in scientific computing.
+  *PLOS Computational Biology* 13(6):e1005510.
+
+### Documentation
+
+- [rrtools GitHub repository](https://github.com/benmarwick/rrtools)
+- [usethis documentation](https://usethis.r-lib.org/)
+- [renv documentation](https://rstudio.github.io/renv/)
+
+### Example Compendia
+
+- [Marwick's research compendia examples](https://github.com/benmarwick/ctv-archaeology)

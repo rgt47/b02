@@ -4,41 +4,76 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-Course materials repository for PHB 243b (Practicum in Biostatistics) at UCSD. Contains teaching slides, demonstrations, and documentation focused on reproducible R development workflows with Docker and renv, and multi-language data science (R, Python, Julia).
+Course materials for PHB 243b (Practicum in Biostatistics) at UCSD, Winter 2026. Covers reproducible research workflows, statistical analysis plans, and collaborative biostatistics practice.
 
 ## Rendering Documents
 
 Quarto slides (revealjs format):
 ```bash
-quarto render slides_engines.qmd
-quarto render docker_renv_slides.qmd
+quarto render slides.qmd
+quarto render slides.qmd -o slides_$(date +%Y-%m-%d).html
 ```
 
-R Markdown to PDF (using xelatex for Unicode support):
+Quarto documents to PDF:
 ```bash
-Rscript -e "rmarkdown::render('multiple_engine.Rmd')"
+quarto render document.qmd --to pdf
 ```
 
-Note: Some Rmd files reference `~/shr/preamble.tex` and `~/shr/zz.tools.R` as shared resources.
+R Markdown to PDF (using xelatex for Unicode):
+```bash
+Rscript -e "rmarkdown::render('document.Rmd')"
+```
 
-## Key Content Areas
-
-- **Docker + renv workflow**: `docker_renv_slides.qmd`, `chat_outline_docker_renv.Rmd` demonstrate containerized reproducible R environments
-- **Multi-language RMarkdown**: `multiple_engine.Rmd`, `slides_engines.qmd` show R-Python-Julia integration using reticulate and JuliaCall
-- **Team science skills**: `docs/team-science-skills.qmd` presents survey data on essential biostatistician collaboration skills
+Markdown to PDF with proper Unicode box-drawing:
+```bash
+pandoc doc.md -o doc.pdf --pdf-engine=xelatex -V monofont="DejaVu Sans Mono"
+```
 
 ## Directory Structure
 
-- `data/` - datasets (symlinked as `a`)
-- `figures/` - generated figures (symlinked as `f`)
-- `scripts/` - R scripts (symlinked as `s`)
-- `docs/` - additional course documents
-- `demo/` - demonstration R scripts
+- `lec01/` through `lec20/` - Individual lecture folders following `_schedule.yml`
+- `archive/` - Previous versions and reference materials
+- `_variables.yml` - Course metadata (instructor, TA, schedule details)
+- `_schedule.yml` - Lecture schedule with topics and project assignments
+- `custom.css` - Shared CSS for revealjs slides
 
-## R-Python Integration Pattern
+## Lecture Folder Convention
 
-The multi-engine documents follow this pattern:
-1. Load `reticulate` in R setup chunk
-2. Prepare data as R data frame
-3. Access R objects in Python via `r.object_name`
-4. Access Python objects in R via `py$object_name`
+Each `lecXX/` folder typically contains:
+
+- `slides.qmd` - Revealjs presentation (uses `../custom.css` and `../ucsdlibrary.jpeg`)
+- `speaker_notes.qmd` - Extended notes for instructor
+- `scripts/` - Numbered R scripts (e.g., `01_prepare_data.R`, `02_fit_models.R`)
+- `figures/` - Generated output figures
+
+## Quarto Slide Configuration
+
+Standard YAML frontmatter for slides:
+```yaml
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+```
+
+## Course Projects and Datasets
+
+Four projects using these datasets (defined in `_schedule.yml`):
+
+1. Palmer Penguins - Species classification, morphometric analysis
+2. ADNI - Alzheimer's disease progression prediction
+3. Stanford Open Policing - Racial disparities analysis
+4. Licorice Gargle - RCT analysis of postoperative outcomes
+
+## Variable Interpolation
+
+Course documents use Quarto shortcodes for variables defined in `_variables.yml`:
+```
+{{< var instructor.name >}}
+{{< var course.time >}}
+```
