@@ -9,6 +9,7 @@ format:
     slide-number: true
     code-fold: false
     code-tools: true
+    code-copy: true
     highlight-style: github
     smaller: true
     css: ../custom.css

@@ -1,0 +1,486 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 10: Regression Analysis with Palmer Penguins"
+author: "Dr. Ronald G. Thomas"
+date: "February 5, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    code-copy: true
+    highlight-style: github
+    smaller: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE,
+                      message = FALSE)
+library(palmerpenguins)
+library(tidyverse)
+library(broom)
+library(car)
+library(corrplot)
+library(patchwork)
+theme_set(theme_minimal(base_size = 14))
+species_colors <- c("Adelie" = "#FF6B35", "Chinstrap" = "#7B68EE",
+                    "Gentoo" = "#2E8B57")
+data(penguins)
+penguins_clean <- penguins |> drop_na()
+```
+
+## Course Information
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+
+## Today's Topics
+
+1. Introduction to the Palmer Penguins dataset
+2. Exploratory data analysis
+3. Simple linear regression
+4. Multiple regression
+5. Simpson's Paradox
+6. Species-aware models
+7. Model diagnostics
+8. Cross-validation
+
+
+# Part I: The Palmer Penguins Dataset
+
+## Dataset Overview
+
+The Palmer Penguins dataset (Gorman et al., 2014):
+
+- Collected at Palmer Station, Antarctica (2007-2009)
+- Three species: Adelie, Chinstrap, Gentoo
+- Morphometric measurements: bill length, bill depth, flipper length, body mass
+- 344 observations (333 complete cases)
+
+**Our goal:** Predict body mass from morphometric measurements
+
+## Why Palmer Penguins?
+
+Advantages over the iris dataset (Horst et al., 2022):
+
+- **Realistic data:** Missing values, unbalanced groups
+- **Intuitive variables:** Flipper length vs. sepal width
+- **Documented provenance:** Published research data
+- **Ethical considerations:** No association with eugenics research
+
+## Loading the Data
+
+```{r}
+library(palmerpenguins)
+data(penguins)
+
+glimpse(penguins)
+```
+
+## Handling Missing Values
+
+```{r}
+penguins |>
+  summarise(across(everything(), ~sum(is.na(.)))) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "missing")
+```
+
+For this analysis, we remove incomplete cases:
+
+```{r}
+penguins_clean <- penguins |> drop_na()
+cat("Complete cases:", nrow(penguins_clean))
+```
+
+
+# Part II: Exploratory Data Analysis
+
+## Species Distribution
+
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+ggplot(penguins_clean, aes(x = species, fill = species)) +
+  geom_bar() +
+  scale_fill_manual(values = species_colors) +
+  labs(title = "Sample Sizes by Species", y = "Count") +
+  theme(legend.position = "none")
+```
+
+## Body Mass by Species
+
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+ggplot(penguins_clean, aes(x = body_mass_g, y = species, fill = species)) +
+  geom_boxplot(alpha = 0.7) +
+  scale_fill_manual(values = species_colors) +
+  labs(x = "Body Mass (g)", y = NULL) +
+  theme(legend.position = "none")
+```
+
+## Correlation Matrix
+
+```{r}
+#| fig-width: 6
+#| fig-height: 5
+numeric_vars <- penguins_clean |>
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+correlation_matrix <- cor(numeric_vars)
+corrplot(correlation_matrix, method = "color", type = "upper",
+         addCoef.col = "black", number.cex = 0.8)
+```
+
+## Key Correlations
+
+| Predictor | Correlation with Body Mass |
+|-----------|---------------------------|
+| Flipper length | **0.87** |
+| Bill length | 0.60 |
+| Bill depth | 0.43 |
+
+**Flipper length** shows the strongest relationship with body mass.
+
+
+# Part III: Simple Linear Regression
+
+## Model Specification
+
+Simple linear regression model:
+
+$$\text{body\_mass}_i = \beta_0 + \beta_1 \cdot \text{flipper\_length}_i + \epsilon_i$$
+
+where $\epsilon_i \sim N(0, \sigma^2)$
+
+```{r}
+model_simple <- lm(body_mass_g ~ flipper_length_mm, data = penguins_clean)
+```
+
+## Model Results
+
+```{r}
+summary(model_simple)
+```
+
+## Interpreting Coefficients
+
+```{r}
+coef(model_simple)
+```
+
+- **Intercept**: -5781 g (extrapolation beyond data range)
+- **Slope**: 49.7 g per mm of flipper length
+
+**Interpretation**: Each additional millimeter of flipper length is associated
+with approximately 50 grams of body mass.
+
+## Visualization
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5
+ggplot(penguins_clean, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species), alpha = 0.7) +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  scale_color_manual(values = species_colors) +
+  labs(x = "Flipper Length (mm)", y = "Body Mass (g)")
+```
+
+## Model Performance
+
+```{r}
+simple_metrics <- glance(model_simple)
+cat("R-squared:", round(simple_metrics$r.squared, 3), "\n")
+cat("RMSE:", round(sqrt(mean(model_simple$residuals^2)), 1), "g\n")
+```
+
+The simple model explains **76%** of variance in body mass.
+
+
+# Part IV: Multiple Regression
+
+## Adding More Predictors
+
+```{r}
+model_multiple <- lm(body_mass_g ~ bill_length_mm + bill_depth_mm +
+                       flipper_length_mm, data = penguins_clean)
+summary(model_multiple)
+```
+
+## Multicollinearity Check
+
+Variance Inflation Factors (VIF):
+
+```{r}
+vif_values <- vif(model_multiple)
+print(round(vif_values, 2))
+```
+
+**Rule of thumb**: VIF > 5 indicates concerning multicollinearity
+
+## Concerning Result
+
+Notice the coefficient for **bill depth**:
+
+```{r}
+coef(model_multiple)["bill_depth_mm"]
+```
+
+**Bill depth has a negative coefficient!**
+
+But wait - we saw a positive correlation earlier...
+
+
+# Part V: Simpson's Paradox
+
+## The Paradox Revealed
+
+```{r}
+#| fig-width: 10
+#| fig-height: 4
+p1 <- ggplot(penguins_clean, aes(x = bill_depth_mm, y = body_mass_g)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", color = "black") +
+  labs(title = "Overall: Negative", x = "Bill Depth (mm)", y = "Body Mass (g)")
+
+p2 <- ggplot(penguins_clean, aes(x = bill_depth_mm, y = body_mass_g,
+                                  color = species)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE) +
+  scale_color_manual(values = species_colors) +
+  labs(title = "Within Species: Positive", x = "Bill Depth (mm)",
+       y = "Body Mass (g)")
+p1 + p2
+```
+
+## What's Happening?
+
+**Simpson's Paradox** (Pearl, 2014):
+
+- Overall correlation: **negative**
+- Within-species correlation: **positive**
+
+**Why?**
+
+- Gentoo penguins: large bodies, **shallow** bills
+- Adelie penguins: smaller bodies, **deeper** bills
+
+Species acts as a **confounding variable**.
+
+## The Solution
+
+Include species in the model to properly account for this confounding:
+
+```{r}
+model_species <- lm(body_mass_g ~ bill_length_mm + bill_depth_mm +
+                      flipper_length_mm + species, data = penguins_clean)
+```
+
+
+# Part VI: Species-Aware Models
+
+## Model Results
+
+```{r}
+summary(model_species)
+```
+
+## Coefficient Comparison
+
+```{r}
+tibble(
+  Term = c("Bill Depth"),
+  Without_Species = coef(model_multiple)["bill_depth_mm"],
+  With_Species = coef(model_species)["bill_depth_mm"]
+) |> mutate(across(where(is.numeric), ~round(.x, 1)))
+```
+
+After controlling for species, bill depth shows the **expected positive**
+relationship with body mass.
+
+## Coefficient Plot
+
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+coef_df <- tidy(model_species, conf.int = TRUE) |>
+  filter(term != "(Intercept)") |>
+  mutate(term = fct_reorder(term, estimate))
+
+ggplot(coef_df, aes(x = estimate, y = term)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_point(size = 3, color = "#2E8B57") +
+  labs(x = "Coefficient Estimate (g)", y = NULL)
+```
+
+## Model Performance Improvement
+
+```{r}
+tibble(
+  Model = c("Simple", "Multiple", "Species-Aware"),
+  R_squared = c(
+    summary(model_simple)$r.squared,
+    summary(model_multiple)$r.squared,
+    summary(model_species)$r.squared
+  ),
+  RMSE = c(
+    sqrt(mean(model_simple$residuals^2)),
+    sqrt(mean(model_multiple$residuals^2)),
+    sqrt(mean(model_species$residuals^2))
+  )
+) |> mutate(across(where(is.numeric), ~round(.x, 3)))
+```
+
+
+# Part VII: Model Diagnostics
+
+## Diagnostic Plots
+
+```{r}
+#| fig-width: 10
+#| fig-height: 8
+par(mfrow = c(2, 2))
+plot(model_species)
+```
+
+## Interpretation
+
+- **Residuals vs Fitted**: No clear pattern (linearity OK)
+- **Q-Q Plot**: Approximately normal residuals
+- **Scale-Location**: Relatively constant spread
+- **Residuals vs Leverage**: No high-leverage outliers
+
+## Prediction Accuracy
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+predictions <- predict(model_species)
+results_df <- penguins_clean |>
+  mutate(predicted = predictions, residual = body_mass_g - predicted)
+
+ggplot(results_df, aes(x = predicted, y = body_mass_g)) +
+  geom_point(aes(color = species), alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  scale_color_manual(values = species_colors) +
+  labs(x = "Predicted Body Mass (g)", y = "Actual Body Mass (g)") +
+  coord_equal()
+```
+
+
+# Part VIII: Cross-Validation
+
+## Why Cross-Validation?
+
+- Training R-squared can be **overly optimistic**
+- Cross-validation provides honest performance estimates
+- Essential for comparing models
+
+## 10-Fold CV Setup
+
+```{r}
+library(caret)
+set.seed(42)
+train_control <- trainControl(method = "cv", number = 10)
+```
+
+## Cross-Validation Results
+
+```{r}
+cv_simple <- train(body_mass_g ~ flipper_length_mm,
+                   data = penguins_clean, method = "lm",
+                   trControl = train_control)
+
+cv_species <- train(body_mass_g ~ bill_length_mm + bill_depth_mm +
+                      flipper_length_mm + species,
+                    data = penguins_clean, method = "lm",
+                    trControl = train_control)
+```
+
+## CV Performance Comparison
+
+```{r}
+tibble(
+  Model = c("Simple", "Species-Aware"),
+  CV_RMSE = c(cv_simple$results$RMSE, cv_species$results$RMSE),
+  CV_R_squared = c(cv_simple$results$Rsquared, cv_species$results$Rsquared)
+) |> mutate(across(where(is.numeric), ~round(.x, 3)))
+```
+
+
+# Part IX: Key Takeaways
+
+## Summary
+
+1. **Flipper length** is the strongest single predictor of body mass
+2. **Simpson's Paradox**: Always check for confounding variables
+3. **Species-aware models** resolve the paradox and improve fit
+4. **Model diagnostics** confirm assumptions are reasonable
+5. **Cross-validation** provides honest performance estimates
+
+## Best Practices
+
+- Explore data visually before modeling
+- Check for confounding variables
+- Include relevant covariates
+- Validate with held-out data
+- Report honest performance metrics
+
+## Model Performance Summary
+
+| Model | R-squared | CV RMSE (g) |
+|-------|-----------|-------------|
+| Simple (flipper only) | 0.759 | ~390 |
+| Multiple (no species) | 0.779 | ~380 |
+| Species-aware | 0.868 | ~290 |
+
+The species-aware model reduces prediction error by **~25%**.
+
+
+## Applying to Project 1
+
+Your penguins project should now include:
+
+1. Exploratory data analysis
+2. Multiple regression models
+3. Consideration of Simpson's Paradox
+4. Model diagnostics
+5. Cross-validation results
+
+## References
+
+- Gorman, K.B. et al. (2014). Ecological sexual dimorphism in Antarctic
+  penguins. *PLOS ONE*, 9(3), e90081.
+- Horst, A.M. et al. (2022). Palmer Penguins: An iris alternative.
+  *The R Journal*, 14(1), 244-254.
+- Pearl, J. (2014). Understanding Simpson's Paradox. *The American
+  Statistician*, 68(1), 8-13.
+- Silge, J. (2020). Get started with tidymodels and Palmer penguins.
+  https://juliasilge.com/blog/palmer-penguins/
+
+
+## Next Steps
+
+**Project 1 Report** presentations continue next week
+
+- Review your regression analysis
+- Prepare 5-minute presentation
+- Include diagnostics and validation
+
+
+## Questions?
+
+- **Office hours:** By appointment
+- **Email:** rgthomas@ucsd.edu or maluo@ucsd.edu
+- **Canvas:** Post in discussion board

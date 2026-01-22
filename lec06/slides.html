@@ -235,6 +235,14 @@ Dr.&nbsp;Ronald G. Thomas
   margin-top: 15px;
   border-radius: 5px;
 }
+
+.terminal-box {
+  background-color: #f0f5ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
 </style>
 </section>
 <section id="course-information" class="slide level2">
@@ -266,6 +274,18 @@ Dr.&nbsp;Ronald G. Thomas
 <p><strong>Keep up with each step.</strong> Raise your hand if you get stuck.</p>
 </div>
 </section>
+<section id="rstudio-vs-terminal" class="slide level2">
+<h2>RStudio vs Terminal</h2>
+<p>Each step shows <strong>two options</strong>:</p>
+<ul>
+<li><strong>RStudio:</strong> Run commands in the R console</li>
+<li><strong>Terminal:</strong> Run commands in a shell (bash/zsh)</li>
+</ul>
+<p>Choose whichever you prefer. Both achieve the same result.</p>
+<div class="terminal-box">
+<p><strong>Terminal commands</strong> appear in blue boxes like this.</p>
+</div>
+</section>
 <section>
 <section id="part-i-software-installation" class="title-slide slide level1 center">
 <h1>Part I: Software Installation</h1>
@@ -274,28 +294,39 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="step-1-check-r-version" class="slide level2">
 <h2>Step 1: Check R Version</h2>
 <div class="do-this">
-<p><strong>DO THIS:</strong> Run in your R console</p>
+<p><strong>DO THIS:</strong> Verify your R version</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>R.version.string</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>You need R version 4.0 or higher.</p>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'R.version.string'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <div class="checkpoint">
-<p><strong>Checkpoint:</strong> You should see something like <code>R version 4.4.0</code> or higher</p>
+<p><strong>Checkpoint:</strong> You should see <code>R version 4.4.0</code> or higher</p>
 </div>
 </section>
 <section id="step-2-install-required-packages" class="slide level2">
 <h2>Step 2: Install Required Packages</h2>
 <div class="do-this">
-<p><strong>DO THIS:</strong> Run each line in your R console</p>
+<p><strong>DO THIS:</strong> Install all required packages</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
-<span id="cb2-2"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
-<span id="cb2-3"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"usethis"</span>)</span>
-<span id="cb2-4"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"testthat"</span>)</span>
-<span id="cb2-5"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"palmerpenguins"</span>)</span>
-<span id="cb2-6"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
+<span id="cb3-2"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
+<span id="cb3-3"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"usethis"</span>)</span>
+<span id="cb3-4"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"testthat"</span>)</span>
+<span id="cb3-5"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"palmerpenguins"</span>)</span>
+<span id="cb3-6"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'install.packages(c("remotes", "devtools", "usethis",</span></span>
+<span id="cb4-2"><a href=""></a><span class="st">  "testthat", "palmerpenguins", "tidyverse"),</span></span>
+<span id="cb4-3"><a href=""></a><span class="st">  repos = "https://cloud.r-project.org")'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This may take a few minutes. Wait for all installations to complete.</p>
 </section>
@@ -304,8 +335,13 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Install rrtools from GitHub</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"benmarwick/rrtools"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"benmarwick/rrtools"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'remotes::install_github("benmarwick/rrtools")'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
 <p><strong>Checkpoint:</strong> No errors in the console. You should see <code>DONE (rrtools)</code> at the end.</p>
@@ -316,13 +352,20 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Load all packages to verify they work</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">library</span>(rrtools)</span>
-<span id="cb4-2"><a href=""></a><span class="fu">library</span>(devtools)</span>
-<span id="cb4-3"><a href=""></a><span class="fu">library</span>(usethis)</span>
-<span id="cb4-4"><a href=""></a><span class="fu">library</span>(testthat)</span>
-<span id="cb4-5"><a href=""></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb4-6"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(rrtools)</span>
+<span id="cb7-2"><a href=""></a><span class="fu">library</span>(devtools)</span>
+<span id="cb7-3"><a href=""></a><span class="fu">library</span>(usethis)</span>
+<span id="cb7-4"><a href=""></a><span class="fu">library</span>(testthat)</span>
+<span id="cb7-5"><a href=""></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb7-6"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'library(rrtools); library(devtools); library(usethis);</span></span>
+<span id="cb8-2"><a href=""></a><span class="st">  library(testthat); library(palmerpenguins); library(tidyverse);</span></span>
+<span id="cb8-3"><a href=""></a><span class="st">  cat("All packages loaded successfully\n")'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
 <p><strong>Checkpoint:</strong> All packages load without error messages</p>
@@ -338,10 +381,15 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Set your working directory</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">setwd</span>(<span class="st">"~/Documents"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">setwd</span>(<span class="st">"~/Documents"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Or use RStudio: Session &gt; Set Working Directory &gt; Choose Directory</p>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href=""></a><span class="bu">cd</span> ~/Documents</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <div class="warning-box">
 <p>Choose a location you can find later. Avoid folders synced to Dropbox/OneDrive during creation (can cause issues).</p>
 </div>
@@ -351,24 +399,36 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Create your project (use YOUR name, no spaces)</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>rrtools<span class="sc">::</span><span class="fu">use_compendium</span>(<span class="st">"penguins.yourname"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>rrtools<span class="sc">::</span><span class="fu">use_compendium</span>(<span class="st">"penguins.yourname"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'rrtools::use_compendium("penguins.yourname")'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Replace <code>yourname</code> with your actual name (e.g., <code>penguins.jsmith</code>).</p>
-<p>A new RStudio window will open automatically.</p>
+<p>In RStudio, a new window will open automatically. From terminal, navigate into the new directory.</p>
 <div class="checkpoint">
-<p><strong>Checkpoint:</strong> New RStudio window with your project name in the title bar</p>
+<p><strong>Checkpoint:</strong> New project directory created with your project name</p>
 </div>
 </section>
 <section id="step-7-add-analysis-structure" class="slide level2">
 <h2>Step 7: Add Analysis Structure</h2>
 <div class="do-this">
-<p><strong>DO THIS:</strong> In the NEW RStudio window, run:</p>
+<p><strong>DO THIS:</strong> In the project directory, add the analysis folder structure</p>
 </div>
+<p><strong>RStudio Console (in the NEW project window):</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>rrtools<span class="sc">::</span><span class="fu">use_analysis</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>rrtools<span class="sc">::</span><span class="fu">use_analysis</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>When prompted, choose option <strong>1</strong> (analysis/paper/paper.Rmd).</p>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href=""></a><span class="bu">cd</span> penguins.yourname</span>
+<span id="cb14-2"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'rrtools::use_analysis(pkg_path = ".", location = "inst")'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note: From terminal, you may need to specify the default location.</p>
+</div>
 <div class="checkpoint">
 <p><strong>Checkpoint:</strong> You now have an <code>analysis/</code> folder with subfolders: <code>data/raw_data</code>, <code>data/derived_data</code>, <code>figures</code>, <code>paper</code></p>
 </div>
@@ -378,8 +438,17 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Check your project structure</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href=""></a><span class="co"># macOS/Linux</span></span>
+<span id="cb16-2"><a href=""></a><span class="fu">find</span> . <span class="at">-type</span> f <span class="at">-name</span> <span class="st">"*.R"</span> <span class="at">-o</span> <span class="at">-type</span> f <span class="at">-name</span> <span class="st">"*.Rmd"</span> <span class="at">-o</span> <span class="at">-type</span> d <span class="kw">|</span> <span class="fu">head</span> <span class="at">-20</span></span>
+<span id="cb16-3"><a href=""></a></span>
+<span id="cb16-4"><a href=""></a><span class="co"># Or if you have tree installed:</span></span>
+<span id="cb16-5"><a href=""></a><span class="ex">tree</span> <span class="at">-L</span> 3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You should see:</p>
 <pre><code>penguins.yourname/
@@ -403,14 +472,23 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Save the penguins dataset as a CSV file</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb10-2"><a href=""></a></span>
-<span id="cb10-3"><a href=""></a><span class="fu">write.csv</span>(</span>
-<span id="cb10-4"><a href=""></a>  penguins,</span>
-<span id="cb10-5"><a href=""></a>  <span class="at">file =</span> <span class="st">"analysis/data/raw_data/penguins.csv"</span>,</span>
-<span id="cb10-6"><a href=""></a>  <span class="at">row.names =</span> <span class="cn">FALSE</span></span>
-<span id="cb10-7"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb18-2"><a href=""></a></span>
+<span id="cb18-3"><a href=""></a><span class="fu">write.csv</span>(</span>
+<span id="cb18-4"><a href=""></a>  penguins,</span>
+<span id="cb18-5"><a href=""></a>  <span class="at">file =</span> <span class="st">"analysis/data/raw_data/penguins.csv"</span>,</span>
+<span id="cb18-6"><a href=""></a>  <span class="at">row.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb18-7"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'</span></span>
+<span id="cb19-2"><a href=""></a><span class="st">library(palmerpenguins)</span></span>
+<span id="cb19-3"><a href=""></a><span class="st">write.csv(penguins, "analysis/data/raw_data/penguins.csv", row.names = FALSE)</span></span>
+<span id="cb19-4"><a href=""></a><span class="st">cat("Data exported successfully\n")</span></span>
+<span id="cb19-5"><a href=""></a><span class="st">'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
 <p><strong>Checkpoint:</strong> File exists at <code>analysis/data/raw_data/penguins.csv</code></p>
@@ -421,11 +499,23 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Read the data back to verify</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>penguins_from_csv <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"analysis/data/raw_data/penguins.csv"</span>)</span>
-<span id="cb11-2"><a href=""></a></span>
-<span id="cb11-3"><a href=""></a><span class="fu">dim</span>(penguins_from_csv)</span>
-<span id="cb11-4"><a href=""></a><span class="fu">head</span>(penguins_from_csv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>penguins_from_csv <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"analysis/data/raw_data/penguins.csv"</span>)</span>
+<span id="cb20-2"><a href=""></a></span>
+<span id="cb20-3"><a href=""></a><span class="fu">dim</span>(penguins_from_csv)</span>
+<span id="cb20-4"><a href=""></a><span class="fu">head</span>(penguins_from_csv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'</span></span>
+<span id="cb21-2"><a href=""></a><span class="st">data &lt;- read.csv("analysis/data/raw_data/penguins.csv")</span></span>
+<span id="cb21-3"><a href=""></a><span class="st">cat("Dimensions:", dim(data), "\n")</span></span>
+<span id="cb21-4"><a href=""></a><span class="st">head(data)</span></span>
+<span id="cb21-5"><a href=""></a><span class="st">'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Or verify with shell commands:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href=""></a><span class="fu">wc</span> <span class="at">-l</span> analysis/data/raw_data/penguins.csv    <span class="co"># Should show 345 (344 + header)</span></span>
+<span id="cb22-2"><a href=""></a><span class="fu">head</span> <span class="at">-5</span> analysis/data/raw_data/penguins.csv  <span class="co"># Preview first 5 lines</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
 <p><strong>Checkpoint:</strong> You should see 344 rows and 8 columns</p>
@@ -439,14 +529,18 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="step-11-copy-template-from-lecture-5" class="slide level2">
 <h2>Step 11: Copy Template from Lecture 5</h2>
 <div class="do-this">
-<p><strong>DO THIS:</strong> Download the analysis plan template</p>
+<p><strong>DO THIS:</strong> Copy the analysis plan template</p>
 </div>
-<p><strong>Option A:</strong> If you have the course files locally:</p>
+<p><strong>RStudio Console (Option A - if you have course files locally):</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">file.copy</span>(</span>
-<span id="cb12-2"><a href=""></a>  <span class="at">from =</span> <span class="st">"~/path/to/lec05/analysis_plan_template.qmd"</span>,</span>
-<span id="cb12-3"><a href=""></a>  <span class="at">to =</span> <span class="st">"analysis/paper/analysis_plan.qmd"</span></span>
-<span id="cb12-4"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">file.copy</span>(</span>
+<span id="cb23-2"><a href=""></a>  <span class="at">from =</span> <span class="st">"~/path/to/lec05/analysis_plan_template.qmd"</span>,</span>
+<span id="cb23-3"><a href=""></a>  <span class="at">to =</span> <span class="st">"analysis/paper/analysis_plan.qmd"</span></span>
+<span id="cb23-4"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href=""></a><span class="fu">cp</span> ~/path/to/lec05/analysis_plan_template.qmd analysis/paper/analysis_plan.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>Option B:</strong> Download from Canvas:</p>
 <ol type="1">
@@ -461,13 +555,21 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Check the template exists</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">file.exists</span>(<span class="st">"analysis/paper/analysis_plan.qmd"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">file.exists</span>(<span class="st">"analysis/paper/analysis_plan.qmd"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href=""></a><span class="fu">ls</span> <span class="at">-la</span> analysis/paper/analysis_plan.qmd</span>
+<span id="cb26-2"><a href=""></a></span>
+<span id="cb26-3"><a href=""></a><span class="co"># Or test existence:</span></span>
+<span id="cb26-4"><a href=""></a><span class="bu">test</span> <span class="at">-f</span> analysis/paper/analysis_plan.qmd <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">"File exists"</span> <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"File missing"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
-<p><strong>Checkpoint:</strong> Returns <code>TRUE</code></p>
+<p><strong>Checkpoint:</strong> Returns <code>TRUE</code> (or file is listed)</p>
 </div>
-<p>Open the file in RStudio to view the template structure.</p>
+<p>Open the file in your editor to view the template structure.</p>
 </section></section>
 <section>
 <section id="part-v-write-unit-tests" class="title-slide slide level1 center">
@@ -493,8 +595,13 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Initialize the testing infrastructure</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_testthat</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_testthat</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'usethis::use_testthat()'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This creates:</p>
 <ul>
@@ -511,27 +618,52 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Create a test file for data tests</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_test</span>(<span class="st">"data-validation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_test</span>(<span class="st">"data-validation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This opens <code>tests/testthat/test-data-validation.R</code> for editing.</p>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'usethis::use_test("data-validation")'</span></span>
+<span id="cb30-2"><a href=""></a></span>
+<span id="cb30-3"><a href=""></a><span class="co"># Or create manually:</span></span>
+<span id="cb30-4"><a href=""></a><span class="fu">mkdir</span> <span class="at">-p</span> tests/testthat</span>
+<span id="cb30-5"><a href=""></a><span class="fu">touch</span> tests/testthat/test-data-validation.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This creates <code>tests/testthat/test-data-validation.R</code> for editing.</p>
 </section>
 <section id="step-15-write-test-1---data-file-validation" class="slide level2">
 <h2>Step 15: Write Test 1 - Data File Validation</h2>
 <div class="do-this">
-<p><strong>DO THIS:</strong> Replace the contents of <code>test-data-validation.R</code> with:</p>
+<p><strong>DO THIS:</strong> Edit <code>test-data-validation.R</code> with the following content</p>
+</div>
+<p><strong>RStudio:</strong> Open and edit the file directly.</p>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href=""></a><span class="fu">cat</span> <span class="op">&gt;</span> tests/testthat/test-data-validation.R <span class="op">&lt;&lt; 'EOF'</span></span>
+<span id="cb31-2"><a href=""></a><span class="st">test_that("penguins data file exists and has correct dimensions", {</span></span>
+<span id="cb31-3"><a href=""></a><span class="st">  data_path &lt;- "analysis/data/raw_data/penguins.csv"</span></span>
+<span id="cb31-4"><a href=""></a></span>
+<span id="cb31-5"><a href=""></a><span class="st">  expect_true(file.exists(data_path))</span></span>
+<span id="cb31-6"><a href=""></a></span>
+<span id="cb31-7"><a href=""></a><span class="st">  penguins_data &lt;- read.csv(data_path)</span></span>
+<span id="cb31-8"><a href=""></a></span>
+<span id="cb31-9"><a href=""></a><span class="st">  expect_equal(nrow(penguins_data), 344)</span></span>
+<span id="cb31-10"><a href=""></a><span class="st">  expect_equal(ncol(penguins_data), 8)</span></span>
+<span id="cb31-11"><a href=""></a><span class="st">})</span></span>
+<span id="cb31-12"><a href=""></a><span class="op">EOF</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">test_that</span>(<span class="st">"penguins data file exists and has correct dimensions"</span>, {</span>
-<span id="cb16-2"><a href=""></a>  data_path <span class="ot">&lt;-</span> <span class="st">"analysis/data/raw_data/penguins.csv"</span></span>
-<span id="cb16-3"><a href=""></a></span>
-<span id="cb16-4"><a href=""></a>  <span class="fu">expect_true</span>(<span class="fu">file.exists</span>(data_path))</span>
-<span id="cb16-5"><a href=""></a></span>
-<span id="cb16-6"><a href=""></a>  penguins_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(data_path)</span>
-<span id="cb16-7"><a href=""></a></span>
-<span id="cb16-8"><a href=""></a>  <span class="fu">expect_equal</span>(<span class="fu">nrow</span>(penguins_data), <span class="dv">344</span>)</span>
-<span id="cb16-9"><a href=""></a>  <span class="fu">expect_equal</span>(<span class="fu">ncol</span>(penguins_data), <span class="dv">8</span>)</span>
-<span id="cb16-10"><a href=""></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a><span class="fu">test_that</span>(<span class="st">"penguins data file exists and has correct dimensions"</span>, {</span>
+<span id="cb32-2"><a href=""></a>  data_path <span class="ot">&lt;-</span> <span class="st">"analysis/data/raw_data/penguins.csv"</span></span>
+<span id="cb32-3"><a href=""></a></span>
+<span id="cb32-4"><a href=""></a>  <span class="fu">expect_true</span>(<span class="fu">file.exists</span>(data_path))</span>
+<span id="cb32-5"><a href=""></a></span>
+<span id="cb32-6"><a href=""></a>  penguins_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(data_path)</span>
+<span id="cb32-7"><a href=""></a></span>
+<span id="cb32-8"><a href=""></a>  <span class="fu">expect_equal</span>(<span class="fu">nrow</span>(penguins_data), <span class="dv">344</span>)</span>
+<span id="cb32-9"><a href=""></a>  <span class="fu">expect_equal</span>(<span class="fu">ncol</span>(penguins_data), <span class="dv">8</span>)</span>
+<span id="cb32-10"><a href=""></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Save the file.</p>
 </section>
@@ -540,19 +672,24 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Create a function to clean the penguins data</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_r</span>(<span class="st">"clean-data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_r</span>(<span class="st">"clean-data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>This opens <code>R/clean-data.R</code>. Add this function:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="co">#' Remove rows with missing values from penguins data</span></span>
-<span id="cb18-2"><a href=""></a><span class="co">#'</span></span>
-<span id="cb18-3"><a href=""></a><span class="co">#' @param data A data frame of penguin measurements</span></span>
-<span id="cb18-4"><a href=""></a><span class="co">#' @return A data frame with complete cases only</span></span>
-<span id="cb18-5"><a href=""></a>clean_penguins <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb18-6"><a href=""></a>  data[<span class="fu">complete.cases</span>(data), ]</span>
-<span id="cb18-7"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href=""></a><span class="fu">mkdir</span> <span class="at">-p</span> R</span>
+<span id="cb34-2"><a href=""></a><span class="fu">cat</span> <span class="op">&gt;</span> R/clean-data.R <span class="op">&lt;&lt; 'EOF'</span></span>
+<span id="cb34-3"><a href=""></a><span class="st">#' Remove rows with missing values from penguins data</span></span>
+<span id="cb34-4"><a href=""></a><span class="st">#'</span></span>
+<span id="cb34-5"><a href=""></a><span class="st">#' @param data A data frame of penguin measurements</span></span>
+<span id="cb34-6"><a href=""></a><span class="st">#' @return A data frame with complete cases only</span></span>
+<span id="cb34-7"><a href=""></a><span class="st">clean_penguins &lt;- function(data) {</span></span>
+<span id="cb34-8"><a href=""></a><span class="st">  data[complete.cases(data), ]</span></span>
+<span id="cb34-9"><a href=""></a><span class="st">}</span></span>
+<span id="cb34-10"><a href=""></a><span class="op">EOF</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>This creates <code>R/clean-data.R</code>. Add the function code shown above.</p>
 <p>Save the file.</p>
 </section>
 <section id="step-17-write-test-2---function-validation" class="slide level2">
@@ -560,35 +697,43 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Create another test file</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_test</span>(<span class="st">"clean-data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_test</span>(<span class="st">"clean-data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Add this test to <code>test-clean-data.R</code>:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">test_that</span>(<span class="st">"clean_penguins removes rows with missing values"</span>, {</span>
-<span id="cb20-2"><a href=""></a>  test_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb20-3"><a href=""></a>    <span class="at">species =</span> <span class="fu">c</span>(<span class="st">"Adelie"</span>, <span class="st">"Gentoo"</span>, <span class="st">"Chinstrap"</span>),</span>
-<span id="cb20-4"><a href=""></a>    <span class="at">bill_length =</span> <span class="fu">c</span>(<span class="fl">39.1</span>, <span class="cn">NA</span>, <span class="fl">46.5</span>),</span>
-<span id="cb20-5"><a href=""></a>    <span class="at">body_mass =</span> <span class="fu">c</span>(<span class="dv">3750</span>, <span class="dv">4500</span>, <span class="cn">NA</span>)</span>
-<span id="cb20-6"><a href=""></a>  )</span>
-<span id="cb20-7"><a href=""></a></span>
-<span id="cb20-8"><a href=""></a>  cleaned <span class="ot">&lt;-</span> <span class="fu">clean_penguins</span>(test_data)</span>
-<span id="cb20-9"><a href=""></a></span>
-<span id="cb20-10"><a href=""></a>  <span class="fu">expect_equal</span>(<span class="fu">nrow</span>(cleaned), <span class="dv">1</span>)</span>
-<span id="cb20-11"><a href=""></a>  <span class="fu">expect_equal</span>(cleaned<span class="sc">$</span>species, <span class="st">"Adelie"</span>)</span>
-<span id="cb20-12"><a href=""></a>  <span class="fu">expect_false</span>(<span class="fu">any</span>(<span class="fu">is.na</span>(cleaned)))</span>
-<span id="cb20-13"><a href=""></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href=""></a><span class="fu">cat</span> <span class="op">&gt;</span> tests/testthat/test-clean-data.R <span class="op">&lt;&lt; 'EOF'</span></span>
+<span id="cb36-2"><a href=""></a><span class="st">test_that("clean_penguins removes rows with missing values", {</span></span>
+<span id="cb36-3"><a href=""></a><span class="st">  test_data &lt;- data.frame(</span></span>
+<span id="cb36-4"><a href=""></a><span class="st">    species = c("Adelie", "Gentoo", "Chinstrap"),</span></span>
+<span id="cb36-5"><a href=""></a><span class="st">    bill_length = c(39.1, NA, 46.5),</span></span>
+<span id="cb36-6"><a href=""></a><span class="st">    body_mass = c(3750, 4500, NA)</span></span>
+<span id="cb36-7"><a href=""></a><span class="st">  )</span></span>
+<span id="cb36-8"><a href=""></a></span>
+<span id="cb36-9"><a href=""></a><span class="st">  cleaned &lt;- clean_penguins(test_data)</span></span>
+<span id="cb36-10"><a href=""></a></span>
+<span id="cb36-11"><a href=""></a><span class="st">  expect_equal(nrow(cleaned), 1)</span></span>
+<span id="cb36-12"><a href=""></a><span class="st">  expect_equal(cleaned$species, "Adelie")</span></span>
+<span id="cb36-13"><a href=""></a><span class="st">  expect_false(any(is.na(cleaned)))</span></span>
+<span id="cb36-14"><a href=""></a><span class="st">})</span></span>
+<span id="cb36-15"><a href=""></a><span class="op">EOF</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Save the file.</p>
+<p>Add the test code to <code>test-clean-data.R</code> and save.</p>
 </section>
 <section id="step-18-run-tests" class="slide level2">
 <h2>Step 18: Run Tests</h2>
 <div class="do-this">
 <p><strong>DO THIS:</strong> Run all tests</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span>
-<span id="cb21-2"><a href=""></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span>
+<span id="cb37-2"><a href=""></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::load_all(); devtools::test()'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
 <p><strong>Checkpoint:</strong> Both tests pass (green checkmarks, no failures)</p>
@@ -607,28 +752,46 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Initialize Git for version control</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_git</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_git</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>When prompted:</p>
 <ul>
 <li>Say <strong>Yes</strong> to commit</li>
 <li>Say <strong>Yes</strong> to restart RStudio</li>
 </ul>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href=""></a><span class="fu">git</span> init</span>
+<span id="cb41-2"><a href=""></a><span class="fu">git</span> add .</span>
+<span id="cb41-3"><a href=""></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Initial commit: rrtools compendium with penguins data and tests"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
 <section id="step-20-connect-to-github" class="slide level2">
 <h2>Step 20: Connect to GitHub</h2>
 <div class="do-this">
 <p><strong>DO THIS:</strong> Create GitHub repository and push</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_github</span>(<span class="at">private =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">use_github</span>(<span class="at">private =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href=""></a><span class="co"># First, create repo on GitHub (via web or gh CLI)</span></span>
+<span id="cb43-2"><a href=""></a><span class="ex">gh</span> repo create penguins.yourname <span class="at">--public</span> <span class="at">--source</span><span class="op">=</span>. <span class="at">--remote</span><span class="op">=</span>origin</span>
+<span id="cb43-3"><a href=""></a></span>
+<span id="cb43-4"><a href=""></a><span class="co"># Or manually add remote and push:</span></span>
+<span id="cb43-5"><a href=""></a><span class="fu">git</span> remote add origin https://github.com/yourusername/penguins.yourname.git</span>
+<span id="cb43-6"><a href=""></a><span class="fu">git</span> branch <span class="at">-M</span> main</span>
+<span id="cb43-7"><a href=""></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="warning-box">
 <p>If you get a PAT error, run: <code>usethis::create_github_token()</code> then <code>gitcreds::gitcreds_set()</code></p>
 </div>
 <div class="checkpoint">
-<p><strong>Checkpoint:</strong> Browser opens to your new GitHub repository</p>
+<p><strong>Checkpoint:</strong> Your repository is now on GitHub</p>
 </div>
 </section></section>
 <section>
@@ -641,8 +804,15 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Check your final project structure</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(<span class="at">recurse =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(<span class="at">recurse =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href=""></a><span class="ex">tree</span> <span class="at">-L</span> 3</span>
+<span id="cb45-2"><a href=""></a><span class="co"># Or without tree:</span></span>
+<span id="cb45-3"><a href=""></a><span class="fu">find</span> . <span class="at">-maxdepth</span> 3 <span class="at">-type</span> f <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">"\.(R|Rmd|qmd|csv)$"</span> <span class="kw">|</span> <span class="fu">sort</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>You should have:</p>
 <pre><code>penguins.yourname/
@@ -670,8 +840,13 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>DO THIS:</strong> Verify everything works together</p>
 </div>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::check()'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This runs a comprehensive check. Some warnings are OK, but there should be no errors.</p>
 <div class="checkpoint">
@@ -717,13 +892,26 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="troubleshooting-reference" class="slide level2">
 <h2>Troubleshooting Reference</h2>
 <h3 id="rrtools-not-found">“rrtools not found”</h3>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"benmarwick/rrtools"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"benmarwick/rrtools"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'remotes::install_github("benmarwick/rrtools")'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <h3 id="github-pat-not-found">“GitHub PAT not found”</h3>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">create_github_token</span>()</span>
-<span id="cb29-2"><a href=""></a>gitcreds<span class="sc">::</span><span class="fu">gitcreds_set</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">create_github_token</span>()</span>
+<span id="cb51-2"><a href=""></a>gitcreds<span class="sc">::</span><span class="fu">gitcreds_set</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'usethis::create_github_token()'</span></span>
+<span id="cb52-2"><a href=""></a><span class="co"># Then follow browser instructions</span></span>
+<span id="cb52-3"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'gitcreds::gitcreds_set()'</span></span>
+<span id="cb52-4"><a href=""></a><span class="co"># Paste your token when prompted</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <h3 id="test-failed">“Test failed”</h3>
 <ul>
@@ -732,8 +920,13 @@ Dr.&nbsp;Ronald G. Thomas
 <li>Run <code>devtools::load_all()</code> before <code>devtools::test()</code></li>
 </ul>
 <h3 id="could-not-find-function">“could not find function”</h3>
+<p><strong>RStudio Console:</strong></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a>devtools<span class="sc">::</span><span class="fu">load_all</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="terminal-box">
+<p><strong>Terminal:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href=""></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::load_all()'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 </section></section>

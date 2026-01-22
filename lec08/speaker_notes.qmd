@@ -1,0 +1,378 @@
+---
+title: "Lecture 8 Speaker Notes"
+subtitle: "Testing Data Analysis Workflows"
+date: "January 29, 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+---
+
+## Lecture Overview
+
+**Duration:** 80 minutes
+**Format:** Lecture with live coding demonstrations
+
+### Learning Objectives
+
+By the end of this lecture, students will be able to:
+
+1. Explain the difference between computational reproducibility and result
+   correctness
+2. Implement unit tests, data validation tests, and integration tests using
+   testthat
+3. Apply assertr for pipeline-friendly data validation
+4. Set up basic continuous integration with GitHub Actions
+
+---
+
+## Timing Plan
+
+| Section | Duration | Cumulative |
+|---------|----------|------------|
+| Part I: Why Test? | 10 min | 10 min |
+| Part II: Types of Tests | 10 min | 20 min |
+| Part III: testthat Framework | 20 min | 40 min |
+| Part IV: Data Validation | 10 min | 50 min |
+| Part V: Reproducibility Tests | 10 min | 60 min |
+| Part VI: Testing Scripts | 10 min | 70 min |
+| Part VII: CI Overview | 5 min | 75 min |
+| Wrap-up & Assignment | 5 min | 80 min |
+
+---
+
+## Part I: Why Test Data Analysis Code? (10 min)
+
+### Key Points
+
+- **The testing gap**: Data science lags behind software engineering in
+  adopting testing practices
+- **Common excuses**: "It's exploratory," "Results look reasonable," "I
+  checked manually"
+- **Problem**: These don't scale and don't protect against regression
+
+### Discussion Prompt
+
+Ask: "Has anyone had an analysis break when they ran it again later, or when a
+collaborator tried to run it?"
+
+This motivates the need for automated testing.
+
+### Two Goals of Testing
+
+1. **Computational reproducibility**: Same code + same data = same results
+2. **Result correctness**: Results are accurate and meaningful
+
+Emphasize that both are necessary for trustworthy research.
+
+---
+
+## Part II: Types of Tests (10 min)
+
+### Testing Taxonomy
+
+Draw the four types on the board:
+
+```
+┌────────────────────────────────────────────────────────┐
+│  Unit Tests          →  Test individual functions      │
+│  Data Validation     →  Test data quality              │
+│  Integration Tests   →  Test complete workflows        │
+│  Reproducibility     →  Test same results              │
+└────────────────────────────────────────────────────────┘
+```
+
+### Quick Examples
+
+Show one-line examples of each type:
+
+- Unit: `expect_equal(mean(c(1,2,3)), 2)`
+- Validation: `expect_true(all(data$age > 0))`
+- Integration: `expect_no_error(source("analysis.R"))`
+- Reproducibility: `set.seed(42); expect_equal(result1, result2)`
+
+---
+
+## Part III: testthat Framework (20 min)
+
+### Live Coding Demo
+
+Create a new test file in front of students:
+
+```r
+library(testthat)
+
+# Arrange-Act-Assert pattern
+test_that("mean calculation works", {
+  # Arrange
+  x <- c(1, 2, 3, 4, 5)
+
+  # Act
+  result <- mean(x)
+
+  # Assert
+  expect_equal(result, 3)
+})
+```
+
+Run it and show the output.
+
+### Common Expectations
+
+Walk through the table of expect_* functions. Emphasize:
+
+- `expect_equal()` has tolerance (good for floating point)
+- `expect_identical()` is exact (use for integers, strings)
+- `expect_no_error()` is testthat 3e syntax
+
+### Test Organization
+
+Show directory structure:
+
+```
+tests/
+├── testthat.R
+└── testthat/
+    ├── helper-test-data.R
+    └── test-*.R
+```
+
+Explain:
+
+- `testthat.R` is the entry point
+- `helper-*.R` files are sourced before tests run
+- `test-*.R` files contain the actual tests
+
+### Running Tests
+
+Demonstrate:
+
+```r
+devtools::test()
+testthat::test_file("tests/testthat/test-example.R")
+```
+
+---
+
+## Part IV: Data Validation with assertr (10 min)
+
+### Pipeline Integration
+
+The key insight: assertions can be part of data pipelines
+
+```r
+library(assertr)
+
+penguins |>
+  verify(nrow(.) > 300) |>
+  assert(within_bounds(0, 10000), body_mass_g) |>
+  # continues processing...
+```
+
+### Live Demo
+
+Show what happens when assertion fails:
+
+```r
+penguins |>
+  verify(nrow(.) > 500)  # This will fail!
+```
+
+The error message shows exactly what went wrong.
+
+### When to Use assertr vs testthat
+
+- **testthat**: External tests that run via `devtools::test()`
+- **assertr**: Inline validation within analysis scripts
+
+Both are valuable; they serve different purposes.
+
+---
+
+## Part V: Reproducibility Testing (10 min)
+
+### Seed Management
+
+Critical point: **Always document and test your seeds**
+
+```r
+test_that("bootstrap is reproducible", {
+  set.seed(42)
+  result1 <- sample(1:100, 10)
+
+  set.seed(42)
+  result2 <- sample(1:100, 10)
+
+  expect_identical(result1, result2)
+})
+```
+
+### Testing Known Results
+
+For published analyses, store expected values:
+
+```r
+test_that("coefficients match paper", {
+  model <- lm(y ~ x, data = mydata)
+  expect_equal(coef(model)[2], 1.234, tolerance = 0.001)
+})
+```
+
+This catches regressions when code or packages change.
+
+### Package Version Testing
+
+```r
+test_that("uses expected versions", {
+  expect_true(packageVersion("dplyr") >= "1.0.0")
+})
+```
+
+Mention that renv makes this easier by locking versions.
+
+---
+
+## Part VI: Testing Analysis Scripts (10 min)
+
+### Script Execution Tests
+
+```r
+test_that("all scripts run", {
+  scripts <- c("01_load.R", "02_clean.R", "03_model.R")
+
+  for (script in scripts) {
+    expect_no_error(source(script, local = new.env()))
+  }
+})
+```
+
+### Output Validation
+
+```r
+test_that("outputs are created", {
+  source("analysis.R")
+  expect_true(file.exists("results/table1.csv"))
+  expect_true(file.exists("figures/figure1.png"))
+})
+```
+
+---
+
+## Part VII: Continuous Integration (5 min)
+
+### Brief Overview
+
+- CI runs tests automatically on every push
+- GitHub Actions is free for public repos
+- Catches problems before collaborators see them
+
+### Show Example Workflow
+
+Display the YAML file but don't deep-dive. Students will implement this
+in a later lecture.
+
+Key point: Once set up, testing becomes automatic.
+
+---
+
+## Wrap-up and Assignment (5 min)
+
+### Summary
+
+1. Testing serves two goals: reproducibility and correctness
+2. Four types: unit, validation, integration, reproducibility
+3. testthat provides the framework
+4. assertr adds pipeline-friendly validation
+5. CI automates testing
+
+### Assignment
+
+**Due Tuesday, February 3:**
+
+1. Add at least two tests to Project 1
+2. Tests should cover regression analysis
+3. Run `devtools::test()` and verify pass
+4. Commit and push
+
+### Reminder
+
+**Tuesday**: Project 1 Report presentations
+
+---
+
+## Troubleshooting Guide
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| "testthat not found" | `install.packages("testthat")` |
+| Tests don't run | Check file naming: must start with `test-` |
+| Helper not loaded | Must be named `helper-*.R` |
+| expect_no_error fails | Function is throwing an error; debug it |
+
+### testthat 3e vs 2e
+
+Students may find older examples online. Key differences:
+
+- 3e: `expect_no_error(f())` instead of 2e: `expect_error(f(), NA)`
+- 3e uses `test_that()` exclusively; 2e had `context()`
+
+### assertr Error Messages
+
+When assertr fails, the error includes:
+
+- Which assertion failed
+- How many rows violated
+- Which column was involved
+
+Teach students to read these messages carefully.
+
+---
+
+## Additional Examples (if time permits)
+
+### Testing a Data Cleaning Function
+
+```r
+clean_penguins <- function(data) {
+  data |>
+    filter(!is.na(body_mass_g)) |>
+    mutate(species = factor(species))
+}
+
+test_that("clean_penguins removes NA and converts species", {
+  test_data <- data.frame(
+    species = c("Adelie", "Gentoo"),
+    body_mass_g = c(3750, NA)
+  )
+
+  result <- clean_penguins(test_data)
+
+  expect_equal(nrow(result), 1)
+  expect_s3_class(result$species, "factor")
+  expect_false(any(is.na(result$body_mass_g)))
+})
+```
+
+### Testing Visualization
+
+```r
+test_that("scatter plot is created", {
+  p <- ggplot(penguins, aes(flipper_length_mm, body_mass_g)) +
+    geom_point()
+
+  expect_s3_class(p, "ggplot")
+  expect_equal(length(p$layers), 1)
+})
+```
+
+---
+
+## References
+
+- Wickham, H. (2011). testthat: Get started with testing. *The R Journal*.
+- Wilson et al. (2017). Good enough practices in scientific computing.
+  *PLOS Computational Biology*.
+- testthat documentation: https://testthat.r-lib.org/
+- assertr documentation: https://docs.ropensci.org/assertr/

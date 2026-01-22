@@ -9,6 +9,7 @@ format:
     slide-number: true
     code-fold: false
     code-tools: true
+    code-copy: true
     highlight-style: github
     smaller: true
     css: ../custom.css
@@ -39,6 +40,14 @@ format:
 .warning-box {
   background-color: #fff2f0;
   border-left: 5px solid #ff4d4f;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.terminal-box {
+  background-color: #f0f5ff;
+  border-left: 5px solid #1890ff;
   padding: 10px 15px;
   margin-top: 15px;
   border-radius: 5px;
@@ -74,13 +83,29 @@ This is a **follow-along walkthrough**. We will:
 :::
 
 
+## RStudio vs Terminal
+
+Each step shows **two options**:
+
+- **RStudio:** Run commands in the R console
+- **Terminal:** Run commands in a shell (bash/zsh)
+
+Choose whichever you prefer. Both achieve the same result.
+
+::: {.terminal-box}
+**Terminal commands** appear in blue boxes like this.
+:::
+
+
 # Part I: Software Installation
 
 ## Step 1: Check R Version
 
 ::: {.do-this}
-**DO THIS:** Run in your R console
+**DO THIS:** Verify your R version
 :::
+
+**RStudio Console:**
 
 ```{r}
 #| echo: true
@@ -88,17 +113,25 @@ This is a **follow-along walkthrough**. We will:
 R.version.string
 ```
 
-You need R version 4.0 or higher.
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'R.version.string'
+```
+:::
 
 ::: {.checkpoint}
-**Checkpoint:** You should see something like `R version 4.4.0` or higher
+**Checkpoint:** You should see `R version 4.4.0` or higher
 :::
 
 ## Step 2: Install Required Packages
 
 ::: {.do-this}
-**DO THIS:** Run each line in your R console
+**DO THIS:** Install all required packages
 :::
+
+**RStudio Console:**
 
 ```{r}
 #| echo: true
@@ -111,6 +144,16 @@ install.packages("palmerpenguins")
 install.packages("tidyverse")
 ```
 
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'install.packages(c("remotes", "devtools", "usethis",
+  "testthat", "palmerpenguins", "tidyverse"),
+  repos = "https://cloud.r-project.org")'
+```
+:::
+
 This may take a few minutes. Wait for all installations to complete.
 
 ## Step 3: Install rrtools
@@ -119,11 +162,21 @@ This may take a few minutes. Wait for all installations to complete.
 **DO THIS:** Install rrtools from GitHub
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 remotes::install_github("benmarwick/rrtools")
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'remotes::install_github("benmarwick/rrtools")'
+```
+:::
 
 ::: {.checkpoint}
 **Checkpoint:** No errors in the console. You should see
@@ -136,6 +189,8 @@ remotes::install_github("benmarwick/rrtools")
 **DO THIS:** Load all packages to verify they work
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -146,6 +201,16 @@ library(testthat)
 library(palmerpenguins)
 library(tidyverse)
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'library(rrtools); library(devtools); library(usethis);
+  library(testthat); library(palmerpenguins); library(tidyverse);
+  cat("All packages loaded successfully\n")'
+```
+:::
 
 ::: {.checkpoint}
 **Checkpoint:** All packages load without error messages
@@ -159,6 +224,9 @@ library(tidyverse)
 ::: {.do-this}
 **DO THIS:** Set your working directory
 :::
+
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -166,6 +234,14 @@ setwd("~/Documents")
 ```
 
 Or use RStudio: Session > Set Working Directory > Choose Directory
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cd ~/Documents
+```
+:::
 
 ::: {.warning-box}
 Choose a location you can find later. Avoid folders synced to
@@ -178,25 +254,38 @@ Dropbox/OneDrive during creation (can cause issues).
 **DO THIS:** Create your project (use YOUR name, no spaces)
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 rrtools::use_compendium("penguins.yourname")
 ```
 
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'rrtools::use_compendium("penguins.yourname")'
+```
+:::
+
 Replace `yourname` with your actual name (e.g., `penguins.jsmith`).
 
-A new RStudio window will open automatically.
+In RStudio, a new window will open automatically.
+From terminal, navigate into the new directory.
 
 ::: {.checkpoint}
-**Checkpoint:** New RStudio window with your project name in the title bar
+**Checkpoint:** New project directory created with your project name
 :::
 
 ## Step 7: Add Analysis Structure
 
 ::: {.do-this}
-**DO THIS:** In the NEW RStudio window, run:
+**DO THIS:** In the project directory, add the analysis folder structure
 :::
+
+**RStudio Console (in the NEW project window):**
 
 ```{r}
 #| echo: true
@@ -205,6 +294,17 @@ rrtools::use_analysis()
 ```
 
 When prompted, choose option **1** (analysis/paper/paper.Rmd).
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cd penguins.yourname
+Rscript -e 'rrtools::use_analysis(pkg_path = ".", location = "inst")'
+```
+
+Note: From terminal, you may need to specify the default location.
+:::
 
 ::: {.checkpoint}
 **Checkpoint:** You now have an `analysis/` folder with subfolders:
@@ -217,11 +317,25 @@ When prompted, choose option **1** (analysis/paper/paper.Rmd).
 **DO THIS:** Check your project structure
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 fs::dir_tree()
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+# macOS/Linux
+find . -type f -name "*.R" -o -type f -name "*.Rmd" -o -type d | head -20
+
+# Or if you have tree installed:
+tree -L 3
+```
+:::
 
 You should see:
 
@@ -247,6 +361,8 @@ penguins.yourname/
 **DO THIS:** Save the penguins dataset as a CSV file
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -259,6 +375,18 @@ write.csv(
 )
 ```
 
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e '
+library(palmerpenguins)
+write.csv(penguins, "analysis/data/raw_data/penguins.csv", row.names = FALSE)
+cat("Data exported successfully\n")
+'
+```
+:::
+
 ::: {.checkpoint}
 **Checkpoint:** File exists at `analysis/data/raw_data/penguins.csv`
 :::
@@ -269,6 +397,8 @@ write.csv(
 **DO THIS:** Read the data back to verify
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -277,6 +407,25 @@ penguins_from_csv <- read.csv("analysis/data/raw_data/penguins.csv")
 dim(penguins_from_csv)
 head(penguins_from_csv)
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e '
+data <- read.csv("analysis/data/raw_data/penguins.csv")
+cat("Dimensions:", dim(data), "\n")
+head(data)
+'
+```
+
+Or verify with shell commands:
+
+```bash
+wc -l analysis/data/raw_data/penguins.csv    # Should show 345 (344 + header)
+head -5 analysis/data/raw_data/penguins.csv  # Preview first 5 lines
+```
+:::
 
 ::: {.checkpoint}
 **Checkpoint:** You should see 344 rows and 8 columns
@@ -288,10 +437,10 @@ head(penguins_from_csv)
 ## Step 11: Copy Template from Lecture 5
 
 ::: {.do-this}
-**DO THIS:** Download the analysis plan template
+**DO THIS:** Copy the analysis plan template
 :::
 
-**Option A:** If you have the course files locally:
+**RStudio Console (Option A - if you have course files locally):**
 
 ```{r}
 #| echo: true
@@ -301,6 +450,14 @@ file.copy(
   to = "analysis/paper/analysis_plan.qmd"
 )
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cp ~/path/to/lec05/analysis_plan_template.qmd analysis/paper/analysis_plan.qmd
+```
+:::
 
 **Option B:** Download from Canvas:
 
@@ -315,17 +472,30 @@ file.copy(
 **DO THIS:** Check the template exists
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 file.exists("analysis/paper/analysis_plan.qmd")
 ```
 
-::: {.checkpoint}
-**Checkpoint:** Returns `TRUE`
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+ls -la analysis/paper/analysis_plan.qmd
+
+# Or test existence:
+test -f analysis/paper/analysis_plan.qmd && echo "File exists" || echo "File missing"
+```
 :::
 
-Open the file in RStudio to view the template structure.
+::: {.checkpoint}
+**Checkpoint:** Returns `TRUE` (or file is listed)
+:::
+
+Open the file in your editor to view the template structure.
 
 
 # Part V: Write Unit Tests
@@ -349,11 +519,21 @@ We will write two tests:
 **DO THIS:** Initialize the testing infrastructure
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 usethis::use_testthat()
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'usethis::use_testthat()'
+```
+:::
 
 This creates:
 
@@ -371,18 +551,53 @@ This creates:
 **DO THIS:** Create a test file for data tests
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 usethis::use_test("data-validation")
 ```
 
-This opens `tests/testthat/test-data-validation.R` for editing.
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'usethis::use_test("data-validation")'
+
+# Or create manually:
+mkdir -p tests/testthat
+touch tests/testthat/test-data-validation.R
+```
+:::
+
+This creates `tests/testthat/test-data-validation.R` for editing.
 
 ## Step 15: Write Test 1 - Data File Validation
 
 ::: {.do-this}
-**DO THIS:** Replace the contents of `test-data-validation.R` with:
+**DO THIS:** Edit `test-data-validation.R` with the following content
+:::
+
+**RStudio:** Open and edit the file directly.
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cat > tests/testthat/test-data-validation.R << 'EOF'
+test_that("penguins data file exists and has correct dimensions", {
+  data_path <- "analysis/data/raw_data/penguins.csv"
+
+  expect_true(file.exists(data_path))
+
+  penguins_data <- read.csv(data_path)
+
+  expect_equal(nrow(penguins_data), 344)
+  expect_equal(ncol(penguins_data), 8)
+})
+EOF
+```
 :::
 
 ```{r}
@@ -408,17 +623,20 @@ Save the file.
 **DO THIS:** Create a function to clean the penguins data
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 usethis::use_r("clean-data")
 ```
 
-This opens `R/clean-data.R`. Add this function:
+::: {.terminal-box}
+**Terminal:**
 
-```{r}
-#| echo: true
-#| eval: false
+```bash
+mkdir -p R
+cat > R/clean-data.R << 'EOF'
 #' Remove rows with missing values from penguins data
 #'
 #' @param data A data frame of penguin measurements
@@ -426,7 +644,11 @@ This opens `R/clean-data.R`. Add this function:
 clean_penguins <- function(data) {
   data[complete.cases(data), ]
 }
+EOF
 ```
+:::
+
+This creates `R/clean-data.R`. Add the function code shown above.
 
 Save the file.
 
@@ -436,17 +658,19 @@ Save the file.
 **DO THIS:** Create another test file
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 usethis::use_test("clean-data")
 ```
 
-Add this test to `test-clean-data.R`:
+::: {.terminal-box}
+**Terminal:**
 
-```{r}
-#| echo: true
-#| eval: false
+```bash
+cat > tests/testthat/test-clean-data.R << 'EOF'
 test_that("clean_penguins removes rows with missing values", {
   test_data <- data.frame(
     species = c("Adelie", "Gentoo", "Chinstrap"),
@@ -460,9 +684,11 @@ test_that("clean_penguins removes rows with missing values", {
   expect_equal(cleaned$species, "Adelie")
   expect_false(any(is.na(cleaned)))
 })
+EOF
 ```
+:::
 
-Save the file.
+Add the test code to `test-clean-data.R` and save.
 
 ## Step 18: Run Tests
 
@@ -470,12 +696,22 @@ Save the file.
 **DO THIS:** Run all tests
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 devtools::load_all()
 devtools::test()
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'devtools::load_all(); devtools::test()'
+```
+:::
 
 ::: {.checkpoint}
 **Checkpoint:** Both tests pass (green checkmarks, no failures)
@@ -496,6 +732,8 @@ devtools::test()
 **DO THIS:** Initialize Git for version control
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -507,11 +745,23 @@ When prompted:
 - Say **Yes** to commit
 - Say **Yes** to restart RStudio
 
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+git init
+git add .
+git commit -m "Initial commit: rrtools compendium with penguins data and tests"
+```
+:::
+
 ## Step 20: Connect to GitHub
 
 ::: {.do-this}
 **DO THIS:** Create GitHub repository and push
 :::
+
+**RStudio Console:**
 
 ```{r}
 #| echo: true
@@ -519,13 +769,27 @@ When prompted:
 usethis::use_github(private = FALSE)
 ```
 
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+# First, create repo on GitHub (via web or gh CLI)
+gh repo create penguins.yourname --public --source=. --remote=origin
+
+# Or manually add remote and push:
+git remote add origin https://github.com/yourusername/penguins.yourname.git
+git branch -M main
+git push -u origin main
+```
+:::
+
 ::: {.warning-box}
 If you get a PAT error, run:
 `usethis::create_github_token()` then `gitcreds::gitcreds_set()`
 :::
 
 ::: {.checkpoint}
-**Checkpoint:** Browser opens to your new GitHub repository
+**Checkpoint:** Your repository is now on GitHub
 :::
 
 
@@ -537,11 +801,23 @@ If you get a PAT error, run:
 **DO THIS:** Check your final project structure
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 fs::dir_tree(recurse = 2)
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+tree -L 3
+# Or without tree:
+find . -maxdepth 3 -type f | grep -E "\.(R|Rmd|qmd|csv)$" | sort
+```
+:::
 
 You should have:
 
@@ -573,11 +849,21 @@ penguins.yourname/
 **DO THIS:** Verify everything works together
 :::
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 devtools::check()
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'devtools::check()'
+```
+:::
 
 This runs a comprehensive check. Some warnings are OK, but there should
 be no errors.
@@ -626,13 +912,25 @@ and **version controlled**.
 
 ### "rrtools not found"
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 remotes::install_github("benmarwick/rrtools")
 ```
 
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'remotes::install_github("benmarwick/rrtools")'
+```
+:::
+
 ### "GitHub PAT not found"
+
+**RStudio Console:**
 
 ```{r}
 #| echo: true
@@ -640,6 +938,17 @@ remotes::install_github("benmarwick/rrtools")
 usethis::create_github_token()
 gitcreds::gitcreds_set()
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'usethis::create_github_token()'
+# Then follow browser instructions
+Rscript -e 'gitcreds::gitcreds_set()'
+# Paste your token when prompted
+```
+:::
 
 ### "Test failed"
 
@@ -649,8 +958,18 @@ gitcreds::gitcreds_set()
 
 ### "could not find function"
 
+**RStudio Console:**
+
 ```{r}
 #| echo: true
 #| eval: false
 devtools::load_all()
 ```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'devtools::load_all()'
+```
+:::
