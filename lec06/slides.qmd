@@ -1,6 +1,6 @@
 ---
 title: "PHB 243b: Practicum in Biostatistics"
-subtitle: "Lecture 6: Setting Up a Reproducible Research Compendium"
+subtitle: "Lecture 6: Hands-On Workspace Setup"
 author: "Dr. Ronald G. Thomas"
 date: "January 22, 2026"
 format:
@@ -19,40 +19,29 @@ format:
 ---
 
 <style>
-.question {
-  background-color: #e6f7ff;
-  border-left: 5px solid #1890ff;
-  padding: 8px 12px;
+.do-this {
+  background-color: #fff7e6;
+  border-left: 5px solid #fa8c16;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.checkpoint {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
   margin-top: 15px;
   border-radius: 5px;
 }
 
-.answer {
-  background-color: #f6ffed;
-  border-left: 5px solid #52c41a;
-  padding: 8px 12px;
-  margin-top: 8px;
+.warning-box {
+  background-color: #fff2f0;
+  border-left: 5px solid #ff4d4f;
+  padding: 10px 15px;
+  margin-top: 15px;
   border-radius: 5px;
-}
-
-.walkthrough {
-  background-color: #fff7e6;
-  border-left: 5px solid #fa8c16;
-  padding: 8px 12px;
-  margin-top: 8px;
-  border-radius: 5px;
-}
-
-.reference-stamp {
-  background-color: rgba(255,0,0,0.7);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 16px;
-  position: absolute;
-  top: 60px;
-  right: 10px;
-  z-index: 1000;
 }
 </style>
 
@@ -65,628 +54,644 @@ format:
 - **TA Email**: maluo@ucsd.edu
 
 
-## Lecture 6: rrtools + GitHub Walkthrough {.subtitle}
+## Lecture 6: Hands-On Workspace Setup {.subtitle}
 
-## Today's Agenda
+## Today's Session
 
-1. What is a Research Compendium?
-2. The rrtools Package
-3. Live Walkthrough: Creating a Compendium
-4. Connecting to GitHub
-5. Organizing Your Penguins Analysis
-6. Lab Time: Set Up Your Project
+**Goal:** Every student leaves with a working rrtools project on GitHub
 
-::: {.fragment .question}
-**Question:** You have learned about renv, Git, and GitHub individually.
-How do you combine them into a coherent project structure?
-:::
+This is a **follow-along walkthrough**. We will:
 
-::: {.fragment .answer}
-**Answer:** "rrtools provides a template that integrates all these tools
-into a standardized research compendium structure. Instead of manually
-creating folders and configuration files, rrtools scaffolds everything
-according to established best practices."
+1. Install required packages
+2. Create a research compendium with rrtools
+3. Export Palmer Penguins data to CSV
+4. Copy the analysis plan template from Lecture 5
+5. Write two unit tests with testthat
+6. Initialize Git, renv, and push to GitHub
+
+::: {.warning-box}
+**Keep up with each step.** Raise your hand if you get stuck.
 :::
 
 
-# Part I: Research Compendia
+# Part I: Software Installation
 
-## What is a Research Compendium?
+## Step 1: Check R Version
 
-A **research compendium** is a bundle containing:
-
-- Data (raw and processed)
-- Code (analysis scripts and functions)
-- Documentation (README, methods narrative)
-- Output (figures, tables, reports)
-
-All organized in a standardized, reproducible structure.
-
-:::{.callout-note}
-The compendium concept comes from Gentleman and Temple Lang (2007):
-research should be distributed as a complete, executable package.
+::: {.do-this}
+**DO THIS:** Run in your R console
 :::
-
-::: {.fragment .question}
-**Question:** How is a research compendium different from just organizing
-your files into folders?
-:::
-
-::: {.fragment .answer}
-**Answer:** "A compendium follows conventions that others in the field
-recognize. When I open someone's compendium, I know where to find the raw
-data, where the analysis scripts live, and how to reproduce their results.
-Ad-hoc folder structures require reading documentation just to navigate
-the project."
-:::
-
-## The rrtools Package
-
-**rrtools** = Reproducible Research tools
-
-Created by Ben Marwick to:
-
-- Scaffold standardized project structures
-- Integrate R package development tools
-- Connect with version control (Git/GitHub)
-- Support literate programming (R Markdown)
 
 ```{r}
 #| echo: true
 #| eval: false
-# Install rrtools from GitHub
-remotes::install_github("benmarwick/rrtools")
-```
-
-## rrtools Project Structure
-
-```
-myproject/
-├── DESCRIPTION          # Project metadata
-├── LICENSE              # Usage terms
-├── README.Rmd           # Project overview (renders to README.md)
-├── analysis/
-│   ├── paper/
-│   │   └── paper.Rmd    # Main analysis document
-│   ├── data/
-│   │   ├── raw_data/    # Unmodified original data
-│   │   └── derived_data/# Processed data from scripts
-│   ├── figures/         # Generated plots
-│   └── supplementary-materials/
-├── R/                   # Custom functions
-└── man/                 # Function documentation
-```
-
-::: {.fragment .question}
-**Question:** Why does rrtools include a DESCRIPTION file like an R package?
-:::
-
-::: {.fragment .answer}
-**Answer:** "The DESCRIPTION file lets you use R's package infrastructure
-for dependency management. You can declare which packages your analysis
-requires, and collaborators can install them with a single command. It
-also provides structured metadata about authors, license, and project
-description."
-:::
-
-
-# Part II: Live Walkthrough
-
-## Prerequisites Check
-
-Before we begin, verify you have:
-
-```{r}
-#| echo: true
-#| eval: false
-# Check R version (need 4.0+)
 R.version.string
+```
 
-# Check for required packages
-c("devtools", "usethis", "renv", "remotes") %in%
-  rownames(installed.packages())
+You need R version 4.0 or higher.
 
-# Install rrtools if needed
+::: {.checkpoint}
+**Checkpoint:** You should see something like `R version 4.4.0` or higher
+:::
+
+## Step 2: Install Required Packages
+
+::: {.do-this}
+**DO THIS:** Run each line in your R console
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+install.packages("remotes")
+install.packages("devtools")
+install.packages("usethis")
+install.packages("renv")
+install.packages("testthat")
+install.packages("palmerpenguins")
+install.packages("tidyverse")
+```
+
+This may take a few minutes. Wait for all installations to complete.
+
+## Step 3: Install rrtools
+
+::: {.do-this}
+**DO THIS:** Install rrtools from GitHub
+:::
+
+```{r}
+#| echo: true
+#| eval: false
 remotes::install_github("benmarwick/rrtools")
 ```
 
-Also verify:
+::: {.checkpoint}
+**Checkpoint:** No errors in the console. You should see
+`DONE (rrtools)` at the end.
+:::
 
-- Git is installed: `git --version` in terminal
-- GitHub account is configured
-- GitHub PAT is set up (from Lecture 4)
+## Step 4: Verify Installation
 
-## Step 1: Create the Compendium
-
-::: {.walkthrough}
-**LIVE DEMO**
+::: {.do-this}
+**DO THIS:** Load all packages to verify they work
 :::
 
 ```{r}
 #| echo: true
 #| eval: false
 library(rrtools)
-
-# Create a new compendium
-# Use your team name or "penguins" for the project
-rrtools::use_compendium("penguins")
+library(devtools)
+library(usethis)
+library(renv)
+library(testthat)
+library(palmerpenguins)
+library(tidyverse)
 ```
 
-This creates:
-
-- New directory with package structure
-- DESCRIPTION file with placeholder metadata
-- Opens new RStudio project
-
-::: {.fragment .question}
-**Question:** What happens if you already have a folder with that name?
+::: {.checkpoint}
+**Checkpoint:** All packages load without error messages
 :::
 
-::: {.fragment .answer}
-**Answer:** "rrtools will stop and warn you. It never overwrites existing
-directories. Either choose a different name or remove the existing folder
-first. This protects you from accidentally destroying work."
+
+# Part II: Create Research Compendium
+
+## Step 5: Navigate to Your Projects Folder
+
+::: {.do-this}
+**DO THIS:** Set your working directory
 :::
-
-## Step 2: Edit DESCRIPTION
-
-::: {.walkthrough}
-**LIVE DEMO**
-:::
-
-Open DESCRIPTION and update:
-
-```
-Package: penguins
-Title: Palmer Penguins Analysis for PHB 243b Project 1
-Version: 0.0.1
-Authors@R:
-    c(person(given = "Your",
-             family = "Name",
-             role = c("aut", "cre"),
-             email = "yourname@ucsd.edu"),
-      person(given = "Teammate",
-             family = "Name",
-             role = "aut",
-             email = "teammate@ucsd.edu"))
-Description: Statistical analysis of morphometric measurements in three
-    penguin species from the Palmer Archipelago, Antarctica.
-License: MIT + file LICENSE
+```{r}
+#| echo: true
+#| eval: false
+setwd("~/Documents")
 ```
 
-## Step 3: Add Analysis Structure
+Or use RStudio: Session > Set Working Directory > Choose Directory
 
-::: {.walkthrough}
-**LIVE DEMO**
+::: {.warning-box}
+Choose a location you can find later. Avoid folders synced to
+Dropbox/OneDrive during creation (can cause issues).
+:::
+
+## Step 6: Create the Compendium
+
+::: {.do-this}
+**DO THIS:** Create your project (use YOUR name, no spaces)
 :::
 
 ```{r}
 #| echo: true
 #| eval: false
-# Add the analysis folder structure
+rrtools::use_compendium("penguins.yourname")
+```
+
+Replace `yourname` with your actual name (e.g., `penguins.jsmith`).
+
+A new RStudio window will open automatically.
+
+::: {.checkpoint}
+**Checkpoint:** New RStudio window with your project name in the title bar
+:::
+
+## Step 7: Add Analysis Structure
+
+::: {.do-this}
+**DO THIS:** In the NEW RStudio window, run:
+:::
+
+```{r}
+#| echo: true
+#| eval: false
 rrtools::use_analysis()
 ```
 
-Choose option when prompted:
+When prompted, choose option **1** (analysis/paper/paper.Rmd).
 
-- **1**: `analysis/paper/paper.Rmd` - for writing a paper
-- **2**: `analysis/paper/paper.qmd` - for Quarto documents
-- **3**: `vignettes/paper.Rmd` - package vignette style
+::: {.checkpoint}
+**Checkpoint:** You now have an `analysis/` folder with subfolders:
+`data/raw_data`, `data/derived_data`, `figures`, `paper`
+:::
 
-For this course, choose option **1** or **2** based on your preference.
+## Step 8: Verify Folder Structure
 
-## Step 4: Initialize Git
-
-::: {.walkthrough}
-**LIVE DEMO**
+::: {.do-this}
+**DO THIS:** Check your project structure
 :::
 
 ```{r}
 #| echo: true
 #| eval: false
-# Initialize Git repository
-usethis::use_git()
+fs::dir_tree()
 ```
 
-This will:
+You should see:
 
-- Create `.git/` directory
-- Create `.gitignore` with sensible defaults
-- Offer to make initial commit
+```
+penguins.yourname/
+├── DESCRIPTION
+├── analysis/
+│   ├── data/
+│   │   ├── raw_data/
+│   │   └── derived_data/
+│   ├── figures/
+│   └── paper/
+│       └── paper.Rmd
+└── R/
+```
 
-Say **yes** to the initial commit.
 
-::: {.fragment .question}
-**Question:** What files should NOT be committed to Git?
-:::
+# Part III: Add Data
 
-::: {.fragment .answer}
-**Answer:** "Large data files, sensitive information, and generated output.
-The .gitignore file rrtools creates excludes common culprits like .Rhistory,
-.RData, and the renv library folder. You may need to add entries for large
-datasets specific to your project."
-:::
+## Step 9: Export Penguins Data to CSV
 
-## Step 5: Initialize renv
-
-::: {.walkthrough}
-**LIVE DEMO**
+::: {.do-this}
+**DO THIS:** Save the penguins dataset as a CSV file
 :::
 
 ```{r}
 #| echo: true
 #| eval: false
-# Initialize renv for package management
-renv::init()
+library(palmerpenguins)
+
+write.csv(
+  penguins,
+  file = "analysis/data/raw_data/penguins.csv",
+  row.names = FALSE
+)
+```
+
+::: {.checkpoint}
+**Checkpoint:** File exists at `analysis/data/raw_data/penguins.csv`
+:::
+
+## Step 10: Verify Data Export
+
+::: {.do-this}
+**DO THIS:** Read the data back to verify
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+penguins_from_csv <- read.csv("analysis/data/raw_data/penguins.csv")
+
+dim(penguins_from_csv)
+head(penguins_from_csv)
+```
+
+::: {.checkpoint}
+**Checkpoint:** You should see 344 rows and 8 columns
+:::
+
+
+# Part IV: Add Analysis Plan Template
+
+## Step 11: Copy Template from Lecture 5
+
+::: {.do-this}
+**DO THIS:** Download the analysis plan template
+:::
+
+**Option A:** If you have the course files locally:
+
+```{r}
+#| echo: true
+#| eval: false
+file.copy(
+  from = "~/path/to/lec05/analysis_plan_template.qmd",
+  to = "analysis/paper/analysis_plan.qmd"
+)
+```
+
+**Option B:** Download from Canvas:
+
+1. Go to Canvas > Files > lec05
+2. Download `analysis_plan_template.qmd`
+3. Save to your project's `analysis/paper/` folder
+4. Rename to `analysis_plan.qmd`
+
+## Step 12: Verify Template
+
+::: {.do-this}
+**DO THIS:** Check the template exists
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+file.exists("analysis/paper/analysis_plan.qmd")
+```
+
+::: {.checkpoint}
+**Checkpoint:** Returns `TRUE`
+:::
+
+Open the file in RStudio to view the template structure.
+
+
+# Part V: Write Unit Tests
+
+## What Are Unit Tests?
+
+Unit tests verify that your code works correctly.
+
+- **Catch bugs early** before they affect your analysis
+- **Document expectations** about how code should behave
+- **Enable safe changes** - tests alert you if changes break things
+
+We will write two tests:
+
+1. Test that our data file exists and has correct dimensions
+2. Test that a data cleaning function works correctly
+
+## Step 13: Set Up testthat
+
+::: {.do-this}
+**DO THIS:** Initialize the testing infrastructure
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_testthat()
 ```
 
 This creates:
 
-- `renv.lock` - lockfile for exact package versions
-- `renv/` - project-specific library
-- `.Rprofile` - activates renv on project load
+- `tests/` folder
+- `tests/testthat/` for test files
+- `tests/testthat.R` runner script
 
-```{r}
-#| echo: true
-#| eval: false
-# Install packages you need
-install.packages(c("palmerpenguins", "tidyverse", "ggplot2"))
+::: {.checkpoint}
+**Checkpoint:** `tests/testthat/` folder exists
+:::
 
-# Snapshot the state
-renv::snapshot()
-```
+## Step 14: Create Test File
 
-## Step 6: Connect to GitHub
-
-::: {.walkthrough}
-**LIVE DEMO**
+::: {.do-this}
+**DO THIS:** Create a test file for data tests
 :::
 
 ```{r}
 #| echo: true
 #| eval: false
-# Create GitHub repository and push
-usethis::use_github(private = FALSE)
+usethis::use_test("data-validation")
 ```
 
-This will:
+This opens `tests/testthat/test-data-validation.R` for editing.
 
-- Create a new repository on GitHub
-- Add GitHub as remote origin
-- Push your local commits
-- Open the repository in your browser
+## Step 15: Write Test 1 - Data File Validation
 
-:::{.callout-note}
-For team projects, one person creates the repo, then adds teammates as
-collaborators via Settings > Collaborators on GitHub.
-:::
-
-## Step 7: Add README
-
-::: {.walkthrough}
-**LIVE DEMO**
+::: {.do-this}
+**DO THIS:** Replace the contents of `test-data-validation.R` with:
 :::
 
 ```{r}
 #| echo: true
 #| eval: false
-# Create README.Rmd (will render to README.md)
-rrtools::use_readme_rmd()
+test_that("penguins data file exists and has correct dimensions", {
+  data_path <- "analysis/data/raw_data/penguins.csv"
+
+  expect_true(file.exists(data_path))
+
+  penguins_data <- read.csv(data_path)
+
+  expect_equal(nrow(penguins_data), 344)
+  expect_equal(ncol(penguins_data), 8)
+})
 ```
 
-Edit `README.Rmd` to include:
+Save the file.
 
-- Project title and description
-- Team members
-- How to reproduce the analysis
-- Data source citation
+## Step 16: Create Helper Function
 
-```{r}
-#| echo: true
-#| eval: false
-# Render README
-rmarkdown::render("README.Rmd")
-```
-
-
-# Part III: Organizing Your Analysis
-
-## Adding Raw Data
-
-Place your data in `analysis/data/raw_data/`:
-
-```{r}
-#| echo: true
-#| eval: false
-# For Palmer Penguins, you can save from the package
-library(palmerpenguins)
-
-write.csv(penguins,
-          "analysis/data/raw_data/penguins.csv",
-          row.names = FALSE)
-```
-
-:::{.callout-important}
-Raw data files should NEVER be modified. All transformations happen in
-code, with results saved to `derived_data/`.
+::: {.do-this}
+**DO THIS:** Create a function to clean the penguins data
 :::
 
-## Creating Analysis Scripts
-
-Organize scripts in `analysis/` with numbered prefixes:
-
-```
-analysis/
-├── 01_data_preparation.R
-├── 02_exploratory_analysis.R
-├── 03_statistical_models.R
-├── 04_generate_figures.R
-└── paper/
-    └── paper.Rmd
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_r("clean-data")
 ```
 
-Each script should:
-
-- Load required packages at top
-- Read from `raw_data/` or previous script's output
-- Write results to `derived_data/` or `figures/`
-
-## Writing Custom Functions
-
-Place reusable functions in `R/` directory:
+This opens `R/clean-data.R`. Add this function:
 
 ```{r}
 #| echo: true
 #| eval: false
-# R/summarize_species.R
-#' Summarize penguin measurements by species
+#' Remove rows with missing values from penguins data
 #'
-#' @param data A data frame containing penguin measurements
-#' @return A summary data frame with means and SDs by species
-summarize_species <- function(data) {
-  data |>
-    dplyr::group_by(species) |>
-    dplyr::summarise(
-      n = dplyr::n(),
-      mean_mass = mean(body_mass_g, na.rm = TRUE),
-      sd_mass = sd(body_mass_g, na.rm = TRUE),
-      .groups = "drop"
-    )
+#' @param data A data frame of penguin measurements
+#' @return A data frame with complete cases only
+clean_penguins <- function(data) {
+  data[complete.cases(data), ]
 }
 ```
 
-Load with `devtools::load_all()` or source directly.
+Save the file.
 
-## The Paper Document
+## Step 17: Write Test 2 - Function Validation
 
-`analysis/paper/paper.Rmd` is your main analysis narrative:
-
-```yaml
----
-title: "Morphometric Analysis of Palmer Penguins"
-author: "Team Name"
-output:
-  bookdown::pdf_document2:
-    toc: false
----
-```
-
-Include:
-
-- Introduction and research questions
-- Methods description
-- Results with inline R code
-- Discussion and conclusions
-
-::: {.fragment .question}
-**Question:** Should you put all your code in paper.Rmd or in separate scripts?
+::: {.do-this}
+**DO THIS:** Create another test file
 :::
 
-::: {.fragment .answer}
-**Answer:** "Separate scripts for data preparation and heavy computation,
-with paper.Rmd loading the results. This keeps the paper document readable
-and allows you to run time-consuming analyses once, saving results for the
-paper to load quickly."
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_test("clean-data")
+```
+
+Add this test to `test-clean-data.R`:
+
+```{r}
+#| echo: true
+#| eval: false
+test_that("clean_penguins removes rows with missing values", {
+  test_data <- data.frame(
+    species = c("Adelie", "Gentoo", "Chinstrap"),
+    bill_length = c(39.1, NA, 46.5),
+    body_mass = c(3750, 4500, NA)
+  )
+
+  cleaned <- clean_penguins(test_data)
+
+  expect_equal(nrow(cleaned), 1)
+  expect_equal(cleaned$species, "Adelie")
+  expect_false(any(is.na(cleaned)))
+})
+```
+
+Save the file.
+
+## Step 18: Run Tests
+
+::: {.do-this}
+**DO THIS:** Run all tests
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+devtools::load_all()
+devtools::test()
+```
+
+::: {.checkpoint}
+**Checkpoint:** Both tests pass (green checkmarks, no failures)
+:::
+
+```
+✔ | F W  S  OK | Context
+✔ |          1 | clean-data
+✔ |          1 | data-validation
+```
+
+
+# Part VI: Version Control and GitHub
+
+## Step 19: Initialize Git
+
+::: {.do-this}
+**DO THIS:** Initialize Git for version control
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_git()
+```
+
+When prompted:
+
+- Say **Yes** to commit
+- Say **Yes** to restart RStudio
+
+## Step 20: Initialize renv
+
+::: {.do-this}
+**DO THIS:** Lock your package versions
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+renv::init()
+```
+
+Then snapshot:
+
+```{r}
+#| echo: true
+#| eval: false
+renv::snapshot()
+```
+
+::: {.checkpoint}
+**Checkpoint:** `renv.lock` file exists in your project root
+:::
+
+## Step 21: Commit renv Files
+
+::: {.do-this}
+**DO THIS:** Stage and commit the renv files
+:::
+
+In RStudio Git pane (top right):
+
+1. Check boxes next to `renv.lock`, `renv/`, `.Rprofile`
+2. Click **Commit**
+3. Enter message: "Initialize renv for package management"
+4. Click **Commit**
+
+## Step 22: Connect to GitHub
+
+::: {.do-this}
+**DO THIS:** Create GitHub repository and push
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_github(private = FALSE)
+```
+
+::: {.warning-box}
+If you get a PAT error, run:
+`usethis::create_github_token()` then `gitcreds::gitcreds_set()`
+:::
+
+::: {.checkpoint}
+**Checkpoint:** Browser opens to your new GitHub repository
 :::
 
 
-# Part IV: Workflow Best Practices
+# Part VII: Final Verification
 
-## Daily Workflow
+## Step 23: Verify Project Structure
 
-```bash
-# Start of work session
-git pull                    # Get teammate changes
-renv::restore()             # Ensure packages match
-
-# During work
-# ... write code, run analyses ...
-
-# End of work session
-renv::snapshot()            # Capture any new packages
-git add -A
-git commit -m "Add species comparison analysis"
-git push
-```
-
-## Commit Message Guidelines
-
-Write clear, informative commit messages:
-
-```
-# Good
-git commit -m "Add body mass comparison by species and sex"
-git commit -m "Fix missing data handling in correlation analysis"
-git commit -m "Update figure 2 with colorblind-friendly palette"
-
-# Bad
-git commit -m "Update"
-git commit -m "Fixed stuff"
-git commit -m "WIP"
-```
-
-## Collaboration Tips
-
-For team projects:
-
-1. **Assign file ownership** - Each person owns specific scripts
-2. **Pull before you push** - Always `git pull` before starting work
-3. **Communicate conflicts** - If Git reports a merge conflict, talk to
-   your teammate before resolving
-4. **Use branches** - For major changes, create a branch and merge via
-   pull request
-
-```bash
-# Create a branch for new analysis
-git checkout -b add-regression-models
-
-# ... do work, commit ...
-
-# Push branch to GitHub
-git push -u origin add-regression-models
-```
-
-
-# Part V: Lab Time
-
-## Your Task
-
-Set up your Project 1 compendium:
-
-1. Create compendium with `rrtools::use_compendium("p1_teamname")`
-2. Edit DESCRIPTION with your team info
-3. Add analysis structure with `rrtools::use_analysis()`
-4. Initialize Git and renv
-5. Connect to GitHub
-6. Add Palmer Penguins data to `raw_data/`
-7. Create initial analysis script
-8. Push to GitHub
-
-:::{.callout-note}
-One team member creates the repository, then adds others as collaborators.
-All team members should clone the repo and verify `renv::restore()` works.
+::: {.do-this}
+**DO THIS:** Check your final project structure
 :::
 
-## Checklist for Today
+```{r}
+#| echo: true
+#| eval: false
+fs::dir_tree(recurse = 2)
+```
 
-- [ ] Compendium created with rrtools
-- [ ] DESCRIPTION file updated with team info
-- [ ] Git initialized with initial commit
-- [ ] renv initialized and snapshot taken
-- [ ] GitHub repository created
-- [ ] All team members added as collaborators
-- [ ] All team members can clone and restore environment
-- [ ] Raw data added to `analysis/data/raw_data/`
-- [ ] Initial script created
+You should have:
+
+```
+penguins.yourname/
+├── DESCRIPTION
+├── analysis/
+│   ├── data/
+│   │   ├── raw_data/penguins.csv
+│   │   └── derived_data/
+│   ├── figures/
+│   └── paper/
+│       ├── analysis_plan.qmd
+│       └── paper.Rmd
+├── R/
+│   └── clean-data.R
+├── tests/
+│   ├── testthat/
+│   │   ├── test-clean-data.R
+│   │   └── test-data-validation.R
+│   └── testthat.R
+├── renv.lock
+└── renv/
+```
+
+## Step 24: Run Final Test
+
+::: {.do-this}
+**DO THIS:** Verify everything works together
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+devtools::check()
+```
+
+This runs a comprehensive check. Some warnings are OK, but there should
+be no errors.
+
+::: {.checkpoint}
+**Checkpoint:** `0 errors ✔ | 0 warnings ✔` (or minor warnings only)
+:::
+
+## Completion Checklist
+
+You should now have:
+
+- [ ] R packages installed (rrtools, testthat, etc.)
+- [ ] Research compendium created with rrtools
+- [ ] Palmer penguins data exported to `analysis/data/raw_data/penguins.csv`
+- [ ] Analysis plan template in `analysis/paper/analysis_plan.qmd`
+- [ ] Helper function in `R/clean-data.R`
+- [ ] Two passing unit tests in `tests/testthat/`
+- [ ] Git initialized with commits
+- [ ] renv initialized with lockfile
+- [ ] Project pushed to GitHub
+
+## Next Steps
+
+Before Tuesday (Jan 27):
+
+1. **Fill in your analysis plan** using the template
+2. **Add more tests** as you develop analysis functions
+3. **Commit and push** changes regularly
+
+Your analysis plan presentation is on **January 27**.
 
 ## Summary
 
-1. **Research compendia** organize reproducible analyses
-2. **rrtools** scaffolds standardized project structure
-3. **Workflow**: rrtools + renv + Git + GitHub
-4. **Organization**: numbered scripts, raw/derived data separation
-5. **Collaboration**: pull before push, clear commits, communicate
+Today you learned to:
 
-## Reference Material {.center}
+1. Install and configure rrtools for reproducible research
+2. Export data to a standardized location
+3. Use templates for analysis documentation
+4. Write unit tests with testthat
+5. Integrate Git, renv, and GitHub
 
-The following slides are provided as reference material.
+This workflow ensures your analysis is **reproducible**, **testable**,
+and **version controlled**.
 
-## Quick Reference: rrtools Commands {.smaller .reference-only}
+## Troubleshooting Reference
 
-::: {.reference-stamp}
-REFERENCE ONLY
-:::
-
-```{r}
-#| echo: true
-#| eval: false
-# Create new compendium
-rrtools::use_compendium("projectname")
-
-# Add analysis folder structure
-rrtools::use_analysis()
-
-# Add README template
-rrtools::use_readme_rmd()
-
-# Add Travis CI for automated testing (optional)
-rrtools::use_travis()
-
-# Add Dockerfile for containerization (optional)
-rrtools::use_dockerfile()
-```
-
-## Quick Reference: Useful usethis Functions {.smaller .reference-only}
-
-::: {.reference-stamp}
-REFERENCE ONLY
-:::
+### "rrtools not found"
 
 ```{r}
 #| echo: true
 #| eval: false
-# Git and GitHub
-usethis::use_git()
-usethis::use_github()
-usethis::use_github_action()
-
-# Project setup
-usethis::use_mit_license()
-usethis::use_readme_md()
-usethis::use_testthat()
-
-# Package dependencies
-usethis::use_package("dplyr")
-usethis::use_pipe()  # Adds |> to your package
+remotes::install_github("benmarwick/rrtools")
 ```
 
-## Troubleshooting Common Issues {.smaller .reference-only}
+### "GitHub PAT not found"
 
-::: {.reference-stamp}
-REFERENCE ONLY
-:::
+```{r}
+#| echo: true
+#| eval: false
+usethis::create_github_token()
+gitcreds::gitcreds_set()
+```
 
-**"cannot open file 'DESCRIPTION'"**
+### "Test failed"
 
-- You're not in the compendium directory
-- Use `setwd()` or open the .Rproj file
+- Check file paths are correct
+- Make sure you saved all files
+- Run `devtools::load_all()` before `devtools::test()`
 
-**"GitHub PAT not found"**
+### "renv::restore() fails"
 
-- Run `usethis::create_github_token()`
-- Then `gitcreds::gitcreds_set()`
-
-**"renv::restore() fails"**
-
-- Check internet connection
-- Try `renv::clean()` then `renv::restore()`
-- Check if package was removed from CRAN
-
-**"merge conflict in paper.Rmd"**
-
-- Don't panic - open the file and look for `<<<<<<<` markers
-- Discuss with teammate which version to keep
-- Remove conflict markers, save, commit
-
-## Recommended Reading {.smaller .reference-only}
-
-::: {.reference-stamp}
-REFERENCE ONLY
-:::
-
-### Papers
-
-- Marwick B, Boettiger C, Mullen L. (2018). Packaging Data Analytical Work
-  Reproducibly Using R (and Friends). *The American Statistician* 72(1):80-88.
-- Wilson G, et al. (2017). Good enough practices in scientific computing.
-  *PLOS Computational Biology* 13(6):e1005510.
-
-### Documentation
-
-- [rrtools GitHub repository](https://github.com/benmarwick/rrtools)
-- [usethis documentation](https://usethis.r-lib.org/)
-- [renv documentation](https://rstudio.github.io/renv/)
-
-### Example Compendia
-
-- [Marwick's research compendia examples](https://github.com/benmarwick/ctv-archaeology)
+```{r}
+#| echo: true
+#| eval: false
+renv::clean()
+renv::restore()
+```

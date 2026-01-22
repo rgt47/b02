@@ -1,0 +1,608 @@
+---
+title: "Lecture 6 Speaker Notes"
+subtitle: "Hands-On Workspace Setup Walkthrough"
+author: "Dr. Ronald G. Thomas"
+date: "January 22, 2026"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=1in
+---
+
+# Pre-Lecture Preparation
+
+## 30 Minutes Before Class
+
+1. **Test classroom technology**
+   - Projector displays RStudio clearly
+   - Increase RStudio font: Tools > Global Options > Appearance > Font size 16
+
+2. **Prepare your demo environment**
+   ```r
+   # Clean slate
+   setwd("~/Desktop")
+   unlink("penguins.demo", recursive = TRUE)
+
+   # Verify packages work
+   library(rrtools)
+   library(testthat)
+   library(palmerpenguins)
+   ```
+
+3. **Have the analysis plan template accessible**
+   - Copy `lec05/analysis_plan_template.qmd` to an easy location
+   - Or have Canvas open to the file
+
+4. **Test GitHub authentication**
+   ```r
+   usethis::gh_token_help()
+   ```
+
+5. **Prepare for common issues**
+   - Have troubleshooting commands ready
+   - Know location of IT support if needed
+
+## Timing Plan (80 minutes)
+
+| Part | Content | Duration | Cumulative |
+|------|---------|----------|------------|
+| I | Software Installation (Steps 1-4) | 10 min | 10 min |
+| II | Create Compendium (Steps 5-8) | 15 min | 25 min |
+| III | Add Data (Steps 9-10) | 5 min | 30 min |
+| IV | Add Template (Steps 11-12) | 5 min | 35 min |
+| V | Unit Tests (Steps 13-18) | 20 min | 55 min |
+| VI | Version Control (Steps 19-22) | 15 min | 70 min |
+| VII | Verification (Steps 23-24) | 10 min | 80 min |
+
+
+# Lecture Delivery
+
+## Opening (2 minutes)
+
+> "Today is entirely hands-on. By the end of class, every one of you will
+> have a fully configured project repository on GitHub, ready for your
+> Palmer Penguins analysis. Keep up with each step - raise your hand
+> immediately if you get stuck."
+
+**Set expectations:**
+
+- This is follow-along, not lecture
+- Students should have laptops open
+- TA will circulate to help
+- Stop the class if multiple people have the same issue
+
+## Part I: Software Installation (10 minutes)
+
+### Step 1: Check R Version
+
+Run this yourself first, then have students run it.
+
+```r
+R.version.string
+```
+
+**Circulate briefly** - anyone below R 4.0 needs help (rare).
+
+### Step 2: Install Packages
+
+**Important:** Students should run these one at a time, not all at once.
+
+```r
+install.packages("remotes")
+install.packages("devtools")
+install.packages("usethis")
+install.packages("renv")
+install.packages("testthat")
+install.packages("palmerpenguins")
+install.packages("tidyverse")
+```
+
+**Wait here** - tidyverse takes time. This is a good moment to:
+
+- Answer questions
+- Help students who had issues
+- Explain what each package does
+
+### Step 3: Install rrtools
+
+```r
+remotes::install_github("benmarwick/rrtools")
+```
+
+**Common issues:**
+
+- **"Package 'remotes' not found"**: They skipped step 2
+- **GitHub rate limit**: Wait a few minutes, or use PAT
+- **Compilation errors**: May need Xcode tools on Mac
+
+### Step 4: Verify Installation
+
+```r
+library(rrtools)
+library(devtools)
+library(usethis)
+library(renv)
+library(testthat)
+library(palmerpenguins)
+library(tidyverse)
+```
+
+**Checkpoint:** Everyone should see no errors.
+
+If someone has errors, have TA help them while you continue.
+
+
+## Part II: Create Research Compendium (15 minutes)
+
+### Step 5: Navigate to Projects Folder
+
+```r
+setwd("~/Documents")
+```
+
+**Emphasize:**
+
+> "Choose somewhere you can find later. Do NOT use a Dropbox or OneDrive
+> folder - the syncing can cause issues during package creation."
+
+### Step 6: Create the Compendium
+
+**Demo first**, then have students follow:
+
+```r
+rrtools::use_compendium("penguins.demo")
+```
+
+**Key points:**
+
+- Replace `demo` with their name (no spaces!)
+- A new RStudio window opens - work in THAT window now
+- The old window is no longer needed
+
+**Wait for everyone** to have a new RStudio window.
+
+### Step 7: Add Analysis Structure
+
+**In the NEW window:**
+
+```r
+rrtools::use_analysis()
+```
+
+When prompted, say: "Choose option 1 for paper.Rmd"
+
+**Walk through what was created:**
+
+- `analysis/data/raw_data/` - for original data
+- `analysis/data/derived_data/` - for processed data
+- `analysis/figures/` - for plots
+- `analysis/paper/` - for the main document
+
+### Step 8: Verify Structure
+
+```r
+fs::dir_tree()
+```
+
+**Checkpoint:** Everyone should see the folder structure.
+
+
+## Part III: Add Data (5 minutes)
+
+### Step 9: Export Penguins Data
+
+```r
+library(palmerpenguins)
+
+write.csv(
+  penguins,
+  file = "analysis/data/raw_data/penguins.csv",
+  row.names = FALSE
+)
+```
+
+**Explain:**
+
+> "We export the data to CSV even though it's available from the package.
+> This makes our analysis independent of the package version and creates
+> a clear record of exactly what data we used."
+
+### Step 10: Verify Export
+
+```r
+penguins_from_csv <- read.csv("analysis/data/raw_data/penguins.csv")
+dim(penguins_from_csv)
+```
+
+**Checkpoint:** 344 rows, 8 columns
+
+
+## Part IV: Add Analysis Plan Template (5 minutes)
+
+### Step 11: Copy Template
+
+**Option A** (if students have course files):
+
+```r
+file.copy(
+  from = "PATH/TO/lec05/analysis_plan_template.qmd",
+  to = "analysis/paper/analysis_plan.qmd"
+)
+```
+
+**Option B** (from Canvas):
+
+Walk through:
+
+1. Open Canvas
+2. Navigate to Files > lec05
+3. Download `analysis_plan_template.qmd`
+4. Save to `analysis/paper/` folder in their project
+5. Rename to `analysis_plan.qmd`
+
+### Step 12: Verify Template
+
+```r
+file.exists("analysis/paper/analysis_plan.qmd")
+```
+
+**Checkpoint:** Returns TRUE
+
+
+## Part V: Unit Tests (20 minutes)
+
+**This is the longest section - go slowly.**
+
+### Introduction to Unit Tests (2 minutes)
+
+> "Unit tests are automated checks that verify your code works correctly.
+> They catch bugs before they affect your analysis, and they document
+> what your code is supposed to do."
+
+### Step 13: Set Up testthat
+
+```r
+usethis::use_testthat()
+```
+
+**Show what was created:**
+
+- `tests/` folder
+- `tests/testthat/` for test files
+- `tests/testthat.R` runner script
+
+### Step 14: Create First Test File
+
+```r
+usethis::use_test("data-validation")
+```
+
+A new file opens: `tests/testthat/test-data-validation.R`
+
+### Step 15: Write Test 1
+
+**Type this slowly, explaining each part:**
+
+```r
+test_that("penguins data file exists and has correct dimensions", {
+  # Path to our data file
+  data_path <- "analysis/data/raw_data/penguins.csv"
+
+  # Test 1: File exists
+  expect_true(file.exists(data_path))
+
+  # Read the data
+  penguins_data <- read.csv(data_path)
+
+  # Test 2: Correct number of rows
+  expect_equal(nrow(penguins_data), 344)
+
+  # Test 3: Correct number of columns
+  expect_equal(ncol(penguins_data), 8)
+})
+```
+
+**Explain:**
+
+- `test_that()` describes what we're testing
+- `expect_*` functions check specific conditions
+- If any expect fails, the test fails
+
+**Have everyone save the file.**
+
+### Step 16: Create Helper Function
+
+```r
+usethis::use_r("clean-data")
+```
+
+Opens `R/clean-data.R`. Add:
+
+```r
+#' Remove rows with missing values from penguins data
+#'
+#' @param data A data frame of penguin measurements
+#' @return A data frame with complete cases only
+clean_penguins <- function(data) {
+  data[complete.cases(data), ]
+}
+```
+
+**Explain the roxygen comments** briefly.
+
+### Step 17: Write Test 2
+
+```r
+usethis::use_test("clean-data")
+```
+
+Add to `test-clean-data.R`:
+
+```r
+test_that("clean_penguins removes rows with missing values", {
+  # Create test data with some missing values
+  test_data <- data.frame(
+    species = c("Adelie", "Gentoo", "Chinstrap"),
+    bill_length = c(39.1, NA, 46.5),
+    body_mass = c(3750, 4500, NA)
+  )
+
+  # Run our function
+  cleaned <- clean_penguins(test_data)
+
+  # Check results
+  expect_equal(nrow(cleaned), 1)            # Only 1 complete row
+  expect_equal(cleaned$species, "Adelie")   # It's the Adelie
+  expect_false(any(is.na(cleaned)))         # No NAs remain
+})
+```
+
+### Step 18: Run Tests
+
+```r
+devtools::load_all()
+devtools::test()
+```
+
+**Checkpoint:** Both tests pass (green checkmarks)
+
+**If tests fail:**
+
+- Check file paths
+- Make sure files were saved
+- Run `load_all()` first
+
+
+## Part VI: Version Control and GitHub (15 minutes)
+
+### Step 19: Initialize Git
+
+```r
+usethis::use_git()
+```
+
+**When prompted:**
+
+- Yes to commit
+- Yes to restart RStudio
+
+**After restart**, briefly show the Git pane in RStudio.
+
+### Step 20: Initialize renv
+
+```r
+renv::init()
+```
+
+Then:
+
+```r
+renv::snapshot()
+```
+
+**Explain:**
+
+> "The `renv.lock` file now contains the exact version of every package
+> you're using. Anyone who clones your repository can run `renv::restore()`
+> to get the identical environment."
+
+### Step 21: Commit renv Files
+
+Walk through the RStudio Git pane:
+
+1. Check boxes next to `renv.lock`, `renv/`, `.Rprofile`
+2. Click Commit
+3. Enter message: "Initialize renv for package management"
+4. Click Commit button
+
+### Step 22: Connect to GitHub
+
+```r
+usethis::use_github(private = FALSE)
+```
+
+**Common issues:**
+
+- **PAT not found:**
+  ```r
+  usethis::create_github_token()
+  gitcreds::gitcreds_set()
+  ```
+- **Permission denied:** Check GitHub account is configured
+- **Repository exists:** Choose a different name or delete existing
+
+**Checkpoint:** Browser opens to new GitHub repository
+
+
+## Part VII: Final Verification (10 minutes)
+
+### Step 23: Verify Structure
+
+```r
+fs::dir_tree(recurse = 2)
+```
+
+Walk through the expected structure.
+
+### Step 24: Run Final Check
+
+```r
+devtools::check()
+```
+
+**This takes a few minutes.** While it runs:
+
+- Answer questions
+- Help students who are behind
+- Preview next steps
+
+**Expect some warnings** - that's OK. Look for:
+
+- 0 errors
+- Warnings about documentation are fine
+- Notes about non-standard files are fine
+
+
+## Closing (3 minutes)
+
+**Recap what they accomplished:**
+
+> "You now have a complete reproducible research project. The data is
+> in a standard location, you have tests to verify your code works,
+> your package versions are locked, and everything is on GitHub."
+
+**Assign homework:**
+
+> "Before Tuesday, fill in your analysis plan using the template.
+> You'll present your plan on January 27. Commit and push your changes
+> regularly."
+
+**Remind about resources:**
+
+- Office hours
+- Canvas discussion board
+- TA email
+
+
+# Troubleshooting Guide
+
+## Installation Issues
+
+### "Package 'X' is not available"
+
+```r
+# Update package list
+update.packages(ask = FALSE)
+# Try again
+install.packages("X")
+```
+
+### "Cannot install rrtools"
+
+```r
+# Try with dependencies
+remotes::install_github("benmarwick/rrtools", dependencies = TRUE)
+```
+
+### Mac: "Xcode command line tools required"
+
+Run in Terminal:
+
+```bash
+xcode-select --install
+```
+
+## Git/GitHub Issues
+
+### "GitHub PAT not found"
+
+```r
+usethis::create_github_token()  # Opens browser
+gitcreds::gitcreds_set()        # Paste the token
+```
+
+### "Permission denied (publickey)"
+
+```r
+usethis::git_sitrep()  # Diagnose
+usethis::use_git_config(
+  user.name = "Your Name",
+  user.email = "your.email@ucsd.edu"
+)
+```
+
+### "Repository already exists"
+
+Either:
+
+1. Delete the existing repo on GitHub
+2. Use a different project name
+
+## Test Issues
+
+### "could not find function 'clean_penguins'"
+
+```r
+devtools::load_all()  # Must run this first
+devtools::test()
+```
+
+### "Test failed: file does not exist"
+
+Check:
+
+- Working directory is project root
+- Data file was saved to correct location
+- Path in test matches actual path
+
+## renv Issues
+
+### "renv::restore() fails"
+
+```r
+renv::clean()
+renv::restore()
+```
+
+### "Package not found in lockfile"
+
+```r
+install.packages("package_name")
+renv::snapshot()
+```
+
+
+# Post-Lecture
+
+## Immediate Follow-up
+
+1. Post slides and speaker notes to Canvas
+2. Announcement reminding about:
+   - Analysis plan due Tuesday Jan 27
+   - Commit and push changes regularly
+   - Office hours available for help
+
+## Common Post-Class Questions
+
+**"I missed class, how do I catch up?"**
+
+- Follow slides step by step
+- Come to office hours if stuck
+
+**"Can I use a different project structure?"**
+
+- For this course, use rrtools structure
+- Document any deviations in README
+
+**"My tests pass locally but fail on GitHub Actions"**
+
+- Not relevant for this course (no CI required)
+- But good question for advanced reproducibility
+
+**"How do I add more tests?"**
+
+- `usethis::use_test("new-test-name")`
+- Follow the pattern from class
