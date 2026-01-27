@@ -26,15 +26,15 @@ Expected structure:
 
 ```
 penguins.yourname/
-├── DESCRIPTION
-├── analysis/
-│   ├── data/
-│   │   ├── raw_data/
-│   │   └── derived_data/
-│   ├── figures/
-│   └── paper/
-│       └── paper.Rmd
-└── R/
+|-- DESCRIPTION
+|-- analysis/
+|   |-- data/
+|   |   |-- raw_data/
+|   |   \-- derived_data/
+|   |-- figures/
+|   \-- paper/
+|       \-- paper.Rmd
+\-- R/
 ```
 
 ## Part III: Add Data
@@ -129,24 +129,24 @@ Your project should look like this:
 
 ```
 penguins.yourname/
-├── DESCRIPTION
-├── NAMESPACE
-├── analysis/
-│   ├── data/
-│   │   ├── raw_data/
-│   │   │   └── penguins.csv
-│   │   └── derived_data/
-│   ├── figures/
-│   └── paper/
-│       ├── analysis_plan.qmd
-│       └── paper.Rmd
-├── R/
-│   └── clean-data.R
-└── tests/
-    ├── testthat.R
-    └── testthat/
-        ├── test-clean-data.R
-        └── test-data-validation.R
+|-- DESCRIPTION
+|-- NAMESPACE
+|-- analysis/
+|   |-- data/
+|   |   |-- raw_data/
+|   |   |   \-- penguins.csv
+|   |   \-- derived_data/
+|   |-- figures/
+|   \-- paper/
+|       |-- analysis_plan.qmd
+|       \-- paper.Rmd
+|-- R/
+|   \-- clean-data.R
+\-- tests/
+    |-- testthat.R
+    \-- testthat/
+        |-- test-clean-data.R
+        \-- test-data-validation.R
 ```
 
 ## Next Steps
