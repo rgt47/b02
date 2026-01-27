@@ -1,0 +1,975 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 7: Hands-On Workspace Setup (Continued)"
+author: "Dr. Ronald G. Thomas"
+date: "January 27, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    code-copy: true
+    highlight-style: github
+    smaller: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.do-this {
+  background-color: #fff7e6;
+  border-left: 5px solid #fa8c16;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.checkpoint {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.warning-box {
+  background-color: #fff2f0;
+  border-left: 5px solid #ff4d4f;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.terminal-box {
+  background-color: #f0f5ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+</style>
+
+## Course Information
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+
+## Lecture 6: Hands-On Workspace Setup {.subtitle}
+
+## Today's Session
+
+**Goal:** Every student leaves with a working rrtools project on GitHub
+
+This is a **follow-along walkthrough**. We will:
+
+1. Install required packages
+2. Create a research compendium with rrtools
+3. Export Palmer Penguins data to CSV
+4. Copy the analysis plan template from Lecture 5
+5. Write two unit tests with testthat
+6. Initialize Git and push to GitHub
+
+::: {.warning-box}
+**Keep up with each step.** Raise your hand if you get stuck.
+:::
+
+
+## RStudio vs Terminal
+
+Each step shows **two options**:
+
+- **RStudio:** Run commands in the R console
+- **Terminal:** Run commands in a shell (bash/zsh)
+
+Choose whichever you prefer. Both achieve the same result.
+
+::: {.terminal-box}
+**Terminal commands** appear in blue boxes like this.
+:::
+
+
+# Part I: Software Installation
+
+## Step 1: Check R Version
+
+::: {.do-this}
+**DO THIS:** Verify your R version
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+R.version.string
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'R.version.string'
+```
+:::
+
+::: {.checkpoint}
+**Checkpoint:** You should see `R version 4.4.0` or higher
+:::
+
+## Step 2: Install Required Packages
+
+::: {.do-this}
+**DO THIS:** Install all required packages
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+install.packages("remotes")
+install.packages("devtools")
+install.packages("usethis")
+install.packages("testthat")
+install.packages("palmerpenguins")
+install.packages("tidyverse")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'install.packages(c("remotes", "devtools", "usethis",
+  "testthat", "palmerpenguins", "tidyverse"),
+  repos = "https://cloud.r-project.org")'
+```
+:::
+
+This may take a few minutes. Wait for all installations to complete.
+
+## Step 3: Install rrtools
+
+::: {.do-this}
+**DO THIS:** Install rrtools from GitHub
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+remotes::install_github("benmarwick/rrtools")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'remotes::install_github("benmarwick/rrtools")'
+```
+:::
+
+::: {.checkpoint}
+**Checkpoint:** No errors in the console. You should see
+`DONE (rrtools)` at the end.
+:::
+
+## Step 4: Verify Installation
+
+::: {.do-this}
+**DO THIS:** Load all packages to verify they work
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+library(rrtools)
+library(devtools)
+library(usethis)
+library(testthat)
+library(palmerpenguins)
+library(tidyverse)
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'library(rrtools); library(devtools); library(usethis);
+  library(testthat); library(palmerpenguins); library(tidyverse);
+  cat("All packages loaded successfully\n")'
+```
+:::
+
+::: {.checkpoint}
+**Checkpoint:** All packages load without error messages
+:::
+
+
+# Part II: Create Research Compendium
+
+## Step 5: Navigate to Your Projects Folder
+
+::: {.do-this}
+**DO THIS:** Set your working directory
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+setwd("~/Documents")
+```
+
+Or use RStudio: Session > Set Working Directory > Choose Directory
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cd ~/Documents
+```
+:::
+
+::: {.warning-box}
+Choose a location you can find later. Avoid folders synced to
+Dropbox/OneDrive during creation (can cause issues).
+:::
+
+## Step 6: Create the Compendium
+
+::: {.do-this}
+**DO THIS:** Create your project (use YOUR name, no spaces)
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+rrtools::use_compendium("penguins.yourname")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'rrtools::use_compendium("penguins.yourname")'
+```
+:::
+
+Replace `yourname` with your actual name (e.g., `penguins.jsmith`).
+
+In RStudio, a new window will open automatically.
+From terminal, navigate into the new directory.
+
+::: {.checkpoint}
+**Checkpoint:** New project directory created with your project name
+:::
+
+## Step 7: Add Analysis Structure
+
+::: {.do-this}
+**DO THIS:** In the project directory, add the analysis folder structure
+:::
+
+**RStudio Console (in the NEW project window):**
+
+```{r}
+#| echo: true
+#| eval: false
+rrtools::use_analysis()
+```
+
+When prompted, choose option **1** (analysis/paper/paper.Rmd).
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cd penguins.yourname
+Rscript -e 'rrtools::use_analysis(pkg_path = ".", location = "inst")'
+```
+
+Note: From terminal, you may need to specify the default location.
+:::
+
+::: {.checkpoint}
+**Checkpoint:** You now have an `analysis/` folder with subfolders:
+`data/raw_data`, `data/derived_data`, `figures`, `paper`
+:::
+
+## Step 8: Verify Folder Structure
+
+::: {.do-this}
+**DO THIS:** Check your project structure
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+fs::dir_tree()
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+# macOS/Linux
+find . -type f -name "*.R" -o -type f -name "*.Rmd" -o -type d | head -20
+
+# Or if you have tree installed:
+tree -L 3
+```
+:::
+
+You should see:
+
+```
+penguins.yourname/
+├── DESCRIPTION
+├── analysis/
+│   ├── data/
+│   │   ├── raw_data/
+│   │   └── derived_data/
+│   ├── figures/
+│   └── paper/
+│       └── paper.Rmd
+└── R/
+```
+
+
+# Part III: Add Data
+
+## Step 9: Export Penguins Data to CSV
+
+::: {.do-this}
+**DO THIS:** Save the penguins dataset as a CSV file
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+library(palmerpenguins)
+
+write.csv(
+  penguins,
+  file = "analysis/data/raw_data/penguins.csv",
+  row.names = FALSE
+)
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e '
+library(palmerpenguins)
+write.csv(penguins, "analysis/data/raw_data/penguins.csv", row.names = FALSE)
+cat("Data exported successfully\n")
+'
+```
+:::
+
+::: {.checkpoint}
+**Checkpoint:** File exists at `analysis/data/raw_data/penguins.csv`
+:::
+
+## Step 10: Verify Data Export
+
+::: {.do-this}
+**DO THIS:** Read the data back to verify
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+penguins_from_csv <- read.csv("analysis/data/raw_data/penguins.csv")
+
+dim(penguins_from_csv)
+head(penguins_from_csv)
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e '
+data <- read.csv("analysis/data/raw_data/penguins.csv")
+cat("Dimensions:", dim(data), "\n")
+head(data)
+'
+```
+
+Or verify with shell commands:
+
+```bash
+wc -l analysis/data/raw_data/penguins.csv    # Should show 345 (344 + header)
+head -5 analysis/data/raw_data/penguins.csv  # Preview first 5 lines
+```
+:::
+
+::: {.checkpoint}
+**Checkpoint:** You should see 344 rows and 8 columns
+:::
+
+
+# Part IV: Add Analysis Plan Template
+
+## Step 11: Copy Template from Lecture 5
+
+::: {.do-this}
+**DO THIS:** Copy the analysis plan template
+:::
+
+**RStudio Console (Option A - if you have course files locally):**
+
+```{r}
+#| echo: true
+#| eval: false
+file.copy(
+  from = "~/path/to/lec05/analysis_plan_template.qmd",
+  to = "analysis/paper/analysis_plan.qmd"
+)
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cp ~/path/to/lec05/analysis_plan_template.qmd analysis/paper/analysis_plan.qmd
+```
+:::
+
+**Option B:** Download from Canvas:
+
+1. Go to Canvas > Files > lec05
+2. Download `analysis_plan_template.qmd`
+3. Save to your project's `analysis/paper/` folder
+4. Rename to `analysis_plan.qmd`
+
+## Step 12: Verify Template
+
+::: {.do-this}
+**DO THIS:** Check the template exists
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+file.exists("analysis/paper/analysis_plan.qmd")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+ls -la analysis/paper/analysis_plan.qmd
+
+# Or test existence:
+test -f analysis/paper/analysis_plan.qmd && echo "File exists" || echo "File missing"
+```
+:::
+
+::: {.checkpoint}
+**Checkpoint:** Returns `TRUE` (or file is listed)
+:::
+
+Open the file in your editor to view the template structure.
+
+
+# Part V: Write Unit Tests
+
+## What Are Unit Tests?
+
+Unit tests verify that your code works correctly.
+
+- **Catch bugs early** before they affect your analysis
+- **Document expectations** about how code should behave
+- **Enable safe changes** - tests alert you if changes break things
+
+We will write two tests:
+
+1. Test that our data file exists and has correct dimensions
+2. Test that a data cleaning function works correctly
+
+## Step 13: Set Up testthat
+
+::: {.do-this}
+**DO THIS:** Initialize the testing infrastructure
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_testthat()
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'usethis::use_testthat()'
+```
+:::
+
+This creates:
+
+- `tests/` folder
+- `tests/testthat/` for test files
+- `tests/testthat.R` runner script
+
+::: {.checkpoint}
+**Checkpoint:** `tests/testthat/` folder exists
+:::
+
+## Step 14: Create Test File
+
+::: {.do-this}
+**DO THIS:** Create a test file for data tests
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_test("data-validation")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'usethis::use_test("data-validation")'
+
+# Or create manually:
+mkdir -p tests/testthat
+touch tests/testthat/test-data-validation.R
+```
+:::
+
+This creates `tests/testthat/test-data-validation.R` for editing.
+
+## Step 15: Write Test 1 - Data File Validation
+
+::: {.do-this}
+**DO THIS:** Edit `test-data-validation.R` with the following content
+:::
+
+**RStudio:** Open and edit the file directly.
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cat > tests/testthat/test-data-validation.R << 'EOF'
+test_that("penguins data file exists and has correct dimensions", {
+  data_path <- "analysis/data/raw_data/penguins.csv"
+
+  expect_true(file.exists(data_path))
+
+  penguins_data <- read.csv(data_path)
+
+  expect_equal(nrow(penguins_data), 344)
+  expect_equal(ncol(penguins_data), 8)
+})
+EOF
+```
+:::
+
+```{r}
+#| echo: true
+#| eval: false
+test_that("penguins data file exists and has correct dimensions", {
+  data_path <- "analysis/data/raw_data/penguins.csv"
+
+  expect_true(file.exists(data_path))
+
+  penguins_data <- read.csv(data_path)
+
+  expect_equal(nrow(penguins_data), 344)
+  expect_equal(ncol(penguins_data), 8)
+})
+```
+
+Save the file.
+
+## Step 16: Create Helper Function
+
+::: {.do-this}
+**DO THIS:** Create a function to clean the penguins data
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_r("clean-data")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+mkdir -p R
+cat > R/clean-data.R << 'EOF'
+#' Remove rows with missing values from penguins data
+#'
+#' @param data A data frame of penguin measurements
+#' @return A data frame with complete cases only
+clean_penguins <- function(data) {
+  data[complete.cases(data), ]
+}
+EOF
+```
+:::
+
+This creates `R/clean-data.R`. Add the function code shown above.
+
+Save the file.
+
+## Step 17: Write Test 2 - Function Validation
+
+::: {.do-this}
+**DO THIS:** Create another test file
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_test("clean-data")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+cat > tests/testthat/test-clean-data.R << 'EOF'
+test_that("clean_penguins removes rows with missing values", {
+  test_data <- data.frame(
+    species = c("Adelie", "Gentoo", "Chinstrap"),
+    bill_length = c(39.1, NA, 46.5),
+    body_mass = c(3750, 4500, NA)
+  )
+
+  cleaned <- clean_penguins(test_data)
+
+  expect_equal(nrow(cleaned), 1)
+  expect_equal(cleaned$species, "Adelie")
+  expect_false(any(is.na(cleaned)))
+})
+EOF
+```
+:::
+
+Add the test code to `test-clean-data.R` and save.
+
+## Step 18: Run Tests
+
+::: {.do-this}
+**DO THIS:** Run all tests
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+devtools::load_all()
+devtools::test()
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'devtools::load_all(); devtools::test()'
+```
+:::
+
+::: {.checkpoint}
+**Checkpoint:** Both tests pass (green checkmarks, no failures)
+:::
+
+```
+✔ | F W  S  OK | Context
+✔ |          1 | clean-data
+✔ |          1 | data-validation
+```
+
+
+# Part VI: Version Control and GitHub
+
+## Step 19: Initialize Git
+
+::: {.do-this}
+**DO THIS:** Initialize Git for version control
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_git()
+```
+
+When prompted:
+
+- Say **Yes** to commit
+- Say **Yes** to restart RStudio
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+git init
+git add .
+git commit -m "Initial commit: rrtools compendium with penguins data and tests"
+```
+:::
+
+## Step 20: Connect to GitHub
+
+::: {.do-this}
+**DO THIS:** Create GitHub repository and push
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::use_github(private = FALSE)
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+# First, create repo on GitHub (via web or gh CLI)
+gh repo create penguins.yourname --public --source=. --remote=origin
+
+# Or manually add remote and push:
+git remote add origin https://github.com/yourusername/penguins.yourname.git
+git branch -M main
+git push -u origin main
+```
+:::
+
+::: {.warning-box}
+If you get a PAT error, run:
+`usethis::create_github_token()` then `gitcreds::gitcreds_set()`
+:::
+
+::: {.checkpoint}
+**Checkpoint:** Your repository is now on GitHub
+:::
+
+
+# Part VII: Final Verification
+
+## Step 21: Verify Project Structure
+
+::: {.do-this}
+**DO THIS:** Check your final project structure
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+fs::dir_tree(recurse = 2)
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+tree -L 3
+# Or without tree:
+find . -maxdepth 3 -type f | grep -E "\.(R|Rmd|qmd|csv)$" | sort
+```
+:::
+
+You should have:
+
+```
+penguins.yourname/
+├── DESCRIPTION
+├── NAMESPACE
+├── analysis/
+│   ├── data/
+│   │   ├── raw_data/
+│   │   │   └── penguins.csv
+│   │   └── derived_data/
+│   ├── figures/
+│   └── paper/
+│       ├── analysis_plan.qmd
+│       └── paper.Rmd
+├── R/
+│   └── clean-data.R
+└── tests/
+    ├── testthat.R
+    └── testthat/
+        ├── test-clean-data.R
+        └── test-data-validation.R
+```
+
+## Step 22: Run Final Test
+
+::: {.do-this}
+**DO THIS:** Verify everything works together
+:::
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+devtools::check()
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'devtools::check()'
+```
+:::
+
+This runs a comprehensive check. Some warnings are OK, but there should
+be no errors.
+
+::: {.checkpoint}
+**Checkpoint:** `0 errors ✔ | 0 warnings ✔` (or minor warnings only)
+:::
+
+## Completion Checklist
+
+You should now have:
+
+- [ ] R packages installed (rrtools, testthat, etc.)
+- [ ] Research compendium created with rrtools
+- [ ] Palmer penguins data exported to `analysis/data/raw_data/penguins.csv`
+- [ ] Analysis plan template in `analysis/paper/analysis_plan.qmd`
+- [ ] Helper function in `R/clean-data.R`
+- [ ] Two passing unit tests in `tests/testthat/`
+- [ ] Git initialized with commits
+- [ ] Project pushed to GitHub
+
+## Next Steps
+
+Before Tuesday (Jan 27):
+
+1. **Fill in your analysis plan** using the template
+2. **Add more tests** as you develop analysis functions
+3. **Commit and push** changes regularly
+
+Your analysis plan presentation is on **January 27**.
+
+## Summary
+
+Today you learned to:
+
+1. Install and configure rrtools for reproducible research
+2. Export data to a standardized location
+3. Use templates for analysis documentation
+4. Write unit tests with testthat
+5. Integrate Git and GitHub
+
+This workflow ensures your analysis is **reproducible**, **testable**,
+and **version controlled**.
+
+## Troubleshooting Reference
+
+### "rrtools not found"
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+remotes::install_github("benmarwick/rrtools")
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'remotes::install_github("benmarwick/rrtools")'
+```
+:::
+
+### "GitHub PAT not found"
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+usethis::create_github_token()
+gitcreds::gitcreds_set()
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'usethis::create_github_token()'
+# Then follow browser instructions
+Rscript -e 'gitcreds::gitcreds_set()'
+# Paste your token when prompted
+```
+:::
+
+### "Test failed"
+
+- Check file paths are correct
+- Make sure you saved all files
+- Run `devtools::load_all()` before `devtools::test()`
+
+### "could not find function"
+
+**RStudio Console:**
+
+```{r}
+#| echo: true
+#| eval: false
+devtools::load_all()
+```
+
+::: {.terminal-box}
+**Terminal:**
+
+```bash
+Rscript -e 'devtools::load_all()'
+```
+:::
