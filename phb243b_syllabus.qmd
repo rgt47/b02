@@ -83,20 +83,20 @@ Anesthesia & Analgesia: <https://pubmed.ncbi.nlm.nih.gov/23921656/>
 | **Jan 6** Introductions               | **Jan 8** Introduction to Reproducible Research |
 | **Jan 13** renv and Docker            | **Jan 15** Git and GitHub                 |
 | **Jan 20** Assign Project 1 (Penguins)| **Jan 22** Lecture and Lab                |
-| **Jan 27** Present P1 Plan            | **Jan 29** Lecture and Lab                |
-| **Feb 3** Present P1 Report           | **Feb 5** Test 1                          |
-| **Feb 10** Assign Project 2 (ADNI)    | **Feb 12** Lecture and Lab                |
-| **Feb 17** Present P2 Plan            | **Feb 19** Present P2 Report              |
-| **Feb 24** Assign Project 3 (Licorice)| **Feb 26** Present P3 Plan                |
-| **Mar 3** Lecture and Lab             | **Mar 5** Present P3 Report               |
-| **Mar 10** Test 2                     | **Mar 12** Course Wrap-up                 |
+| **Jan 27**  Lecture and Lab           | **Jan 29** Lecture and Lab                |
+| **Feb 3** Present P1 Plan             | **Feb 5** Test 1                          |
+| **Feb 10** Guest lecture              | **Feb 12** Present P1 Report                |
+| **Feb 17** Assign Project 2 (ADNI)    | **Feb 19** Lecture and Lab              |
+| **Feb 24** Lecture and Lab            | **Feb 26** Present P2 Plan                |
+| **Mar 3** Lecture and Lab             | **Mar 5** Present P2 Report               |
+| **Mar 10** Course wrap-up             | **Mar 12** Test 2                 |
 
 ## Assessment and Grading
 
 | **Component**                                | **Percentage** |
 |----------------------------------------------|----------------|
-| Preparation and Presentation of Plans (3)    | 30%            |
-| Preparation and Presentation of Reports (3)  | 30%            |
+| Preparation and Presentation of Plans (2)    | 30%            |
+| Preparation and Presentation of Reports (2)  | 30%            |
 | Tests                                        | 30%            |
 | Class Attendance and Participation           | 10%            |
 
