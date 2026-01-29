@@ -12,3 +12,5 @@ archive/
 # Temporary files
 *~
 *.swp
+
+/.quarto/
