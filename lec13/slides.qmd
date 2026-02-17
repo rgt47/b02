@@ -90,115 +90,120 @@ Alzheimer's disease.
 
 - **Started**: 2004 (ADNI-1)
 - **Phases**: ADNI-1, ADNI-GO, ADNI-2, ADNI-3
-- **Sites**: 57 sites across US and Canada
+- **Sites**: 67 sites across US and Canada
 - **Data**: Publicly available at [adni.loni.usc.edu](http://adni.loni.usc.edu)
 
 ## ADNI Study Design
 
 | Phase | Years | N | Focus |
 |-------|-------|---|-------|
-| ADNI-1 | 2004-2009 | 819 | Establish biomarker methods |
-| ADNI-GO | 2009-2011 | 131 | Early MCI (EMCI) cohort |
-| ADNI-2 | 2011-2016 | 790 | Expanded biomarkers |
-| ADNI-3 | 2016-2022 | 696 | Tau PET, digital biomarkers |
-| ADNI-4 | 2022-present | 596 | Diversity, novel biomarkers |
+| ADNI-1 | 2004--2009 | 819 | Establish biomarker methods |
+| ADNI-GO | 2009--2011 | 131 | Early MCI (EMCI) cohort |
+| ADNI-2 | 2011--2016 | 790 | Expanded biomarkers |
+| ADNI-3 | 2016--2022 | 566 | Tau PET, digital biomarkers |
 
-**Total enrollment**: N = 3,032 participants (Donohue et al., 2026)
+**Total enrollment in ADNIMERGE**: N = 2,306 subjects at baseline
 
 ## Diagnostic Groups in ADNI
 
 | Group | Abbreviation | Definition |
 |-------|--------------|------------|
 | Cognitively Normal | CN | No memory complaints, normal cognition |
+| Significant Memory Concern | SMC | Subjective concern, normal testing |
 | Early MCI | EMCI | Mild memory concern, CDR = 0.5 |
 | Late MCI | LMCI | More pronounced deficits, CDR = 0.5 |
-| Alzheimer's Disease | AD | Dementia diagnosis, CDR ≥ 0.5 |
+| Alzheimer's Disease | AD | Dementia diagnosis, CDR >= 0.5 |
 
 ::: {.concept-box}
 The distinction between EMCI and LMCI is based on education-adjusted
 delayed recall scores on the Logical Memory II subscale.
 :::
 
-## The alzverse: R Packages for ADNI Data
+## The ADNIMERGE Dataset
 
 ::: {.concept-box}
-**New in 2026**: The `alzverse` ecosystem provides curated, analysis-ready
-ADNI data with reproducible vignettes (Donohue et al., 2026).
+**ADNIMERGE** is a curated, merged dataset that combines key ADNI variables
+into a single longitudinal file. It includes demographics, diagnoses,
+cognitive scores, imaging measures, and biomarker data.
 :::
 
-| Package | Description |
-|---------|-------------|
-| `ADNIMERGE2` | Updated ADNI data with pharmaverse/ADaM workflows |
-| `A4LEARN` | A4 trial and LEARN observational study |
-| `alzverse` | Meta-package integrating multiple studies |
+| Property | Value |
+|----------|-------|
+| Subjects | 2,306 |
+| Total visits | 15,278 |
+| Variables | 113 |
+| Format | CSV (one row per visit) |
 
-- Cited in ~250 publications since 2013
-- Includes built-in documentation and analysis vignettes
-- Supports reproducibility via `renv` and Docker
+- Downloaded from [adni.loni.usc.edu](http://adni.loni.usc.edu)
+  (requires Data Use Agreement)
+- Cited in approximately 250 publications since 2013
 
-## Installing ADNIMERGE2
+## Loading ADNIMERGE
 
 ```{r}
 #| echo: true
 #| eval: false
-# Download from ADNI website (requires Data Use Agreement)
-# https://adni.loni.usc.edu
+library(tidyverse)
 
-# Install the downloaded package
-install.packages("ADNIMERGE2_x.x.x.tar.gz", repos = NULL)
-library(ADNIMERGE2)
+adni <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
+dim(adni)          # 15278 rows x 113 columns
 
-# Access subject-level data (ADaM format)
-data(ADSL)  # Subject-level analysis dataset
-data(ADQS)  # Questionnaire/cognitive scores
+# Baseline data: one row per subject
+adni_bl <- adni |> filter(VISCODE == "bl")
+nrow(adni_bl)      # 2306 subjects
 ```
 
-Key variables in ADNIMERGE2:
+Key variables in ADNIMERGE:
 
-- Demographics: AGE, SEX, RACE, ETHNIC, EDUCAT
-- Diagnosis: DX, DX_BL (baseline diagnosis)
+- Demographics: AGE, PTGENDER, PTEDUCAT, PTRACCAT, PTMARRY
+- Diagnosis: DX (visit), DX_bl (baseline diagnosis)
 - Cognition: MMSE, ADAS11, ADAS13, RAVLT scores, LDELTOTAL
-- Function: FAQ, CDR-SB
+- Function: FAQ, CDRSB
 - Imaging: Hippocampus, Ventricles, WholeBrain
-- Genetics: APOE genotype, amyloid status
+- Genetics: APOE4
+- Time: Years_bl (years from baseline)
 
-## ADNI Baseline Characteristics (N = 3,032)
+## ADNI Baseline Characteristics (N = 2,306)
 
 | Characteristic | Value |
 |----------------|-------|
-| Age, mean (SD) | 72.2 (7.6) years |
-| Sex | 50% Female, 50% Male |
+| Age, mean (SD) | 73.1 (7.4) years |
+| Sex | 46.9% Female, 53.1% Male |
 | Education, mean (SD) | 16.0 (2.8) years |
-| Race: White | 81% |
-| Race: Black/African-American | 13% |
-| Ethnicity: Hispanic/Latino | 6.4% |
+| Race: White | 91.0% |
+| Race: Black | 5.2% |
+| Race: Asian | 2.0% |
+| Ethnicity: Hispanic/Latino | 3.9% |
 
 **Baseline Diagnosis**:
 
-- Cognitively Normal (CN): 40% (n = 1,215)
-- Mild Cognitive Impairment (MCI): 44% (n = 1,338)
-- Dementia (DEM): 16% (n = 477)
+- Cognitively Normal (CN): 22.6% (n = 521)
+- Significant Memory Concern (SMC): 13.1% (n = 303)
+- Early MCI (EMCI): 17.5% (n = 404)
+- Late MCI (LMCI): 28.6% (n = 659)
+- Alzheimer's Disease (AD): 17.3% (n = 400)
 
 ## ADNI Data Structure
 
 ```{r}
 #| echo: true
 #| eval: false
-library(ADNIMERGE2)
-data(ADSL)  # Subject-level (one row per subject)
-data(ADQS)  # Cognitive scores (one row per visit per test)
+adni <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
 
-# Examine structure
-dim(ADSL)
-names(ADSL)[1:15]
+# One row per visit; filter to baseline
+adni_bl <- adni |> filter(VISCODE == "bl")
+
+dim(adni_bl)           # 2306 x 113
+names(adni_bl)[1:15]
 
 # Baseline diagnoses
-table(ADSL$DX_BL)
+table(adni_bl$DX_bl)
 ```
 
 ::: {.checkpoint}
-**Key insight**: ADSL has one row per subject; ADQS has multiple rows
-per subject for longitudinal cognitive assessments.
+**Key insight**: ADNIMERGE has one row per visit per subject. Filter to
+`VISCODE == "bl"` for baseline data; use `Years_bl` to track follow-up
+time from baseline.
 :::
 
 
@@ -229,12 +234,14 @@ MCI represents a transitional state between normal aging and dementia.
 
 ADNI focuses primarily on **amnestic MCI** (single and multi-domain).
 
+In ADNIMERGE: **1,063 MCI subjects** (404 EMCI + 659 LMCI).
+
 ## The Clinical Problem
 
 ::: {.warning-box}
 **Not all MCI patients progress to AD**
 
-- ~10-15% of MCI patients convert to AD annually
+- ~10--15% of MCI patients convert to AD annually
 - Some remain stable (stable MCI, sMCI)
 - Some revert to normal cognition
 :::
@@ -248,17 +255,20 @@ ADNI focuses primarily on **amnestic MCI** (single and multi-domain).
 
 ## MCI to AD Conversion Rates
 
-From ADNI data (Grassi et al., 2019):
+From our ADNIMERGE.csv data (applying Grassi et al. criteria: MCI
+subjects with 3+ years follow-up, age 55--90, MMSE 24--30):
 
 | Outcome | N | Percentage |
 |---------|---|------------|
-| Stable MCI (sMCI) | 353 | 64.2% |
-| Converter to AD (cAD) | 197 | 35.8% |
-| **Total** | 550 | 100% |
+| Stable MCI (sMCI) | 446 | 75.2% |
+| Converter to AD (cAD) | 147 | 24.8% |
+| **Total** | 593 | 100% |
 
 ::: {.concept-box}
-Over a 3-year follow-up period, approximately **36% of MCI patients** in ADNI
-converted to AD dementia.
+Grassi et al. (2019) reported 550 subjects (197 converters, 35.8%) from an
+earlier ADNIMERGE download. Our dataset yields 593 subjects with a 24.8%
+conversion rate, reflecting additional ADNI-2 and ADNI-3 enrollment with
+more EMCI subjects who convert at lower rates.
 :::
 
 
@@ -276,14 +286,14 @@ baseline clinical and cognitive data.
 
 **Reference**: Grassi M, et al. (2019). A Clinically-Translatable Machine
 Learning Algorithm for the Prediction of Alzheimer's Disease Conversion
-in Individuals with Mild and Premild Cognitive Impairment. *J Alzheimers
-Dis*, 67(4):1353-1365.
+in Individuals with Mild and Premild Cognitive Impairment. *Frontiers in
+Neurology*, 10:756.
 
 ## Study Design: Grassi et al.
 
 **Cohort Selection**:
 
-- 550 MCI subjects from ADNIMERGE
+- MCI subjects from ADNIMERGE (both EMCI and LMCI)
 - Baseline data only (no longitudinal features)
 - 3-year follow-up for conversion assessment
 - Site-independent train/test split
@@ -291,7 +301,7 @@ Dis*, 67(4):1353-1365.
 **Outcome**:
 
 - Binary: Converter (cAD) vs. Stable (sMCI)
-- Conversion = diagnosis of AD at any follow-up visit
+- Conversion = diagnosis of Dementia at any follow-up visit within 3 years
 
 ## Key Results: Grassi et al.
 
@@ -355,9 +365,11 @@ maximize clinical applicability.
 ```{r}
 #| echo: true
 #| eval: false
-# Extract sociodemographic features
-demo_vars <- adnimerge |>
-  filter(VISCODE == "bl") |>
+adni <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
+
+demo_vars <- adni |>
+  filter(VISCODE == "bl",
+         DX_bl %in% c("EMCI", "LMCI")) |>
   select(RID, AGE, PTEDUCAT, PTGENDER, PTMARRY)
 
 head(demo_vars)
@@ -376,26 +388,26 @@ head(demo_vars)
 
 - Assesses 6 domains: memory, orientation, judgment, community affairs,
   home/hobbies, personal care
-- Range: 0-18 (higher = worse)
+- Range: 0--18 (higher = worse)
 - Sensitive to early changes
 
 **Functional Activities Questionnaire (FAQ)**:
 
 - 10 items assessing instrumental ADLs
-- Range: 0-30 (higher = more impairment)
+- Range: 0--30 (higher = more impairment)
 - Completed by informant
 
 ## Neuropsychological Tests
 
 | Test | Domain | Scoring |
 |------|--------|---------|
-| MMSE | Global cognition | 0-30 (higher = better) |
-| ADAS-Cog 11/13 | Memory, language, praxis | 0-70/85 (higher = worse) |
-| RAVLT Immediate | Verbal learning | Sum of trials 1-5 |
+| MMSE | Global cognition | 0--30 (higher = better) |
+| ADAS-Cog 11/13 | Memory, language, praxis | 0--70/85 (higher = worse) |
+| RAVLT Immediate | Verbal learning | Sum of trials 1--5 |
 | RAVLT Learning | Learning rate | Trial 5 - Trial 1 |
 | RAVLT Forgetting | Retention | Trial 5 - Delayed |
 | LDELTOTAL | Logical memory | Delayed recall score |
-| TMTB | Executive function | Seconds (higher = worse) |
+| TRABSCOR (TMTB) | Executive function | Seconds (higher = worse) |
 
 ## ADAS-Cog in Detail
 
@@ -404,11 +416,12 @@ The Alzheimer's Disease Assessment Scale-Cognitive (ADAS-Cog):
 ```{r}
 #| echo: true
 #| eval: false
-# ADAS components in ADNIMERGE
+adni <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
 adas_vars <- c("ADAS11", "ADAS13", "ADASQ4")
 
-adnimerge |>
-  filter(VISCODE == "bl", DX.bl == "LMCI") |>
+adni |>
+  filter(VISCODE == "bl",
+         DX_bl %in% c("EMCI", "LMCI")) |>
   select(RID, all_of(adas_vars)) |>
   summary()
 ```
@@ -422,34 +435,37 @@ adnimerge |>
 ::: {.concept-box}
 **RAVLT Protocol**:
 
-- 15-word list presented 5 times (Trials 1-5)
+- 15-word list presented 5 times (Trials 1--5)
 - Interference list presented once
 - Immediate recall after interference
 - 30-minute delayed recall
 :::
 
-Key derived scores:
+Key derived scores in ADNIMERGE:
 
-- **RAVLT_immediate**: Sum of Trials 1-5 (learning capacity)
+- **RAVLT_immediate**: Sum of Trials 1--5 (learning capacity)
 - **RAVLT_learning**: Trial 5 - Trial 1 (learning rate)
 - **RAVLT_forgetting**: Trial 5 - Delayed (retention)
 - **RAVLT_perc_forgetting**: % forgotten over delay
 
 ## Feature Importance: Grassi et al.
 
-Top predictors ranked by importance:
+Top predictors ranked by individual AUROC (Table 6):
 
-1. **ADAS13** - Most predictive overall
-2. **CDR-SB** - Clinical staging
-3. **RAVLT forgetting** - Memory retention
-4. **FAQ** - Functional impairment
-5. **LDELTOTAL** - Logical memory delayed recall
-6. **TMTB** - Executive function
-7. **MMSE** - Global cognition
+1. **ADAS-PC1** (0.809) -- First principal component of ADAS scores
+2. **RAVLT Immediate** (0.777) -- Verbal learning
+3. **FAQ** (0.777) -- Functional impairment
+4. **LDELTOTAL** (0.770) -- Logical memory delayed recall
+5. **RAVLT Learning** (0.707) -- Learning rate
+6. **CDRSB** (0.697) -- Clinical staging
+7. **RAVLT-F-PC1** (0.685) -- Forgetting component
+8. **MMSE** (0.678) -- Global cognition
+9. **MCI Subtype** (0.658) -- EMCI vs. LMCI
+10. **TRABSCOR** (0.658) -- Executive function
 
 ::: {.checkpoint}
-**Key insight**: Memory retention (RAVLT forgetting) and executive function
-(TMTB) add predictive value beyond global measures like ADAS and MMSE.
+**Key insight**: Memory retention (RAVLT) and executive function (TMTB)
+add predictive value beyond global measures like ADAS and MMSE.
 :::
 
 
@@ -485,7 +501,6 @@ The final prediction used **weighted rank averaging** across all models.
 #| eval: false
 library(randomForest)
 
-# Example: Train random forest for MCI conversion
 rf_model <- randomForest(
   converter ~ ADAS13 + CDRSB + FAQ + RAVLT_forgetting +
               LDELTOTAL + TRABSCOR + MMSE,
@@ -495,7 +510,6 @@ rf_model <- randomForest(
   importance = TRUE
 )
 
-# Variable importance
 importance(rf_model)
 varImpPlot(rf_model)
 ```
@@ -509,7 +523,8 @@ performance estimates.
 
 Grassi et al. used:
 
-1. **Site-independent split**: Training and test sets from different ADNI sites
+1. **Site-independent split**: Training and test sets from different ADNI
+   sites (67 sites in the dataset)
 2. **5-fold cross-validation**: Within training set for hyperparameter tuning
 3. **Held-out test set**: Final unbiased performance evaluation
 
@@ -518,12 +533,17 @@ Grassi et al. used:
 ```{r}
 #| echo: true
 #| eval: false
+adni <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
+
+# 67 unique sites available
+length(unique(adni$SITE))
+
 # Split by site to ensure independence
-train_sites <- c("Site01", "Site02", "Site03", ...)
-test_sites <- c("Site10", "Site11", "Site12", ...)
+train_sites <- c(2, 3, 5, 6, 7, 9, 10, ...)
+test_sites  <- c(11, 12, 13, 14, ...)
 
 train_data <- adni_mci |> filter(SITE %in% train_sites)
-test_data <- adni_mci |> filter(SITE %in% test_sites)
+test_data  <- adni_mci |> filter(SITE %in% test_sites)
 ```
 
 ::: {.concept-box}
@@ -548,15 +568,13 @@ model work at a clinic that wasn't used for training?
 #| eval: false
 library(pROC)
 
-# Calculate ROC curve
 roc_obj <- roc(test_data$converter, predictions)
 
-# Plot
 plot(roc_obj, main = "MCI to AD Conversion Prediction")
 auc(roc_obj)
 
-# Optimal threshold
-coords(roc_obj, "best", ret = c("threshold", "sensitivity", "specificity"))
+coords(roc_obj, "best",
+       ret = c("threshold", "sensitivity", "specificity"))
 ```
 
 
@@ -602,19 +620,23 @@ Your analysis must include:
 ```{r}
 #| echo: true
 #| eval: false
-library(ADNIMERGE2)
 library(tidyverse)
 
-# Step 1: Load subject-level and cognitive data
-data(ADSL)
-data(ADQS)
+# Step 1: Load ADNIMERGE
+adni <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
 
 # Step 2: Select MCI subjects at baseline
-mci_baseline <- ADSL |>
-  filter(DX_BL %in% c("EMCI", "LMCI"))
+mci <- adni |>
+  filter(DX_bl %in% c("EMCI", "LMCI"))
 
-# Step 3: Determine conversion status
-# (requires follow-up data - see next slide)
+# Step 3: Identify subjects with 3+ years follow-up
+followup <- mci |>
+  group_by(RID) |>
+  summarize(max_years = max(Years_bl, na.rm = TRUE))
+
+rids_3yr <- followup |>
+  filter(max_years >= 3) |>
+  pull(RID)
 ```
 
 ## Defining Conversion Status
@@ -622,31 +644,33 @@ mci_baseline <- ADSL |>
 ```{r}
 #| echo: true
 #| eval: false
-# Get longitudinal diagnosis data
-data(ADQS)
-
-# Identify converters: any subsequent AD diagnosis
-converters <- ADQS |>
-  filter(USUBJID %in% mci_baseline$USUBJID,
-         PARAMCD == "DX") |>
-  group_by(USUBJID) |>
+# Converters: DX changed to "Dementia" within 3 years
+converters <- mci |>
+  filter(RID %in% rids_3yr, Years_bl <= 3) |>
+  group_by(RID) |>
   summarize(
-    converted = any(AVAL == "Dementia", na.rm = TRUE),
-    time_to_conversion = min(ADY[AVAL == "Dementia"], na.rm = TRUE)
+    converted = any(DX == "Dementia", na.rm = TRUE)
   )
 
-# Merge back to baseline
-mci_analysis <- mci_baseline |>
-  left_join(converters, by = "USUBJID")
+# Merge to baseline data
+mci_bl <- mci |>
+  filter(VISCODE == "bl", RID %in% rids_3yr) |>
+  left_join(converters, by = "RID") |>
+  filter(AGE >= 55, AGE <= 90,
+         MMSE >= 24, MMSE <= 30)
+
+table(mci_bl$converted)
+# FALSE  TRUE
+#   446   147
 ```
 
 ## Suggested Timeline
 
 | Week | Task |
 |------|------|
-| Week 7 (Feb 17-21) | Data preparation, cohort definition |
-| Week 8 (Feb 24-28) | Feature engineering, initial models |
-| Week 9 (Mar 2-6) | Model tuning, evaluation, report |
+| Week 7 (Feb 17--21) | Data preparation, cohort definition |
+| Week 8 (Feb 24--28) | Feature engineering, initial models |
+| Week 9 (Mar 2--6) | Model tuning, evaluation, report |
 | Mar 3 | **Final submission** |
 
 ::: {.warning-box}
@@ -657,33 +681,35 @@ Start early. Data cleaning and feature engineering take longer than expected.
 
 **Papers** (on Canvas):
 
-- Grassi et al. (2019) - Primary reference for ML approach
-- Rye et al. (2022) - Additional ML approach with imaging
-- Donohue et al. (2026) - ADNIMERGE2 and alzverse packages
+- Grassi et al. (2019) -- Primary reference for ML approach
+- Rye et al. (2022) -- Additional ML approach with imaging
 
 **R Packages**:
 
-- `ADNIMERGE2` - ADNI data (requires DUA from adni.loni.usc.edu)
-- `caret` or `tidymodels` - ML framework
-- `randomForest`, `glmnet`, `e1071` - Algorithms
-- `pROC` - ROC analysis
+- `caret` or `tidymodels` -- ML framework
+- `randomForest`, `glmnet`, `e1071` -- Algorithms
+- `pROC` -- ROC analysis
+- `kableExtra` -- Table formatting
 
-**Documentation**:
+**Data**:
 
-- alzverse: [atri-biostats.github.io/alzverse](https://atri-biostats.github.io/alzverse)
-- ADNIMERGE2: [atri-biostats.github.io/ADNIMERGE2](https://atri-biostats.github.io/ADNIMERGE2)
+- ADNIMERGE.csv -- available in `./data/` directory
+  (requires DUA from [adni.loni.usc.edu](https://adni.loni.usc.edu))
 
 
 ## Summary
 
 Today we covered:
 
-1. **ADNI**: Multicenter longitudinal study of AD biomarkers
-2. **MCI**: Transitional state with ~36% 3-year conversion rate
-3. **Grassi et al.**: Clinically-translatable ML approach (AUROC = 0.88)
-4. **Key predictors**: ADAS13, CDR-SB, RAVLT, FAQ, LDELTOTAL, TMTB
-5. **ML methods**: Ensemble of 13 algorithms with site-independent testing
-6. **Project 2**: Replicate this approach in your research compendium
+1. **ADNI**: Multicenter longitudinal study (2,306 subjects, 67 sites,
+   4 phases)
+2. **ADNIMERGE**: Curated dataset with 113 variables per visit
+3. **MCI**: 1,063 MCI subjects in ADNIMERGE (404 EMCI + 659 LMCI)
+4. **Conversion**: 24.8% of MCI subjects with 3-year follow-up converted
+   to AD
+5. **Grassi et al.**: Clinically-translatable ML approach (AUROC = 0.88)
+6. **Key predictors**: ADAS, RAVLT, FAQ, LDELTOTAL, CDRSB, TMTB
+7. **Project 2**: Replicate this approach in your research compendium
 
 
 ## Next Steps
@@ -691,27 +717,26 @@ Today we covered:
 ::: {.do-this}
 **Before next class**:
 
-1. Apply for ADNI data access at [adni.loni.usc.edu](https://adni.loni.usc.edu)
-2. Download ADNIMERGE2 package (requires Data Use Agreement)
-3. Review Grassi et al. paper in detail
-4. Begin cohort selection and data exploration
+1. Download ADNIMERGE.csv from
+   [adni.loni.usc.edu](https://adni.loni.usc.edu)
+   (requires Data Use Agreement)
+2. Review Grassi et al. (2019) paper in detail
+3. Run the cohort selection code from today's slides
+4. Begin data exploration and feature extraction
 5. Draft your statistical analysis plan
 :::
 
 
 ## References
 
-Donohue MC, Hussen K, Langford O, Gallardo R, Jimenez-Maggiora G, Aisen PS.
-(2026). Alzheimer's clinical research data via R packages: The alzverse.
-*Alzheimer's Dement*, 22:e71152.
-
-Grassi M, Perna G, Caldirola D, Schruers K, Duara R, Loewenstein DA. (2019).
-A Clinically-Translatable Machine Learning Algorithm for the Prediction of
-Alzheimer's Disease Conversion in Individuals with Mild and Premild Cognitive
-Impairment. *J Alzheimers Dis*, 67(4):1353-1365.
+Grassi M, Rouleaux N, Caldirola D, Loewenstein D, Schruers K, Perna G,
+Dumontier M. (2019). A Novel Ensemble-Based Machine Learning Algorithm to
+Predict the Conversion From Mild Cognitive Impairment to Alzheimer's
+Disease Using Socio-Demographic Characteristics, Clinical Information,
+and Neuropsychological Measures. *Frontiers in Neurology*, 10:756.
 
 Petersen RC. (2004). Mild cognitive impairment as a diagnostic entity.
-*J Intern Med*, 256(3):183-194.
+*J Intern Med*, 256(3):183--194.
 
 Rye I, Vik A, Kocinski M, Lundervold AS, Lundervold AJ. (2022). Predicting
 conversion to Alzheimer's disease in individuals with Mild Cognitive

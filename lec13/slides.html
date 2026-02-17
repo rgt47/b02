@@ -6,8 +6,8 @@
 <script src="slides_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="slides_files/libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.27">
+<link href="slides_files/libs/quarto-html/quarto-syntax-highlighting-a6ed5eb8724c29512b75ae76af222dd4.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.25">
 
   <meta name="author" content="Dr.&nbsp;Ronald G. Thomas">
   <meta name="dcterms.date" content="2026-02-17">
@@ -96,7 +96,7 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-ec442cf06bb45be625e3b8987e465173.css">
+  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-90fd36d93b2474ff5ba50edd39c754ee.css">
   <link rel="stylesheet" href="../custom.css">
   <link href="slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -284,7 +284,7 @@ Dr.&nbsp;Ronald G. Thomas
 <ul>
 <li><strong>Started</strong>: 2004 (ADNI-1)</li>
 <li><strong>Phases</strong>: ADNI-1, ADNI-GO, ADNI-2, ADNI-3</li>
-<li><strong>Sites</strong>: 57 sites across US and Canada</li>
+<li><strong>Sites</strong>: 67 sites across US and Canada</li>
 <li><strong>Data</strong>: Publicly available at <a href="http://adni.loni.usc.edu">adni.loni.usc.edu</a></li>
 </ul>
 </section>
@@ -302,41 +302,40 @@ Dr.&nbsp;Ronald G. Thomas
 <tbody>
 <tr class="odd">
 <td>ADNI-1</td>
-<td>2004-2009</td>
+<td>2004–2009</td>
 <td>819</td>
 <td>Establish biomarker methods</td>
 </tr>
 <tr class="even">
 <td>ADNI-GO</td>
-<td>2009-2011</td>
+<td>2009–2011</td>
 <td>131</td>
 <td>Early MCI (EMCI) cohort</td>
 </tr>
 <tr class="odd">
 <td>ADNI-2</td>
-<td>2011-2016</td>
+<td>2011–2016</td>
 <td>790</td>
 <td>Expanded biomarkers</td>
 </tr>
 <tr class="even">
 <td>ADNI-3</td>
-<td>2016-2022</td>
-<td>696</td>
+<td>2016–2022</td>
+<td>566</td>
 <td>Tau PET, digital biomarkers</td>
-</tr>
-<tr class="odd">
-<td>ADNI-4</td>
-<td>2022-present</td>
-<td>596</td>
-<td>Diversity, novel biomarkers</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Total enrollment</strong>: N = 3,032 participants (Donohue et al., 2026)</p>
+<p><strong>Total enrollment in ADNIMERGE</strong>: N = 2,306 subjects at baseline</p>
 </section>
 <section id="diagnostic-groups-in-adni" class="slide level2">
 <h2>Diagnostic Groups in ADNI</h2>
 <table class="caption-top">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 42%">
+<col style="width: 36%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Group</th>
@@ -351,19 +350,24 @@ Dr.&nbsp;Ronald G. Thomas
 <td>No memory complaints, normal cognition</td>
 </tr>
 <tr class="even">
+<td>Significant Memory Concern</td>
+<td>SMC</td>
+<td>Subjective concern, normal testing</td>
+</tr>
+<tr class="odd">
 <td>Early MCI</td>
 <td>EMCI</td>
 <td>Mild memory concern, CDR = 0.5</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Late MCI</td>
 <td>LMCI</td>
 <td>More pronounced deficits, CDR = 0.5</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Alzheimer’s Disease</td>
 <td>AD</td>
-<td>Dementia diagnosis, CDR ≥ 0.5</td>
+<td>Dementia diagnosis, CDR &gt;= 0.5</td>
 </tr>
 </tbody>
 </table>
@@ -371,65 +375,67 @@ Dr.&nbsp;Ronald G. Thomas
 <p>The distinction between EMCI and LMCI is based on education-adjusted delayed recall scores on the Logical Memory II subscale.</p>
 </div>
 </section>
-<section id="the-alzverse-r-packages-for-adni-data" class="slide level2">
-<h2>The alzverse: R Packages for ADNI Data</h2>
+<section id="the-adnimerge-dataset" class="slide level2">
+<h2>The ADNIMERGE Dataset</h2>
 <div class="concept-box">
-<p><strong>New in 2026</strong>: The <code>alzverse</code> ecosystem provides curated, analysis-ready ADNI data with reproducible vignettes (Donohue et al., 2026).</p>
+<p><strong>ADNIMERGE</strong> is a curated, merged dataset that combines key ADNI variables into a single longitudinal file. It includes demographics, diagnoses, cognitive scores, imaging measures, and biomarker data.</p>
 </div>
 <table class="caption-top">
 <thead>
 <tr class="header">
-<th>Package</th>
-<th>Description</th>
+<th>Property</th>
+<th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>ADNIMERGE2</code></td>
-<td>Updated ADNI data with pharmaverse/ADaM workflows</td>
+<td>Subjects</td>
+<td>2,306</td>
 </tr>
 <tr class="even">
-<td><code>A4LEARN</code></td>
-<td>A4 trial and LEARN observational study</td>
+<td>Total visits</td>
+<td>15,278</td>
 </tr>
 <tr class="odd">
-<td><code>alzverse</code></td>
-<td>Meta-package integrating multiple studies</td>
+<td>Variables</td>
+<td>113</td>
+</tr>
+<tr class="even">
+<td>Format</td>
+<td>CSV (one row per visit)</td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li>Cited in ~250 publications since 2013</li>
-<li>Includes built-in documentation and analysis vignettes</li>
-<li>Supports reproducibility via <code>renv</code> and Docker</li>
+<li>Downloaded from <a href="http://adni.loni.usc.edu">adni.loni.usc.edu</a> (requires Data Use Agreement)</li>
+<li>Cited in approximately 250 publications since 2013</li>
 </ul>
 </section>
-<section id="installing-adnimerge2" class="slide level2">
-<h2>Installing ADNIMERGE2</h2>
+<section id="loading-adnimerge" class="slide level2">
+<h2>Loading ADNIMERGE</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Download from ADNI website (requires Data Use Agreement)</span></span>
-<span id="cb1-2"><a href=""></a><span class="co"># https://adni.loni.usc.edu</span></span>
-<span id="cb1-3"><a href=""></a></span>
-<span id="cb1-4"><a href=""></a><span class="co"># Install the downloaded package</span></span>
-<span id="cb1-5"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"ADNIMERGE2_x.x.x.tar.gz"</span>, <span class="at">repos =</span> <span class="cn">NULL</span>)</span>
-<span id="cb1-6"><a href=""></a><span class="fu">library</span>(ADNIMERGE2)</span>
-<span id="cb1-7"><a href=""></a></span>
-<span id="cb1-8"><a href=""></a><span class="co"># Access subject-level data (ADaM format)</span></span>
-<span id="cb1-9"><a href=""></a><span class="fu">data</span>(ADSL)  <span class="co"># Subject-level analysis dataset</span></span>
-<span id="cb1-10"><a href=""></a><span class="fu">data</span>(ADQS)  <span class="co"># Questionnaire/cognitive scores</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href=""></a></span>
+<span id="cb1-3"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb1-4"><a href=""></a><span class="fu">dim</span>(adni)          <span class="co"># 15278 rows x 113 columns</span></span>
+<span id="cb1-5"><a href=""></a></span>
+<span id="cb1-6"><a href=""></a><span class="co"># Baseline data: one row per subject</span></span>
+<span id="cb1-7"><a href=""></a>adni_bl <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span> <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>)</span>
+<span id="cb1-8"><a href=""></a><span class="fu">nrow</span>(adni_bl)      <span class="co"># 2306 subjects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Key variables in ADNIMERGE2:</p>
+<p>Key variables in ADNIMERGE:</p>
 <ul>
-<li>Demographics: AGE, SEX, RACE, ETHNIC, EDUCAT</li>
-<li>Diagnosis: DX, DX_BL (baseline diagnosis)</li>
+<li>Demographics: AGE, PTGENDER, PTEDUCAT, PTRACCAT, PTMARRY</li>
+<li>Diagnosis: DX (visit), DX_bl (baseline diagnosis)</li>
 <li>Cognition: MMSE, ADAS11, ADAS13, RAVLT scores, LDELTOTAL</li>
-<li>Function: FAQ, CDR-SB</li>
+<li>Function: FAQ, CDRSB</li>
 <li>Imaging: Hippocampus, Ventricles, WholeBrain</li>
-<li>Genetics: APOE genotype, amyloid status</li>
+<li>Genetics: APOE4</li>
+<li>Time: Years_bl (years from baseline)</li>
 </ul>
 </section>
-<section id="adni-baseline-characteristics-n-3032" class="slide level2">
-<h2>ADNI Baseline Characteristics (N = 3,032)</h2>
+<section id="adni-baseline-characteristics-n-2306" class="slide level2">
+<h2>ADNI Baseline Characteristics (N = 2,306)</h2>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -440,11 +446,11 @@ Dr.&nbsp;Ronald G. Thomas
 <tbody>
 <tr class="odd">
 <td>Age, mean (SD)</td>
-<td>72.2 (7.6) years</td>
+<td>73.1 (7.4) years</td>
 </tr>
 <tr class="even">
 <td>Sex</td>
-<td>50% Female, 50% Male</td>
+<td>46.9% Female, 53.1% Male</td>
 </tr>
 <tr class="odd">
 <td>Education, mean (SD)</td>
@@ -452,41 +458,47 @@ Dr.&nbsp;Ronald G. Thomas
 </tr>
 <tr class="even">
 <td>Race: White</td>
-<td>81%</td>
+<td>91.0%</td>
 </tr>
 <tr class="odd">
-<td>Race: Black/African-American</td>
-<td>13%</td>
+<td>Race: Black</td>
+<td>5.2%</td>
 </tr>
 <tr class="even">
+<td>Race: Asian</td>
+<td>2.0%</td>
+</tr>
+<tr class="odd">
 <td>Ethnicity: Hispanic/Latino</td>
-<td>6.4%</td>
+<td>3.9%</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Baseline Diagnosis</strong>:</p>
 <ul>
-<li>Cognitively Normal (CN): 40% (n = 1,215)</li>
-<li>Mild Cognitive Impairment (MCI): 44% (n = 1,338)</li>
-<li>Dementia (DEM): 16% (n = 477)</li>
+<li>Cognitively Normal (CN): 22.6% (n = 521)</li>
+<li>Significant Memory Concern (SMC): 13.1% (n = 303)</li>
+<li>Early MCI (EMCI): 17.5% (n = 404)</li>
+<li>Late MCI (LMCI): 28.6% (n = 659)</li>
+<li>Alzheimer’s Disease (AD): 17.3% (n = 400)</li>
 </ul>
 </section>
 <section id="adni-data-structure" class="slide level2">
 <h2>ADNI Data Structure</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">library</span>(ADNIMERGE2)</span>
-<span id="cb2-2"><a href=""></a><span class="fu">data</span>(ADSL)  <span class="co"># Subject-level (one row per subject)</span></span>
-<span id="cb2-3"><a href=""></a><span class="fu">data</span>(ADQS)  <span class="co"># Cognitive scores (one row per visit per test)</span></span>
-<span id="cb2-4"><a href=""></a></span>
-<span id="cb2-5"><a href=""></a><span class="co"># Examine structure</span></span>
-<span id="cb2-6"><a href=""></a><span class="fu">dim</span>(ADSL)</span>
-<span id="cb2-7"><a href=""></a><span class="fu">names</span>(ADSL)[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>]</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb2-2"><a href=""></a></span>
+<span id="cb2-3"><a href=""></a><span class="co"># One row per visit; filter to baseline</span></span>
+<span id="cb2-4"><a href=""></a>adni_bl <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span> <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>)</span>
+<span id="cb2-5"><a href=""></a></span>
+<span id="cb2-6"><a href=""></a><span class="fu">dim</span>(adni_bl)           <span class="co"># 2306 x 113</span></span>
+<span id="cb2-7"><a href=""></a><span class="fu">names</span>(adni_bl)[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>]</span>
 <span id="cb2-8"><a href=""></a></span>
 <span id="cb2-9"><a href=""></a><span class="co"># Baseline diagnoses</span></span>
-<span id="cb2-10"><a href=""></a><span class="fu">table</span>(ADSL<span class="sc">$</span>DX_BL)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-10"><a href=""></a><span class="fu">table</span>(adni_bl<span class="sc">$</span>DX_bl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="checkpoint">
-<p><strong>Key insight</strong>: ADSL has one row per subject; ADQS has multiple rows per subject for longitudinal cognitive assessments.</p>
+<p><strong>Key insight</strong>: ADNIMERGE has one row per visit per subject. Filter to <code>VISCODE == "bl"</code> for baseline data; use <code>Years_bl</code> to track follow-up time from baseline.</p>
 </div>
 </section></section>
 <section>
@@ -542,13 +554,14 @@ Dr.&nbsp;Ronald G. Thomas
 </tbody>
 </table>
 <p>ADNI focuses primarily on <strong>amnestic MCI</strong> (single and multi-domain).</p>
+<p>In ADNIMERGE: <strong>1,063 MCI subjects</strong> (404 EMCI + 659 LMCI).</p>
 </section>
 <section id="the-clinical-problem" class="slide level2">
 <h2>The Clinical Problem</h2>
 <div class="warning-box">
 <p><strong>Not all MCI patients progress to AD</strong></p>
 <ul>
-<li>~10-15% of MCI patients convert to AD annually</li>
+<li>~10–15% of MCI patients convert to AD annually</li>
 <li>Some remain stable (stable MCI, sMCI)</li>
 <li>Some revert to normal cognition</li>
 </ul>
@@ -563,7 +576,7 @@ Dr.&nbsp;Ronald G. Thomas
 </section>
 <section id="mci-to-ad-conversion-rates" class="slide level2">
 <h2>MCI to AD Conversion Rates</h2>
-<p>From ADNI data (Grassi et al., 2019):</p>
+<p>From our ADNIMERGE.csv data (applying Grassi et al.&nbsp;criteria: MCI subjects with 3+ years follow-up, age 55–90, MMSE 24–30):</p>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -575,23 +588,23 @@ Dr.&nbsp;Ronald G. Thomas
 <tbody>
 <tr class="odd">
 <td>Stable MCI (sMCI)</td>
-<td>353</td>
-<td>64.2%</td>
+<td>446</td>
+<td>75.2%</td>
 </tr>
 <tr class="even">
 <td>Converter to AD (cAD)</td>
-<td>197</td>
-<td>35.8%</td>
+<td>147</td>
+<td>24.8%</td>
 </tr>
 <tr class="odd">
 <td><strong>Total</strong></td>
-<td>550</td>
+<td>593</td>
 <td>100%</td>
 </tr>
 </tbody>
 </table>
 <div class="concept-box">
-<p>Over a 3-year follow-up period, approximately <strong>36% of MCI patients</strong> in ADNI converted to AD dementia.</p>
+<p>Grassi et al.&nbsp;(2019) reported 550 subjects (197 converters, 35.8%) from an earlier ADNIMERGE download. Our dataset yields 593 subjects with a 24.8% conversion rate, reflecting additional ADNI-2 and ADNI-3 enrollment with more EMCI subjects who convert at lower rates.</p>
 </div>
 </section></section>
 <section>
@@ -605,13 +618,13 @@ Dr.&nbsp;Ronald G. Thomas
 <p><strong>Your Project 2 Hypothesis</strong></p>
 <p>Replicate and extend the approach of Grassi et al.&nbsp;(2019) to predict conversion from MCI to AD using machine learning methods applied to baseline clinical and cognitive data.</p>
 </div>
-<p><strong>Reference</strong>: Grassi M, et al.&nbsp;(2019). A Clinically-Translatable Machine Learning Algorithm for the Prediction of Alzheimer’s Disease Conversion in Individuals with Mild and Premild Cognitive Impairment. <em>J Alzheimers Dis</em>, 67(4):1353-1365.</p>
+<p><strong>Reference</strong>: Grassi M, et al.&nbsp;(2019). A Clinically-Translatable Machine Learning Algorithm for the Prediction of Alzheimer’s Disease Conversion in Individuals with Mild and Premild Cognitive Impairment. <em>Frontiers in Neurology</em>, 10:756.</p>
 </section>
 <section id="study-design-grassi-et-al." class="slide level2">
 <h2>Study Design: Grassi et al.</h2>
 <p><strong>Cohort Selection</strong>:</p>
 <ul>
-<li>550 MCI subjects from ADNIMERGE</li>
+<li>MCI subjects from ADNIMERGE (both EMCI and LMCI)</li>
 <li>Baseline data only (no longitudinal features)</li>
 <li>3-year follow-up for conversion assessment</li>
 <li>Site-independent train/test split</li>
@@ -619,7 +632,7 @@ Dr.&nbsp;Ronald G. Thomas
 <p><strong>Outcome</strong>:</p>
 <ul>
 <li>Binary: Converter (cAD) vs.&nbsp;Stable (sMCI)</li>
-<li>Conversion = diagnosis of AD at any follow-up visit</li>
+<li>Conversion = diagnosis of Dementia at any follow-up visit within 3 years</li>
 </ul>
 </section>
 <section id="key-results-grassi-et-al." class="slide level2">
@@ -719,12 +732,14 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="sociodemographic-features" class="slide level2">
 <h2>Sociodemographic Features</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="co"># Extract sociodemographic features</span></span>
-<span id="cb3-2"><a href=""></a>demo_vars <span class="ot">&lt;-</span> adnimerge <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-4"><a href=""></a>  <span class="fu">select</span>(RID, AGE, PTEDUCAT, PTGENDER, PTMARRY)</span>
-<span id="cb3-5"><a href=""></a></span>
-<span id="cb3-6"><a href=""></a><span class="fu">head</span>(demo_vars)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb3-2"><a href=""></a></span>
+<span id="cb3-3"><a href=""></a>demo_vars <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>,</span>
+<span id="cb3-5"><a href=""></a>         DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href=""></a>  <span class="fu">select</span>(RID, AGE, PTEDUCAT, PTGENDER, PTMARRY)</span>
+<span id="cb3-7"><a href=""></a></span>
+<span id="cb3-8"><a href=""></a><span class="fu">head</span>(demo_vars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <table class="caption-top">
 <thead>
@@ -763,19 +778,24 @@ Dr.&nbsp;Ronald G. Thomas
 <p><strong>Clinical Dementia Rating - Sum of Boxes (CDR-SB)</strong>:</p>
 <ul>
 <li>Assesses 6 domains: memory, orientation, judgment, community affairs, home/hobbies, personal care</li>
-<li>Range: 0-18 (higher = worse)</li>
+<li>Range: 0–18 (higher = worse)</li>
 <li>Sensitive to early changes</li>
 </ul>
 <p><strong>Functional Activities Questionnaire (FAQ)</strong>:</p>
 <ul>
 <li>10 items assessing instrumental ADLs</li>
-<li>Range: 0-30 (higher = more impairment)</li>
+<li>Range: 0–30 (higher = more impairment)</li>
 <li>Completed by informant</li>
 </ul>
 </section>
 <section id="neuropsychological-tests" class="slide level2">
 <h2>Neuropsychological Tests</h2>
 <table class="caption-top">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 34%">
+<col style="width: 39%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Test</th>
@@ -787,17 +807,17 @@ Dr.&nbsp;Ronald G. Thomas
 <tr class="odd">
 <td>MMSE</td>
 <td>Global cognition</td>
-<td>0-30 (higher = better)</td>
+<td>0–30 (higher = better)</td>
 </tr>
 <tr class="even">
 <td>ADAS-Cog 11/13</td>
 <td>Memory, language, praxis</td>
-<td>0-70/85 (higher = worse)</td>
+<td>0–70/85 (higher = worse)</td>
 </tr>
 <tr class="odd">
 <td>RAVLT Immediate</td>
 <td>Verbal learning</td>
-<td>Sum of trials 1-5</td>
+<td>Sum of trials 1–5</td>
 </tr>
 <tr class="even">
 <td>RAVLT Learning</td>
@@ -815,7 +835,7 @@ Dr.&nbsp;Ronald G. Thomas
 <td>Delayed recall score</td>
 </tr>
 <tr class="odd">
-<td>TMTB</td>
+<td>TRABSCOR (TMTB)</td>
 <td>Executive function</td>
 <td>Seconds (higher = worse)</td>
 </tr>
@@ -826,13 +846,14 @@ Dr.&nbsp;Ronald G. Thomas
 <h2>ADAS-Cog in Detail</h2>
 <p>The Alzheimer’s Disease Assessment Scale-Cognitive (ADAS-Cog):</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="co"># ADAS components in ADNIMERGE</span></span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
 <span id="cb4-2"><a href=""></a>adas_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ADAS11"</span>, <span class="st">"ADAS13"</span>, <span class="st">"ADASQ4"</span>)</span>
 <span id="cb4-3"><a href=""></a></span>
-<span id="cb4-4"><a href=""></a>adnimerge <span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>, DX.bl <span class="sc">==</span> <span class="st">"LMCI"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-6"><a href=""></a>  <span class="fu">select</span>(RID, <span class="fu">all_of</span>(adas_vars)) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a href=""></a>  <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-4"><a href=""></a>adni <span class="sc">|&gt;</span></span>
+<span id="cb4-5"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>,</span>
+<span id="cb4-6"><a href=""></a>         DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href=""></a>  <span class="fu">select</span>(RID, <span class="fu">all_of</span>(adas_vars)) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href=""></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><strong>ADAS11</strong>: Original 11-item version</li>
@@ -845,15 +866,15 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="concept-box">
 <p><strong>RAVLT Protocol</strong>:</p>
 <ul>
-<li>15-word list presented 5 times (Trials 1-5)</li>
+<li>15-word list presented 5 times (Trials 1–5)</li>
 <li>Interference list presented once</li>
 <li>Immediate recall after interference</li>
 <li>30-minute delayed recall</li>
 </ul>
 </div>
-<p>Key derived scores:</p>
+<p>Key derived scores in ADNIMERGE:</p>
 <ul>
-<li><strong>RAVLT_immediate</strong>: Sum of Trials 1-5 (learning capacity)</li>
+<li><strong>RAVLT_immediate</strong>: Sum of Trials 1–5 (learning capacity)</li>
 <li><strong>RAVLT_learning</strong>: Trial 5 - Trial 1 (learning rate)</li>
 <li><strong>RAVLT_forgetting</strong>: Trial 5 - Delayed (retention)</li>
 <li><strong>RAVLT_perc_forgetting</strong>: % forgotten over delay</li>
@@ -861,18 +882,21 @@ Dr.&nbsp;Ronald G. Thomas
 </section>
 <section id="feature-importance-grassi-et-al." class="slide level2">
 <h2>Feature Importance: Grassi et al.</h2>
-<p>Top predictors ranked by importance:</p>
+<p>Top predictors ranked by individual AUROC (Table 6):</p>
 <ol type="1">
-<li><strong>ADAS13</strong> - Most predictive overall</li>
-<li><strong>CDR-SB</strong> - Clinical staging</li>
-<li><strong>RAVLT forgetting</strong> - Memory retention</li>
-<li><strong>FAQ</strong> - Functional impairment</li>
-<li><strong>LDELTOTAL</strong> - Logical memory delayed recall</li>
-<li><strong>TMTB</strong> - Executive function</li>
-<li><strong>MMSE</strong> - Global cognition</li>
+<li><strong>ADAS-PC1</strong> (0.809) – First principal component of ADAS scores</li>
+<li><strong>RAVLT Immediate</strong> (0.777) – Verbal learning</li>
+<li><strong>FAQ</strong> (0.777) – Functional impairment</li>
+<li><strong>LDELTOTAL</strong> (0.770) – Logical memory delayed recall</li>
+<li><strong>RAVLT Learning</strong> (0.707) – Learning rate</li>
+<li><strong>CDRSB</strong> (0.697) – Clinical staging</li>
+<li><strong>RAVLT-F-PC1</strong> (0.685) – Forgetting component</li>
+<li><strong>MMSE</strong> (0.678) – Global cognition</li>
+<li><strong>MCI Subtype</strong> (0.658) – EMCI vs.&nbsp;LMCI</li>
+<li><strong>TRABSCOR</strong> (0.658) – Executive function</li>
 </ol>
 <div class="checkpoint">
-<p><strong>Key insight</strong>: Memory retention (RAVLT forgetting) and executive function (TMTB) add predictive value beyond global measures like ADAS and MMSE.</p>
+<p><strong>Key insight</strong>: Memory retention (RAVLT) and executive function (TMTB) add predictive value beyond global measures like ADAS and MMSE.</p>
 </div>
 </section></section>
 <section>
@@ -928,21 +952,19 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="random-forest-a-closer-look" class="slide level2">
 <h2>Random Forest: A Closer Look</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">library</span>(randomForest)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">library</span>(randomForest)</span>
 <span id="cb5-2"><a href=""></a></span>
-<span id="cb5-3"><a href=""></a><span class="co"># Example: Train random forest for MCI conversion</span></span>
-<span id="cb5-4"><a href=""></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(</span>
-<span id="cb5-5"><a href=""></a>  converter <span class="sc">~</span> ADAS13 <span class="sc">+</span> CDRSB <span class="sc">+</span> FAQ <span class="sc">+</span> RAVLT_forgetting <span class="sc">+</span></span>
-<span id="cb5-6"><a href=""></a>              LDELTOTAL <span class="sc">+</span> TRABSCOR <span class="sc">+</span> MMSE,</span>
-<span id="cb5-7"><a href=""></a>  <span class="at">data =</span> train_data,</span>
-<span id="cb5-8"><a href=""></a>  <span class="at">ntree =</span> <span class="dv">500</span>,</span>
-<span id="cb5-9"><a href=""></a>  <span class="at">mtry =</span> <span class="dv">3</span>,</span>
-<span id="cb5-10"><a href=""></a>  <span class="at">importance =</span> <span class="cn">TRUE</span></span>
-<span id="cb5-11"><a href=""></a>)</span>
-<span id="cb5-12"><a href=""></a></span>
-<span id="cb5-13"><a href=""></a><span class="co"># Variable importance</span></span>
-<span id="cb5-14"><a href=""></a><span class="fu">importance</span>(rf_model)</span>
-<span id="cb5-15"><a href=""></a><span class="fu">varImpPlot</span>(rf_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-3"><a href=""></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(</span>
+<span id="cb5-4"><a href=""></a>  converter <span class="sc">~</span> ADAS13 <span class="sc">+</span> CDRSB <span class="sc">+</span> FAQ <span class="sc">+</span> RAVLT_forgetting <span class="sc">+</span></span>
+<span id="cb5-5"><a href=""></a>              LDELTOTAL <span class="sc">+</span> TRABSCOR <span class="sc">+</span> MMSE,</span>
+<span id="cb5-6"><a href=""></a>  <span class="at">data =</span> train_data,</span>
+<span id="cb5-7"><a href=""></a>  <span class="at">ntree =</span> <span class="dv">500</span>,</span>
+<span id="cb5-8"><a href=""></a>  <span class="at">mtry =</span> <span class="dv">3</span>,</span>
+<span id="cb5-9"><a href=""></a>  <span class="at">importance =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-10"><a href=""></a>)</span>
+<span id="cb5-11"><a href=""></a></span>
+<span id="cb5-12"><a href=""></a><span class="fu">importance</span>(rf_model)</span>
+<span id="cb5-13"><a href=""></a><span class="fu">varImpPlot</span>(rf_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="cross-validation-strategy" class="slide level2">
@@ -952,7 +974,7 @@ Dr.&nbsp;Ronald G. Thomas
 </div>
 <p>Grassi et al.&nbsp;used:</p>
 <ol type="1">
-<li><strong>Site-independent split</strong>: Training and test sets from different ADNI sites</li>
+<li><strong>Site-independent split</strong>: Training and test sets from different ADNI sites (67 sites in the dataset)</li>
 <li><strong>5-fold cross-validation</strong>: Within training set for hyperparameter tuning</li>
 <li><strong>Held-out test set</strong>: Final unbiased performance evaluation</li>
 </ol>
@@ -960,12 +982,17 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="site-independent-testing" class="slide level2">
 <h2>Site-Independent Testing</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Split by site to ensure independence</span></span>
-<span id="cb6-2"><a href=""></a>train_sites <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Site01"</span>, <span class="st">"Site02"</span>, <span class="st">"Site03"</span>, ...)</span>
-<span id="cb6-3"><a href=""></a>test_sites <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Site10"</span>, <span class="st">"Site11"</span>, <span class="st">"Site12"</span>, ...)</span>
-<span id="cb6-4"><a href=""></a></span>
-<span id="cb6-5"><a href=""></a>train_data <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> train_sites)</span>
-<span id="cb6-6"><a href=""></a>test_data <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> test_sites)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb6-2"><a href=""></a></span>
+<span id="cb6-3"><a href=""></a><span class="co"># 67 unique sites available</span></span>
+<span id="cb6-4"><a href=""></a><span class="fu">length</span>(<span class="fu">unique</span>(adni<span class="sc">$</span>SITE))</span>
+<span id="cb6-5"><a href=""></a></span>
+<span id="cb6-6"><a href=""></a><span class="co"># Split by site to ensure independence</span></span>
+<span id="cb6-7"><a href=""></a>train_sites <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">9</span>, <span class="dv">10</span>, ...)</span>
+<span id="cb6-8"><a href=""></a>test_sites  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, ...)</span>
+<span id="cb6-9"><a href=""></a></span>
+<span id="cb6-10"><a href=""></a>train_data <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> train_sites)</span>
+<span id="cb6-11"><a href=""></a>test_data  <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> test_sites)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="concept-box">
 <p>Site-independent testing simulates real-world generalization: Will the model work at a clinic that wasn’t used for training?</p>
@@ -1013,17 +1040,15 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="roc-curve-interpretation" class="slide level2">
 <h2>ROC Curve Interpretation</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(pROC)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(pROC)</span>
 <span id="cb7-2"><a href=""></a></span>
-<span id="cb7-3"><a href=""></a><span class="co"># Calculate ROC curve</span></span>
-<span id="cb7-4"><a href=""></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(test_data<span class="sc">$</span>converter, predictions)</span>
-<span id="cb7-5"><a href=""></a></span>
-<span id="cb7-6"><a href=""></a><span class="co"># Plot</span></span>
-<span id="cb7-7"><a href=""></a><span class="fu">plot</span>(roc_obj, <span class="at">main =</span> <span class="st">"MCI to AD Conversion Prediction"</span>)</span>
-<span id="cb7-8"><a href=""></a><span class="fu">auc</span>(roc_obj)</span>
-<span id="cb7-9"><a href=""></a></span>
-<span id="cb7-10"><a href=""></a><span class="co"># Optimal threshold</span></span>
-<span id="cb7-11"><a href=""></a><span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"sensitivity"</span>, <span class="st">"specificity"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-3"><a href=""></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(test_data<span class="sc">$</span>converter, predictions)</span>
+<span id="cb7-4"><a href=""></a></span>
+<span id="cb7-5"><a href=""></a><span class="fu">plot</span>(roc_obj, <span class="at">main =</span> <span class="st">"MCI to AD Conversion Prediction"</span>)</span>
+<span id="cb7-6"><a href=""></a><span class="fu">auc</span>(roc_obj)</span>
+<span id="cb7-7"><a href=""></a></span>
+<span id="cb7-8"><a href=""></a><span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>,</span>
+<span id="cb7-9"><a href=""></a>       <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"sensitivity"</span>, <span class="st">"specificity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section>
 <section>
@@ -1072,40 +1097,46 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="data-preparation-steps" class="slide level2">
 <h2>Data Preparation Steps</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(ADNIMERGE2)</span>
-<span id="cb8-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb8-3"><a href=""></a></span>
-<span id="cb8-4"><a href=""></a><span class="co"># Step 1: Load subject-level and cognitive data</span></span>
-<span id="cb8-5"><a href=""></a><span class="fu">data</span>(ADSL)</span>
-<span id="cb8-6"><a href=""></a><span class="fu">data</span>(ADQS)</span>
-<span id="cb8-7"><a href=""></a></span>
-<span id="cb8-8"><a href=""></a><span class="co"># Step 2: Select MCI subjects at baseline</span></span>
-<span id="cb8-9"><a href=""></a>mci_baseline <span class="ot">&lt;-</span> ADSL <span class="sc">|&gt;</span></span>
-<span id="cb8-10"><a href=""></a>  <span class="fu">filter</span>(DX_BL <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>))</span>
-<span id="cb8-11"><a href=""></a></span>
-<span id="cb8-12"><a href=""></a><span class="co"># Step 3: Determine conversion status</span></span>
-<span id="cb8-13"><a href=""></a><span class="co"># (requires follow-up data - see next slide)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb8-2"><a href=""></a></span>
+<span id="cb8-3"><a href=""></a><span class="co"># Step 1: Load ADNIMERGE</span></span>
+<span id="cb8-4"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb8-5"><a href=""></a></span>
+<span id="cb8-6"><a href=""></a><span class="co"># Step 2: Select MCI subjects at baseline</span></span>
+<span id="cb8-7"><a href=""></a>mci <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href=""></a>  <span class="fu">filter</span>(DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>))</span>
+<span id="cb8-9"><a href=""></a></span>
+<span id="cb8-10"><a href=""></a><span class="co"># Step 3: Identify subjects with 3+ years follow-up</span></span>
+<span id="cb8-11"><a href=""></a>followup <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
+<span id="cb8-12"><a href=""></a>  <span class="fu">group_by</span>(RID) <span class="sc">|&gt;</span></span>
+<span id="cb8-13"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">max_years =</span> <span class="fu">max</span>(Years_bl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb8-14"><a href=""></a></span>
+<span id="cb8-15"><a href=""></a>rids_3yr <span class="ot">&lt;-</span> followup <span class="sc">|&gt;</span></span>
+<span id="cb8-16"><a href=""></a>  <span class="fu">filter</span>(max_years <span class="sc">&gt;=</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-17"><a href=""></a>  <span class="fu">pull</span>(RID)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="defining-conversion-status" class="slide level2">
 <h2>Defining Conversion Status</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="co"># Get longitudinal diagnosis data</span></span>
-<span id="cb9-2"><a href=""></a><span class="fu">data</span>(ADQS)</span>
-<span id="cb9-3"><a href=""></a></span>
-<span id="cb9-4"><a href=""></a><span class="co"># Identify converters: any subsequent AD diagnosis</span></span>
-<span id="cb9-5"><a href=""></a>converters <span class="ot">&lt;-</span> ADQS <span class="sc">|&gt;</span></span>
-<span id="cb9-6"><a href=""></a>  <span class="fu">filter</span>(USUBJID <span class="sc">%in%</span> mci_baseline<span class="sc">$</span>USUBJID,</span>
-<span id="cb9-7"><a href=""></a>         PARAMCD <span class="sc">==</span> <span class="st">"DX"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-8"><a href=""></a>  <span class="fu">group_by</span>(USUBJID) <span class="sc">|&gt;</span></span>
-<span id="cb9-9"><a href=""></a>  <span class="fu">summarize</span>(</span>
-<span id="cb9-10"><a href=""></a>    <span class="at">converted =</span> <span class="fu">any</span>(AVAL <span class="sc">==</span> <span class="st">"Dementia"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb9-11"><a href=""></a>    <span class="at">time_to_conversion =</span> <span class="fu">min</span>(ADY[AVAL <span class="sc">==</span> <span class="st">"Dementia"</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-12"><a href=""></a>  )</span>
-<span id="cb9-13"><a href=""></a></span>
-<span id="cb9-14"><a href=""></a><span class="co"># Merge back to baseline</span></span>
-<span id="cb9-15"><a href=""></a>mci_analysis <span class="ot">&lt;-</span> mci_baseline <span class="sc">|&gt;</span></span>
-<span id="cb9-16"><a href=""></a>  <span class="fu">left_join</span>(converters, <span class="at">by =</span> <span class="st">"USUBJID"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="co"># Converters: DX changed to "Dementia" within 3 years</span></span>
+<span id="cb9-2"><a href=""></a>converters <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href=""></a>  <span class="fu">filter</span>(RID <span class="sc">%in%</span> rids_3yr, Years_bl <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">group_by</span>(RID) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href=""></a>  <span class="fu">summarize</span>(</span>
+<span id="cb9-6"><a href=""></a>    <span class="at">converted =</span> <span class="fu">any</span>(DX <span class="sc">==</span> <span class="st">"Dementia"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-7"><a href=""></a>  )</span>
+<span id="cb9-8"><a href=""></a></span>
+<span id="cb9-9"><a href=""></a><span class="co"># Merge to baseline data</span></span>
+<span id="cb9-10"><a href=""></a>mci_bl <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
+<span id="cb9-11"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>, RID <span class="sc">%in%</span> rids_3yr) <span class="sc">|&gt;</span></span>
+<span id="cb9-12"><a href=""></a>  <span class="fu">left_join</span>(converters, <span class="at">by =</span> <span class="st">"RID"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-13"><a href=""></a>  <span class="fu">filter</span>(AGE <span class="sc">&gt;=</span> <span class="dv">55</span>, AGE <span class="sc">&lt;=</span> <span class="dv">90</span>,</span>
+<span id="cb9-14"><a href=""></a>         MMSE <span class="sc">&gt;=</span> <span class="dv">24</span>, MMSE <span class="sc">&lt;=</span> <span class="dv">30</span>)</span>
+<span id="cb9-15"><a href=""></a></span>
+<span id="cb9-16"><a href=""></a><span class="fu">table</span>(mci_bl<span class="sc">$</span>converted)</span>
+<span id="cb9-17"><a href=""></a><span class="co"># FALSE  TRUE</span></span>
+<span id="cb9-18"><a href=""></a><span class="co">#   446   147</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="suggested-timeline" class="slide level2">
@@ -1119,15 +1150,15 @@ Dr.&nbsp;Ronald G. Thomas
 </thead>
 <tbody>
 <tr class="odd">
-<td>Week 7 (Feb 17-21)</td>
+<td>Week 7 (Feb 17–21)</td>
 <td>Data preparation, cohort definition</td>
 </tr>
 <tr class="even">
-<td>Week 8 (Feb 24-28)</td>
+<td>Week 8 (Feb 24–28)</td>
 <td>Feature engineering, initial models</td>
 </tr>
 <tr class="odd">
-<td>Week 9 (Mar 2-6)</td>
+<td>Week 9 (Mar 2–6)</td>
 <td>Model tuning, evaluation, report</td>
 </tr>
 <tr class="even">
@@ -1144,32 +1175,31 @@ Dr.&nbsp;Ronald G. Thomas
 <h2>Resources</h2>
 <p><strong>Papers</strong> (on Canvas):</p>
 <ul>
-<li>Grassi et al.&nbsp;(2019) - Primary reference for ML approach</li>
-<li>Rye et al.&nbsp;(2022) - Additional ML approach with imaging</li>
-<li>Donohue et al.&nbsp;(2026) - ADNIMERGE2 and alzverse packages</li>
+<li>Grassi et al.&nbsp;(2019) – Primary reference for ML approach</li>
+<li>Rye et al.&nbsp;(2022) – Additional ML approach with imaging</li>
 </ul>
 <p><strong>R Packages</strong>:</p>
 <ul>
-<li><code>ADNIMERGE2</code> - ADNI data (requires DUA from adni.loni.usc.edu)</li>
-<li><code>caret</code> or <code>tidymodels</code> - ML framework</li>
-<li><code>randomForest</code>, <code>glmnet</code>, <code>e1071</code> - Algorithms</li>
-<li><code>pROC</code> - ROC analysis</li>
+<li><code>caret</code> or <code>tidymodels</code> – ML framework</li>
+<li><code>randomForest</code>, <code>glmnet</code>, <code>e1071</code> – Algorithms</li>
+<li><code>pROC</code> – ROC analysis</li>
+<li><code>kableExtra</code> – Table formatting</li>
 </ul>
-<p><strong>Documentation</strong>:</p>
+<p><strong>Data</strong>:</p>
 <ul>
-<li>alzverse: <a href="https://atri-biostats.github.io/alzverse">atri-biostats.github.io/alzverse</a></li>
-<li>ADNIMERGE2: <a href="https://atri-biostats.github.io/ADNIMERGE2">atri-biostats.github.io/ADNIMERGE2</a></li>
+<li>ADNIMERGE.csv – available in <code>./data/</code> directory (requires DUA from <a href="https://adni.loni.usc.edu">adni.loni.usc.edu</a>)</li>
 </ul>
 </section>
 <section id="summary" class="slide level2">
 <h2>Summary</h2>
 <p>Today we covered:</p>
 <ol type="1">
-<li><strong>ADNI</strong>: Multicenter longitudinal study of AD biomarkers</li>
-<li><strong>MCI</strong>: Transitional state with ~36% 3-year conversion rate</li>
+<li><strong>ADNI</strong>: Multicenter longitudinal study (2,306 subjects, 67 sites, 4 phases)</li>
+<li><strong>ADNIMERGE</strong>: Curated dataset with 113 variables per visit</li>
+<li><strong>MCI</strong>: 1,063 MCI subjects in ADNIMERGE (404 EMCI + 659 LMCI)</li>
+<li><strong>Conversion</strong>: 24.8% of MCI subjects with 3-year follow-up converted to AD</li>
 <li><strong>Grassi et al.</strong>: Clinically-translatable ML approach (AUROC = 0.88)</li>
-<li><strong>Key predictors</strong>: ADAS13, CDR-SB, RAVLT, FAQ, LDELTOTAL, TMTB</li>
-<li><strong>ML methods</strong>: Ensemble of 13 algorithms with site-independent testing</li>
+<li><strong>Key predictors</strong>: ADAS, RAVLT, FAQ, LDELTOTAL, CDRSB, TMTB</li>
 <li><strong>Project 2</strong>: Replicate this approach in your research compendium</li>
 </ol>
 </section>
@@ -1178,19 +1208,18 @@ Dr.&nbsp;Ronald G. Thomas
 <div class="do-this">
 <p><strong>Before next class</strong>:</p>
 <ol type="1">
-<li>Apply for ADNI data access at <a href="https://adni.loni.usc.edu">adni.loni.usc.edu</a></li>
-<li>Download ADNIMERGE2 package (requires Data Use Agreement)</li>
-<li>Review Grassi et al.&nbsp;paper in detail</li>
-<li>Begin cohort selection and data exploration</li>
+<li>Download ADNIMERGE.csv from <a href="https://adni.loni.usc.edu">adni.loni.usc.edu</a> (requires Data Use Agreement)</li>
+<li>Review Grassi et al.&nbsp;(2019) paper in detail</li>
+<li>Run the cohort selection code from today’s slides</li>
+<li>Begin data exploration and feature extraction</li>
 <li>Draft your statistical analysis plan</li>
 </ol>
 </div>
 </section>
 <section id="references" class="slide level2">
 <h2>References</h2>
-<p>Donohue MC, Hussen K, Langford O, Gallardo R, Jimenez-Maggiora G, Aisen PS. (2026). Alzheimer’s clinical research data via R packages: The alzverse. <em>Alzheimer’s Dement</em>, 22:e71152.</p>
-<p>Grassi M, Perna G, Caldirola D, Schruers K, Duara R, Loewenstein DA. (2019). A Clinically-Translatable Machine Learning Algorithm for the Prediction of Alzheimer’s Disease Conversion in Individuals with Mild and Premild Cognitive Impairment. <em>J Alzheimers Dis</em>, 67(4):1353-1365.</p>
-<p>Petersen RC. (2004). Mild cognitive impairment as a diagnostic entity. <em>J Intern Med</em>, 256(3):183-194.</p>
+<p>Grassi M, Rouleaux N, Caldirola D, Loewenstein D, Schruers K, Perna G, Dumontier M. (2019). A Novel Ensemble-Based Machine Learning Algorithm to Predict the Conversion From Mild Cognitive Impairment to Alzheimer’s Disease Using Socio-Demographic Characteristics, Clinical Information, and Neuropsychological Measures. <em>Frontiers in Neurology</em>, 10:756.</p>
+<p>Petersen RC. (2004). Mild cognitive impairment as a diagnostic entity. <em>J Intern Med</em>, 256(3):183–194.</p>
 <p>Rye I, Vik A, Kocinski M, Lundervold AS, Lundervold AJ. (2022). Predicting conversion to Alzheimer’s disease in individuals with Mild Cognitive Impairment using clinically transferable features. <em>Sci Rep</em>, 12:15566.</p>
 </section>
 <section id="questions" class="slide level2">
@@ -1394,7 +1423,7 @@ Dr.&nbsp;Ronald G. Thomas
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -1506,14 +1535,13 @@ Dr.&nbsp;Ronald G. Thomas
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-          const outerScaffold = trigger.parentElement.cloneNode(true);
-          const codeEl = outerScaffold.querySelector('code');
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
             }
-          }
-          return codeEl.innerText;
+            return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

@@ -336,6 +336,7 @@ dummies <- dummyVars(
 )
 cat_encoded <- predict(dummies, df_analytic) |>
   as.data.frame()
+names(cat_encoded) <- make.names(names(cat_encoded))
 
 pred_numeric <- c(
   "age", "pteducat", "cdrsb", "adas_pc1",
@@ -454,25 +455,21 @@ cv_aurocs <- map_dbl(models, function(m) {
   max(m$results$ROC)
 })
 
-ensemble_preds <- map_dfc(models, function(m) {
-  pred_df <- m$pred |>
-    group_by(rowIndex) |>
-    dplyr::summarize(prob = mean(cAD), .groups = "drop") |>
-    arrange(rowIndex)
-  tibble(prob = pred_df$prob)
+ensemble_probs <- map(models, function(m) {
+  predict(m, x_train, type = "prob")[["cAD"]]
 })
-names(ensemble_preds) <- names(models)
 
-rank_preds <- map_dfc(ensemble_preds, function(col) {
-  rank(col[[1]]) / length(col[[1]])
+rank_preds <- map(ensemble_probs, function(p) {
+  rank(p) / length(p)
 })
+rank_mat <- do.call(cbind, rank_preds)
 
 weights <- cv_aurocs / sum(cv_aurocs)
-ensemble_score <- as.matrix(rank_preds) %*% weights
+ensemble_score <- as.numeric(rank_mat %*% weights)
 
 roc_ensemble <- roc(
-  y_train, as.numeric(ensemble_score),
-  levels = c("NC", "cAD"), direction = "<"
+  y_train, ensemble_score,
+  levels = c("NC", "cAD"), direction = "<", quiet = TRUE
 )
 auc_ensemble <- auc(roc_ensemble)
 ci_ensemble <- ci.auc(roc_ensemble, method = "bootstrap",
@@ -513,14 +510,8 @@ kbl(perf_tbl, booktabs = TRUE, linesep = "", escape = TRUE,
 
 ```{r roc-plot, results='markup', fig.width=4.5, fig.height=4.5}
 roc_list <- map(models, function(m) {
-  pred_df <- m$pred |>
-    group_by(rowIndex) |>
-    dplyr::summarize(
-      prob = mean(cAD),
-      obs = first(obs),
-      .groups = "drop"
-    )
-  roc(pred_df$obs, pred_df$prob,
+  probs <- predict(m, x_train, type = "prob")[["cAD"]]
+  roc(y_train, probs,
       levels = c("NC", "cAD"), direction = "<", quiet = TRUE)
 })
 roc_list[["Ensemble"]] <- roc_ensemble
@@ -613,9 +604,9 @@ feat_auroc <- map_dfr(feature_names, function(f) {
                     boot.n = 2000, quiet = TRUE)
     tibble(
       Feature = f,
-      AUROC = auc(r),
-      CI_lo = ci_r[1],
-      CI_hi = ci_r[3]
+      AUROC = as.numeric(auc(r)),
+      CI_lo = as.numeric(ci_r[1]),
+      CI_hi = as.numeric(ci_r[3])
     )
   }, error = function(e) {
     tibble(Feature = f, AUROC = NA_real_,
