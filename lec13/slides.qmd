@@ -95,20 +95,15 @@ Alzheimer's disease.
 
 ## ADNI Study Design
 
-```{r}
-#| echo: false
-#| eval: false
-# Conceptual diagram of ADNI phases
-```
+| Phase | Years | N | Focus |
+|-------|-------|---|-------|
+| ADNI-1 | 2004-2009 | 819 | Establish biomarker methods |
+| ADNI-GO | 2009-2011 | 131 | Early MCI (EMCI) cohort |
+| ADNI-2 | 2011-2016 | 790 | Expanded biomarkers |
+| ADNI-3 | 2016-2022 | 696 | Tau PET, digital biomarkers |
+| ADNI-4 | 2022-present | 596 | Diversity, novel biomarkers |
 
-| Phase | Years | Focus |
-|-------|-------|-------|
-| ADNI-1 | 2004-2009 | Establish biomarker methods |
-| ADNI-GO | 2009-2011 | Early MCI (EMCI) cohort |
-| ADNI-2 | 2011-2016 | Expanded biomarkers |
-| ADNI-3 | 2016-present | Tau PET, digital biomarkers |
-
-Total enrollment: >2,000 participants across all phases
+**Total enrollment**: N = 3,032 participants (Donohue et al., 2026)
 
 ## Diagnostic Groups in ADNI
 
@@ -124,47 +119,86 @@ The distinction between EMCI and LMCI is based on education-adjusted
 delayed recall scores on the Logical Memory II subscale.
 :::
 
-## The ADNIMERGE R Package
+## The alzverse: R Packages for ADNI Data
 
-The `ADNIMERGE` package consolidates key ADNI data into a single dataset:
+::: {.concept-box}
+**New in 2026**: The `alzverse` ecosystem provides curated, analysis-ready
+ADNI data with reproducible vignettes (Donohue et al., 2026).
+:::
+
+| Package | Description |
+|---------|-------------|
+| `ADNIMERGE2` | Updated ADNI data with pharmaverse/ADaM workflows |
+| `A4LEARN` | A4 trial and LEARN observational study |
+| `alzverse` | Meta-package integrating multiple studies |
+
+- Cited in ~250 publications since 2013
+- Includes built-in documentation and analysis vignettes
+- Supports reproducibility via `renv` and Docker
+
+## Installing ADNIMERGE2
 
 ```{r}
 #| echo: true
 #| eval: false
-# Install from ADNI website (requires DUA)
-install.packages("ADNIMERGE_0.0.1.tar.gz", repos = NULL)
-library(ADNIMERGE)
-data(adnimerge)
+# Download from ADNI website (requires Data Use Agreement)
+# https://adni.loni.usc.edu
+
+# Install the downloaded package
+install.packages("ADNIMERGE2_x.x.x.tar.gz", repos = NULL)
+library(ADNIMERGE2)
+
+# Access subject-level data (ADaM format)
+data(ADSL)  # Subject-level analysis dataset
+data(ADQS)  # Questionnaire/cognitive scores
 ```
 
-Key variables in `adnimerge`:
+Key variables in ADNIMERGE2:
 
-- Demographics: AGE, PTGENDER, PTEDUCAT, PTETHCAT, PTRACCAT
-- Diagnosis: DX, DX.bl (baseline diagnosis)
+- Demographics: AGE, SEX, RACE, ETHNIC, EDUCAT
+- Diagnosis: DX, DX_BL (baseline diagnosis)
 - Cognition: MMSE, ADAS11, ADAS13, RAVLT scores, LDELTOTAL
 - Function: FAQ, CDR-SB
-- Imaging: Hippocampus, Ventricles, WholeBrain, Entorhinal
-- Genetics: APOE4 status
+- Imaging: Hippocampus, Ventricles, WholeBrain
+- Genetics: APOE genotype, amyloid status
+
+## ADNI Baseline Characteristics (N = 3,032)
+
+| Characteristic | Value |
+|----------------|-------|
+| Age, mean (SD) | 72.2 (7.6) years |
+| Sex | 50% Female, 50% Male |
+| Education, mean (SD) | 16.0 (2.8) years |
+| Race: White | 81% |
+| Race: Black/African-American | 13% |
+| Ethnicity: Hispanic/Latino | 6.4% |
+
+**Baseline Diagnosis**:
+
+- Cognitively Normal (CN): 40% (n = 1,215)
+- Mild Cognitive Impairment (MCI): 44% (n = 1,338)
+- Dementia (DEM): 16% (n = 477)
 
 ## ADNI Data Structure
 
 ```{r}
 #| echo: true
 #| eval: false
-library(ADNIMERGE)
-data(adnimerge)
+library(ADNIMERGE2)
+data(ADSL)  # Subject-level (one row per subject)
+data(ADQS)  # Cognitive scores (one row per visit per test)
 
 # Examine structure
-dim(adnimerge)
-names(adnimerge)[1:20]
+dim(ADSL)
+names(ADSL)[1:15]
 
 # Baseline diagnoses
-table(adnimerge$DX.bl)
+table(ADSL$DX_BL)
 ```
 
 ::: {.checkpoint}
-**Key insight**: Each row represents one visit. Subjects have multiple rows
-for longitudinal follow-up.
+**Key insight**: ADSL has one row per subject; ADQS has multiple rows
+per subject for longitudinal cognitive assessments.
 :::
 
 
@@ -272,6 +306,15 @@ Dis*, 67(4):1353-1365.
 ::: {.checkpoint}
 **Interpretation**: The model correctly identifies ~78% of future converters
 while maintaining ~80% specificity for stable patients.
+:::
+
+## Grassi et al. Table 2: Cohort Characteristics
+
+![Grassi et al. Table 2](table2.png){width=90%}
+
+::: {.checkpoint}
+**Your goal**: Reproduce a similar table for your MCI cohort, comparing
+converters (cAD) vs. stable (sMCI) subjects.
 :::
 
 ## Why This Approach?
@@ -559,16 +602,16 @@ Your analysis must include:
 ```{r}
 #| echo: true
 #| eval: false
-library(ADNIMERGE)
+library(ADNIMERGE2)
 library(tidyverse)
 
-# Step 1: Load data
-data(adnimerge)
+# Step 1: Load subject-level and cognitive data
+data(ADSL)
+data(ADQS)
 
 # Step 2: Select MCI subjects at baseline
-mci_baseline <- adnimerge |>
-  filter(VISCODE == "bl",
-         DX.bl %in% c("EMCI", "LMCI"))
+mci_baseline <- ADSL |>
+  filter(DX_BL %in% c("EMCI", "LMCI"))
 
 # Step 3: Determine conversion status
 # (requires follow-up data - see next slide)
@@ -579,18 +622,22 @@ mci_baseline <- adnimerge |>
 ```{r}
 #| echo: true
 #| eval: false
+# Get longitudinal diagnosis data
+data(ADQS)
+
 # Identify converters: any subsequent AD diagnosis
-converters <- adnimerge |>
-  filter(RID %in% mci_baseline$RID) |>
-  group_by(RID) |>
+converters <- ADQS |>
+  filter(USUBJID %in% mci_baseline$USUBJID,
+         PARAMCD == "DX") |>
+  group_by(USUBJID) |>
   summarize(
-    converted = any(DX == "Dementia", na.rm = TRUE),
-    time_to_conversion = min(EXAMDATE[DX == "Dementia"], na.rm = TRUE)
+    converted = any(AVAL == "Dementia", na.rm = TRUE),
+    time_to_conversion = min(ADY[AVAL == "Dementia"], na.rm = TRUE)
   )
 
 # Merge back to baseline
 mci_analysis <- mci_baseline |>
-  left_join(converters, by = "RID")
+  left_join(converters, by = "USUBJID")
 ```
 
 ## Suggested Timeline
@@ -610,20 +657,21 @@ Start early. Data cleaning and feature engineering take longer than expected.
 
 **Papers** (on Canvas):
 
-- Grassi et al. (2019) - Primary reference
-- Rye et al. (2022) - Additional ML approach
+- Grassi et al. (2019) - Primary reference for ML approach
+- Rye et al. (2022) - Additional ML approach with imaging
+- Donohue et al. (2026) - ADNIMERGE2 and alzverse packages
 
 **R Packages**:
 
-- `ADNIMERGE` - ADNI data
+- `ADNIMERGE2` - ADNI data (requires DUA from adni.loni.usc.edu)
 - `caret` or `tidymodels` - ML framework
 - `randomForest`, `glmnet`, `e1071` - Algorithms
 - `pROC` - ROC analysis
 
 **Documentation**:
 
-- ADNIMERGE vignettes
-- Caret package documentation
+- alzverse: [atri-biostats.github.io/alzverse](https://atri-biostats.github.io/alzverse)
+- ADNIMERGE2: [atri-biostats.github.io/ADNIMERGE2](https://atri-biostats.github.io/ADNIMERGE2)
 
 
 ## Summary
@@ -643,14 +691,19 @@ Today we covered:
 ::: {.do-this}
 **Before next class**:
 
-1. Download ADNIMERGE data (requires DUA)
-2. Review Grassi et al. paper in detail
-3. Begin cohort selection and data exploration
-4. Draft your statistical analysis plan
+1. Apply for ADNI data access at [adni.loni.usc.edu](https://adni.loni.usc.edu)
+2. Download ADNIMERGE2 package (requires Data Use Agreement)
+3. Review Grassi et al. paper in detail
+4. Begin cohort selection and data exploration
+5. Draft your statistical analysis plan
 :::
 
 
 ## References
+
+Donohue MC, Hussen K, Langford O, Gallardo R, Jimenez-Maggiora G, Aisen PS.
+(2026). Alzheimer's clinical research data via R packages: The alzverse.
+*Alzheimer's Dement*, 22:e71152.
 
 Grassi M, Perna G, Caldirola D, Schruers K, Duara R, Loewenstein DA. (2019).
 A Clinically-Translatable Machine Learning Algorithm for the Prediction of
