@@ -1,0 +1,518 @@
+---
+title: "Statistical Analysis Plan: ADNI MCI Conversion Prediction"
+subtitle: "PHB 243b Project 2"
+author: "[Your Name Here]"
+date: last-modified
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+  revealjs:
+    theme: serif
+    slide-number: true
+    smaller: true
+    scrollable: true
+    toc: true
+    toc-depth: 1
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(knitr)
+# library(ADNIMERGE2)  # Uncomment when data available
+```
+
+# Introduction
+
+## Background and Rationale
+
+<!--
+PROMPT: Provide 2-3 paragraphs describing:
+- Alzheimer's disease as a public health problem
+- The role of MCI as a transitional state
+- Why predicting MCI-to-AD conversion is clinically important
+- Brief mention of prior work (cite Grassi et al. 2019)
+
+Example opening: "Alzheimer's disease (AD) is the most common cause of
+dementia, affecting an estimated 6.7 million Americans..."
+-->
+
+[Your background text here]
+
+## Research Questions
+
+<!--
+PROMPT: State your primary research question clearly. Consider:
+- What outcome are you trying to predict? (MCI to AD conversion)
+- What predictors will you examine? (baseline clinical/cognitive measures)
+- What is the prediction horizon? (3-year follow-up)
+
+Be specific. Example: "Can baseline sociodemographic characteristics,
+clinical scales, and neuropsychological test scores predict conversion
+from MCI to AD dementia within 3 years?"
+-->
+
+**Primary Research Question:**
+
+[Your primary question here]
+
+**Secondary Questions (if any):**
+
+1. Which predictor categories (sociodemographic, clinical, neuropsychological)
+   contribute most to prediction accuracy?
+2. Does prediction performance differ between EMCI and LMCI subgroups?
+
+## Hypotheses
+
+<!--
+PROMPT: State your hypotheses before analyzing the data.
+- What variables do you expect to be most predictive?
+- What is the clinical/biological rationale?
+- What level of discrimination (AUROC) do you expect?
+
+Reference Grassi et al. (2019): AUROC = 0.88
+-->
+
+**Primary Hypothesis:**
+
+[Your hypothesis here, e.g., "Baseline ADAS-Cog-13, CDR-SB, and RAVLT
+forgetting scores will significantly predict MCI-to-AD conversion..."]
+
+**Expected Performance:**
+
+Based on Grassi et al. (2019), we expect AUROC in the range of 0.75-0.85.
+
+# Data Description
+
+## Data Source
+
+<!--
+PROMPT: Describe where the data come from. Include:
+- ADNI study description
+- ADNIMERGE2 R package
+- Data Use Agreement requirements
+- Data download date
+-->
+
+Data for this analysis come from the Alzheimer's Disease Neuroimaging
+Initiative (ADNI), accessed via the ADNIMERGE2 R package (Donohue et al.,
+2026). ADNI is a longitudinal multicenter study designed to develop
+clinical, imaging, genetic, and biochemical biomarkers for early detection
+and tracking of Alzheimer's disease.
+
+**Data access:** [adni.loni.usc.edu](https://adni.loni.usc.edu)
+
+**Data download date:** [Your download date]
+
+**Citation:** Donohue MC, et al. (2026). Alzheimer's clinical research data
+via R packages: The alzverse. *Alzheimer's Dement*, 22:e71152.
+
+## Study Population
+
+<!--
+PROMPT: Describe the study population:
+- Inclusion criteria: MCI diagnosis at baseline (EMCI or LMCI)
+- Minimum follow-up: 3 years (or at least one follow-up visit)
+- Exclusion criteria: Missing key predictors, no follow-up data
+-->
+
+**Inclusion Criteria:**
+
+1. Baseline diagnosis of Mild Cognitive Impairment (EMCI or LMCI)
+2. At least 3 years of follow-up OR documented conversion to AD
+3. Complete data on primary predictor variables
+
+**Exclusion Criteria:**
+
+1. Baseline diagnosis of CN or Dementia
+2. No follow-up visits after baseline
+3. Missing data on >50% of predictor variables
+
+## Sample Size
+
+<!--
+PROMPT: Report expected sample size:
+- Total MCI subjects in ADNIMERGE2
+- Expected sample after applying inclusion/exclusion criteria
+- Number of converters vs. stable
+-->
+
+```{r}
+#| label: sample-size
+#| eval: false
+# Uncomment when ADNIMERGE2 data available
+# data(ADSL)
+# ADSL |>
+#   filter(DX_BL %in% c("EMCI", "LMCI")) |>
+#   count(DX_BL) |>
+#   kable(caption = "MCI subjects by baseline diagnosis")
+```
+
+**Expected Sample Size:**
+
+| Group | N (expected) | Percentage |
+|-------|--------------|------------|
+| Stable MCI (sMCI) | ~350 | ~64% |
+| Converters (cAD) | ~200 | ~36% |
+| **Total** | ~550 | 100% |
+
+Based on Grassi et al. (2019) cohort selection criteria.
+
+# Variables
+
+## Primary Outcome
+
+<!--
+PROMPT: Define your primary outcome variable:
+- Conversion to AD dementia (binary: Yes/No)
+- How conversion is defined (any follow-up diagnosis of Dementia)
+- Time horizon (within 3 years of baseline)
+-->
+
+| Attribute | Description |
+|-----------|-------------|
+| Variable name | `converter` |
+| Definition | Conversion from MCI to AD dementia |
+| Type | Binary (0 = Stable, 1 = Converter) |
+| Operationalization | Any follow-up diagnosis of "Dementia" within 3 years |
+| Reference | Grassi et al. (2019) |
+
+## Primary Predictors
+
+### Sociodemographic Variables
+
+| Variable | Definition | Type | Rationale |
+|----------|------------|------|-----------|
+| AGE | Age at baseline (years) | Continuous | Age is primary AD risk factor |
+| PTEDUCAT | Years of education | Continuous | Cognitive reserve proxy |
+| PTGENDER | Sex | Binary | Sex differences in AD risk |
+| PTMARRY | Marital status | Categorical | Social support proxy |
+
+### Clinical Scales
+
+| Variable | Definition | Type | Rationale |
+|----------|------------|------|-----------|
+| CDRSB | CDR Sum of Boxes (0-18) | Continuous | Clinical staging |
+| FAQ | Functional Activities Questionnaire (0-30) | Continuous | Functional impairment |
+
+### Neuropsychological Tests
+
+| Variable | Definition | Type | Rationale |
+|----------|------------|------|-----------|
+| MMSE | Mini-Mental State Exam (0-30) | Continuous | Global cognition |
+| ADAS13 | ADAS-Cog 13-item (0-85) | Continuous | AD-specific cognition |
+| RAVLT_immediate | RAVLT sum of trials 1-5 | Continuous | Verbal learning |
+| RAVLT_learning | RAVLT trial 5 - trial 1 | Continuous | Learning rate |
+| RAVLT_forgetting | RAVLT trial 5 - delayed | Continuous | Memory retention |
+| LDELTOTAL | Logical Memory delayed recall | Continuous | Episodic memory |
+| TRABSCOR | Trail Making Test B (seconds) | Continuous | Executive function |
+
+### MCI Subtype
+
+| Variable | Definition | Type | Rationale |
+|----------|------------|------|-----------|
+| DX_BL | Baseline MCI subtype | Binary | EMCI vs LMCI |
+
+## Excluded Variables
+
+<!--
+PROMPT: Explain why imaging and genetic variables are excluded
+(following Grassi et al. approach for clinical translatability)
+-->
+
+The following variable categories are intentionally **excluded** to maximize
+clinical translatability (Grassi et al., 2019):
+
+- **Imaging:** MRI volumes, PET SUVRs
+- **Genetic:** APOE genotype
+- **Biomarkers:** CSF Abeta, tau, p-tau
+
+**Rationale:** These measures require specialized equipment and expertise
+not available in most community clinical settings.
+
+# Statistical Methods
+
+## Descriptive Statistics
+
+**Continuous variables:** Mean (SD), median (IQR), range
+
+**Categorical variables:** Frequencies, percentages
+
+**Stratification:** By conversion status (sMCI vs cAD)
+
+**Comparison tests:**
+
+- Continuous: t-test or Wilcoxon rank-sum
+- Categorical: Chi-square or Fisher's exact
+
+## Missing Data
+
+<!--
+PROMPT: Describe your approach to missing data
+-->
+
+```{r}
+#| label: missing-data
+#| eval: false
+# Uncomment when data available
+# mci_data |>
+#   summarise(across(everything(), ~sum(is.na(.))/n()*100)) |>
+#   pivot_longer(everything(), names_to = "Variable", values_to = "Pct_Missing") |>
+#   filter(Pct_Missing > 0) |>
+#   arrange(desc(Pct_Missing)) |>
+#   kable(caption = "Percentage missing by variable", digits = 1)
+```
+
+**Strategy:** [Complete case analysis / Multiple imputation / Specify]
+
+**Justification:** [Your justification here]
+
+## Machine Learning Methods
+
+### Algorithms
+
+We will implement at least three classification algorithms:
+
+| Algorithm | R Package | Key Hyperparameters |
+|-----------|-----------|---------------------|
+| Logistic Regression | `glm` | None |
+| Random Forest | `randomForest` | ntree, mtry |
+| Gradient Boosting | `xgboost` | max_depth, eta, nrounds |
+| [Optional: Additional] | | |
+
+### Cross-Validation Strategy
+
+<!--
+PROMPT: Describe your validation approach
+- Train/test split ratio
+- Cross-validation folds
+- Site-independent split (if possible)
+-->
+
+1. **Train/Test Split:** 70% training, 30% testing
+2. **Cross-Validation:** 5-fold CV within training set
+3. **Site Independence:** [If feasible, split by ADNI site]
+
+### Hyperparameter Tuning
+
+| Algorithm | Tuning Method | Grid/Range |
+|-----------|---------------|------------|
+| Random Forest | Grid search | mtry: 2-8, ntree: 100-500 |
+| XGBoost | Grid search | max_depth: 3-6, eta: 0.01-0.3 |
+
+## Evaluation Metrics
+
+| Metric | Definition | Target |
+|--------|------------|--------|
+| AUROC | Area under ROC curve | > 0.75 |
+| Sensitivity | TP / (TP + FN) | > 0.70 |
+| Specificity | TN / (TN + FP) | > 0.70 |
+| PPV | TP / (TP + FP) | Report |
+| NPV | TN / (TN + FN) | Report |
+
+**Threshold Selection:** Youden's J statistic (maximize sensitivity + specificity)
+
+## Feature Importance
+
+- **Random Forest:** Mean decrease in Gini / Permutation importance
+- **Logistic Regression:** Standardized coefficients
+- **XGBoost:** Gain-based importance
+
+# Planned Results
+
+## Table 1: Baseline Characteristics by Conversion Status
+
+| Characteristic | Stable MCI | Converters | p-value |
+|----------------|------------|------------|---------|
+| **N** | | | |
+| **Age, mean (SD)** | | | |
+| **Education, mean (SD)** | | | |
+| **Female, n (%)** | | | |
+| **EMCI, n (%)** | | | |
+| **MMSE, mean (SD)** | | | |
+| **ADAS-Cog-13, mean (SD)** | | | |
+| **CDR-SB, mean (SD)** | | | |
+| **FAQ, mean (SD)** | | | |
+| **RAVLT immediate, mean (SD)** | | | |
+| **RAVLT forgetting, mean (SD)** | | | |
+| **LDELTOTAL, mean (SD)** | | | |
+| **TMT-B, mean (SD)** | | | |
+
+## Table 2: Model Performance Comparison
+
+| Metric | Logistic Reg | Random Forest | XGBoost |
+|--------|--------------|---------------|---------|
+| AUROC (95% CI) | | | |
+| Sensitivity | | | |
+| Specificity | | | |
+| PPV | | | |
+| NPV | | | |
+| Accuracy | | | |
+
+## Table 3: Feature Importance Rankings
+
+| Rank | Logistic Reg | Random Forest | XGBoost |
+|------|--------------|---------------|---------|
+| 1 | | | |
+| 2 | | | |
+| 3 | | | |
+| 4 | | | |
+| 5 | | | |
+
+## Planned Figures
+
+### Figure 1: Cohort Flow Diagram
+
+- **Type:** CONSORT-style flow diagram
+- **Purpose:** Show sample selection and exclusions
+
+### Figure 2: ROC Curves
+
+- **Type:** Overlaid ROC curves for all models
+- **Purpose:** Compare discrimination across algorithms
+
+### Figure 3: Feature Importance Plot
+
+- **Type:** Bar chart or dot plot
+- **Purpose:** Visualize top predictors
+
+### Figure 4: Calibration Plot
+
+- **Type:** Predicted vs. observed probabilities
+- **Purpose:** Assess calibration of best model
+
+# Sensitivity Analyses
+
+| Analysis | Rationale | Expected Impact |
+|----------|-----------|-----------------|
+| EMCI only | Test in early-stage MCI | Lower conversion rate |
+| LMCI only | Test in late-stage MCI | Higher conversion rate |
+| Exclude outliers | Robustness check | Minimal change expected |
+| Alternative imputation | Compare to complete case | Similar results expected |
+| Different CV folds | Check stability | Similar AUROC expected |
+
+# Limitations
+
+## Scope and Generalizability
+
+- Results specific to ADNI population (highly educated, mostly White)
+- May not generalize to community clinic populations
+- ADNI uses strict diagnostic criteria
+
+## Methodological Limitations
+
+- Retrospective cohort design
+- Cannot establish causation
+- 3-year prediction horizon may miss later converters
+- No external validation cohort
+
+## Data Limitations
+
+- Missing data on some predictor variables
+- Potential selection bias in ADNI enrollment
+- Measurement variability across sites
+
+# Timeline
+
+| Week | Task | Deliverable |
+|------|------|-------------|
+| 1 (Feb 17-21) | Data preparation, cohort selection | Clean dataset |
+| 2 (Feb 24-28) | Feature engineering, initial models | Preliminary results |
+| 3 (Mar 2-6) | Model tuning, evaluation, report | Final submission |
+
+**Due Date:** March 3, 2026
+
+# References
+
+1. Donohue MC, et al. (2026). Alzheimer's clinical research data via R
+   packages: The alzverse. *Alzheimer's Dement*, 22:e71152.
+
+2. Grassi M, et al. (2019). A Clinically-Translatable Machine Learning
+   Algorithm for the Prediction of Alzheimer's Disease Conversion.
+   *Front Neurol*, 10:756.
+
+3. Petersen RC. (2004). Mild cognitive impairment as a diagnostic entity.
+   *J Intern Med*, 256(3):183-194.
+
+4. Rye I, et al. (2022). Predicting conversion to Alzheimer's disease in
+   individuals with Mild Cognitive Impairment. *Sci Rep*, 12:15566.
+
+# Appendix: Code Framework
+
+```{r}
+#| label: code-framework
+#| echo: true
+#| eval: false
+
+# ============================================================
+# Data Preparation
+# ============================================================
+library(ADNIMERGE2)
+library(tidyverse)
+library(caret)
+
+# Load data
+data(ADSL)
+data(ADQS)
+
+# Select MCI subjects at baseline
+mci_baseline <- ADSL |>
+  filter(DX_BL %in% c("EMCI", "LMCI"))
+
+# Define conversion status
+# [Your code here]
+
+# ============================================================
+# Feature Engineering
+# ============================================================
+# Select predictor variables
+predictors <- c("AGE", "PTEDUCAT", "PTGENDER", "CDRSB", "FAQ",
+                "MMSE", "ADAS13", "RAVLT_immediate", "RAVLT_forgetting",
+                "LDELTOTAL", "TRABSCOR")
+
+# ============================================================
+# Model Training
+# ============================================================
+# Train/test split
+set.seed(243)
+train_idx <- createDataPartition(mci_data$converter, p = 0.7, list = FALSE)
+
+# Cross-validation setup
+ctrl <- trainControl(method = "cv", number = 5,
+                     classProbs = TRUE, summaryFunction = twoClassSummary)
+
+# ============================================================
+# Model Evaluation
+# ============================================================
+# ROC curves
+library(pROC)
+# [Your code here]
+```
+
+<!--
+CHECKLIST before submitting:
+
+[ ] Clear, specific research question about MCI conversion prediction
+[ ] Complete data description with ADNI/ADNIMERGE2 citations
+[ ] All predictor variables defined with clinical rationale
+[ ] At least 3 ML algorithms specified with hyperparameters
+[ ] Cross-validation strategy clearly described
+[ ] Evaluation metrics defined with targets
+[ ] Table shells for baseline characteristics and model comparison
+[ ] Figure descriptions for ROC curves and feature importance
+[ ] Sensitivity analyses planned
+[ ] Limitations acknowledged
+[ ] All references cited
+
+Goal: Someone else could execute your plan and get the same results.
+-->
