@@ -1,5 +1,3 @@
-
-
 ---
 title: "Machine Learning predictions in ADNI"
 author: "R.G. Thomas"
@@ -10,152 +8,684 @@ output:
     number_sections: true
     highlight: tango
     keep_tex: false
-latex_engine: xelatex
+    latex_engine: xelatex
 ---
 
-```{r  include=FALSE}
-options(knitr.kable.NA = '',dplyr.summarise.inform = FALSE, dplyr.print_max = 1e9)
+```{r setup, include=FALSE}
+options(
+  knitr.kable.NA = "",
+  dplyr.summarise.inform = FALSE,
+  dplyr.print_max = 1e9
+)
 library(pacman)
-p_load(kableExtra, janitor, rmarkdown, tidyverse, knitr)
+p_load(
+  kableExtra, janitor, rmarkdown, tidyverse, knitr,
+  caret, pROC, glmnet, randomForest, e1071, gbm, class
+)
 
-opts_chunk$set(warning = F, message = F, echo = F, fig.width = 3.2,
-       fig.height = 3,  results = "asis", dev = "pdf",
-       opts_chunk$set(cache.path = "cache/"))
-# Custom helpers replaced with dplyr functions
+opts_chunk$set(
+  warning = FALSE, message = FALSE, echo = FALSE,
+  fig.width = 5, fig.height = 4,
+  results = "asis", dev = "pdf"
+)
 options(scipen = 1, digits = 2)
+set.seed(42)
 ```
 
 ## Notes
 
-**Goal**: Mimic three ADNI ML papers
+**Goal**: Replicate the analysis of Grassi et al. (2019), *Frontiers in
+Neurology* 10:756, which developed an ensemble-based machine learning
+algorithm to predict 3-year conversion from MCI to AD using
+sociodemographic, clinical, and neuropsychological predictors from the
+ADNIMERGE dataset.
 
-- Grassi (2019): Read ADNIMERGE data, subset converters with 3+ years follow-up
-- Gill (2020): Neuroimaging + ML
-- Dimitriadis (2018): Random Forest approach
+# Introduction
 
-**Analysis idea**: Random forest analysis of cognitive data to find enrichment
-criteria
+Alzheimer's Disease (AD) is a neurodegenerative disease characterized by
+progressive memory loss, cognitive impairment, and general disability. The
+progression of AD comprises a long, unnoticed preclinical stage, followed by
+a prodromal stage of Mild Cognitive Impairment (MCI) that leads to severe
+dementia and eventually death. Only 20--40\% of MCI individuals will progress
+to dementia within 3 years following initial diagnosis.
 
-# Introduction 
-[start with a description of AD and the early stages.
-Why are we looking for prediction models? consider NIA intro page] A
-diagnosis of Alzheimer's Disease usually only occurs following a long
-period, as much as 15 years, of disease progression. 
+The prompt identification of subjects at high risk for conversion to AD is of
+great importance for clinical trial enrichment and early intervention. Grassi
+et al. (2019) proposed a clinically translatable machine learning algorithm,
+based on non-invasive and easily collectible predictors, to identify MCI
+subjects at risk for conversion to AD. The algorithm achieved an AUROC of
+0.88 with 77.7\% sensitivity and 79.9\% specificity.
 
-The length of this prodromal phase differs across individuals.
-Identifying those at greatest risk for rapid progression is vital,
-both for a clinical and a research perspective.i.e. enrichment. 
-
-Consider the ADNI data archive as a resource for assessing/modeling
-progression from MCI -- the earliest stage of observable disease
-phenotype -- to AD. The ADNI project was designed by Drs. Leon Thal
-and Michael Weiner. Initiated in 2005, the project has 
-
-First key paper is Grassi et al. (2019). First step is to mimic Table 2 in
-the paper.
-
-![Grassi Table 2](table2.png)
-
-**Other references**:
-
-- Dimitriadis (2018)
-- Gill (2020)
-- Haulcy (2021)
-- Katabathula (2021)
+The present analysis replicates the Grassi et al. Table 2 descriptive
+statistics and follows their analytical pipeline using available R
+implementations of the machine learning techniques they employed.
 
 # Methods
-```sh
 
-Notes on getting data from ADNI
-new password .. see pass find loni
+## Data Loading
 
-goal 1: mimic Grassi table 2. 
-1. determine sample size for adnimerge data set. 
-step 1.1: read in ADNIMERGE from ./data directory
-> df1 = read.csv("./data/ADNIMERGE.csv")
-> dim(df1) # should be greater than 550
->  # looking for 550 subjects with MCI and dx followup for at
->  # least 3 years. 
+```{r load-data}
+df_raw <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
 
-2. find age mean/sd by coverters
-
-step 2: explore DX variable (see ./data/ADNIMERGE_DICT.csv
-and ./data/ADNIMERGE_Methods_21030429.pdf
-
+df <- df_raw |>
+  dplyr::select(
+    RID, VISCODE, SITE, ORIGPROT,
+    AGE, PTGENDER, PTEDUCAT, PTMARRY,
+    DX, DX_bl,
+    CDRSB, ADAS11, ADAS13, ADASQ4, MMSE,
+    RAVLT_immediate, RAVLT_learning,
+    RAVLT_forgetting, RAVLT_perc_forgetting,
+    LDELTOTAL, DIGITSCOR, TRABSCOR, FAQ,
+    Years_bl
+  ) |>
+  rename_with(tolower) |>
+  dplyr::filter(dx_bl %in% c("EMCI", "LMCI"))
 ```
 
+## Inclusion Criteria
 
+Following Grassi et al. (2019), we select MCI subjects (both Early and Late
+MCI) with diagnostic follow-up for at least 3 years from baseline. Converters
+are defined as subjects whose diagnosis changed to Dementia at any follow-up
+assessment within 3 years.
 
+```{r apply-criteria}
+followup_duration <- df |>
+  group_by(rid) |>
+  dplyr::summarize(
+    max_years = max(years_bl, na.rm = TRUE),
+    .groups = "drop"
+  )
 
+rids_3yr <- followup_duration |>
+  dplyr::filter(max_years >= 3) |>
+  pull(rid)
 
+df_3yr <- df |>
+  dplyr::filter(rid %in% rids_3yr)
 
+converter_status <- df_3yr |>
+  dplyr::filter(years_bl <= 3) |>
+  group_by(rid) |>
+  dplyr::summarize(
+    converter = any(dx == "Dementia", na.rm = TRUE),
+    .groups = "drop"
+  )
+```
 
+```{r baseline-data}
+df_bl <- df_3yr |>
+  dplyr::filter(viscode == "bl") |>
+  left_join(converter_status, by = "rid") |>
+  dplyr::filter(
+    !is.na(converter),
+    age >= 55, age <= 90,
+    mmse >= 24, mmse <= 30
+  ) |>
+  mutate(
+    group = if_else(converter, "Converter", "Non-converter"),
+    mci_subtype = if_else(
+      dx_bl == "EMCI", "Early", "Late"
+    ),
+    sex = ptgender
+  )
+```
 
+```{r sample-counts}
+n_total <- nrow(df_bl)
+n_conv <- sum(df_bl$converter)
+n_nonconv <- n_total - n_conv
+pct_conv <- round(100 * n_conv / n_total, 1)
+```
+
+The analytic sample includes `r n_total` MCI subjects with at least 3 years
+of diagnostic follow-up: `r n_conv` converters (`r pct_conv`\%) and
+`r n_nonconv` non-converters. Grassi et al. reported 550 subjects (197
+converters, 35.8\%; 353 non-converters, 64.2\%).
+
+## Descriptive Statistics (Table 2 Replication)
+
+```{r table2-continuous, results='asis'}
+cont_vars <- c(
+  "age", "pteducat", "cdrsb", "adas11", "adas13", "adasq4",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravlt_forgetting", "ravlt_perc_forgetting",
+  "ldeltotal", "digitscor", "trabscor", "faq"
+)
+cont_labels <- c(
+  "Age", "Years of education", "CDRSB",
+  "ADAS11", "ADAS13", "ADASQ4",
+  "MMSE", "RAVLT-I", "RAVLT-L",
+  "RAVLT-F", "RAVLT-PF",
+  "LDT", "DIGIT", "TMTBT", "FAQ"
+)
+
+tbl_cont <- map2_dfr(cont_vars, cont_labels, function(v, lab) {
+  stats <- df_bl |>
+    group_by(group) |>
+    dplyr::summarize(
+      mean_val = mean(.data[[v]], na.rm = TRUE),
+      sd_val = sd(.data[[v]], na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    mutate(stat = sprintf("%.2f (%.2f)", mean_val, sd_val)) |>
+    dplyr::select(group, stat) |>
+    pivot_wider(names_from = group, values_from = stat)
+
+  n_miss <- sum(is.na(df_bl[[v]]))
+  pct_miss <- if (n_miss > 0) {
+    sprintf("%.2f", 100 * n_miss / n_total)
+  } else {
+    "/"
+  }
+  n_miss_str <- if (n_miss > 0) as.character(n_miss) else "/"
+
+  stats |>
+    mutate(
+      Variable = lab,
+      `Missing N` = n_miss_str,
+      `Missing pct` = pct_miss,
+      .before = 1
+    )
+})
+
+kbl(tbl_cont, booktabs = TRUE, linesep = "", escape = TRUE,
+    col.names = c(
+      "Continuous predictors", "N", "\\%",
+      "Mean (S.D.)", "Mean (S.D.)"
+    ),
+    caption = "Descriptive statistics of continuous predictors
+    (cf. Grassi et al., 2019, Table 2).") |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  ) |>
+  add_header_above(c(
+    " " = 1, "Missing" = 2,
+    "Non-converters" = 1, "Converters" = 1
+  ))
+```
+
+```{r table2-categorical, results='asis'}
+cat_summary <- function(data, var, levels_vec) {
+  map_dfr(levels_vec, function(lev) {
+    data |>
+      group_by(group) |>
+      dplyr::summarize(
+        n_lev = sum(.data[[var]] == lev, na.rm = TRUE),
+        pct_lev = 100 * mean(.data[[var]] == lev, na.rm = TRUE),
+        .groups = "drop"
+      ) |>
+      mutate(stat = sprintf("%.0f (%.2f)", n_lev, pct_lev)) |>
+      dplyr::select(group, stat) |>
+      pivot_wider(names_from = group, values_from = stat) |>
+      mutate(Category = lev, .before = 1)
+  })
+}
+
+tbl_sex <- cat_summary(df_bl, "sex", c("Male", "Female")) |>
+  mutate(Variable = c("Sex", ""), .before = 1)
+
+tbl_mci <- cat_summary(
+  df_bl, "mci_subtype", c("Early", "Late")
+) |>
+  mutate(Variable = c("Subtype of MCI", ""), .before = 1)
+
+df_marry <- df_bl |>
+  dplyr::filter(ptmarry %in% c(
+    "Never married", "Married", "Divorced", "Widowed"
+  ))
+
+tbl_marry <- cat_summary(
+  df_marry, "ptmarry",
+  c("Never married", "Married", "Divorced", "Widowed")
+) |>
+  mutate(
+    Variable = c("Marital status", "", "", ""),
+    .before = 1
+  )
+
+tbl_cat_all <- bind_rows(tbl_sex, tbl_mci, tbl_marry) |>
+  dplyr::select(Variable, Category, `Non-converter`, Converter)
+
+kbl(tbl_cat_all, booktabs = TRUE, linesep = "", escape = TRUE,
+    col.names = c(
+      "Categorical predictors", "",
+      "N (\\%)", "N (\\%)"
+    ),
+    caption = "Descriptive statistics of categorical predictors
+    (cf. Grassi et al., 2019, Table 2).") |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  ) |>
+  add_header_above(c(
+    " " = 2, "Non-converters" = 1, "Converters" = 1
+  ))
+```
+
+## Feature Transformation and Selection
+
+Following Grassi et al. (2019), continuous variables are standardized
+(mean = 0, SD = 1) and categorical variables are dichotomized using
+one-hot encoding. Variables correlated above $r = 0.75$ are replaced with
+their first principal component.
+
+```{r feature-prep, results='hide'}
+pred_cont <- c(
+  "age", "pteducat", "cdrsb", "adas11", "adas13", "adasq4",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravlt_forgetting", "ravlt_perc_forgetting",
+  "ldeltotal", "trabscor", "faq"
+)
+
+df_model <- df_bl |>
+  dplyr::select(rid, converter, all_of(pred_cont),
+                sex, mci_subtype, ptmarry) |>
+  dplyr::filter(
+    ptmarry %in% c(
+      "Never married", "Married", "Divorced", "Widowed"
+    )
+  ) |>
+  mutate(converter = factor(
+    converter, levels = c(FALSE, TRUE),
+    labels = c("NC", "cAD")
+  ))
+
+impute_median <- function(x) {
+  x[is.na(x)] <- median(x, na.rm = TRUE)
+  x
+}
+
+df_model <- df_model |>
+  mutate(across(all_of(pred_cont), impute_median))
+
+adas_cor <- cor(
+  df_model[, c("adas11", "adas13", "adasq4")],
+  use = "complete.obs"
+)
+adas_pca <- prcomp(
+  df_model[, c("adas11", "adas13", "adasq4")],
+  scale. = TRUE
+)
+df_model$adas_pc1 <- adas_pca$x[, 1]
+
+ravltf_cor <- cor(
+  df_model[, c("ravlt_forgetting", "ravlt_perc_forgetting")],
+  use = "complete.obs"
+)
+ravltf_pca <- prcomp(
+  df_model[, c("ravlt_forgetting", "ravlt_perc_forgetting")],
+  scale. = TRUE
+)
+df_model$ravltf_pc1 <- ravltf_pca$x[, 1]
+
+pred_final <- c(
+  "age", "pteducat", "cdrsb", "adas_pc1",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravltf_pc1", "ldeltotal", "trabscor", "faq",
+  "sex", "mci_subtype", "ptmarry"
+)
+
+df_analytic <- df_model |>
+  dplyr::select(rid, converter, all_of(pred_final))
+
+dummies <- dummyVars(
+  converter ~ sex + mci_subtype + ptmarry,
+  data = df_analytic
+)
+cat_encoded <- predict(dummies, df_analytic) |>
+  as.data.frame()
+
+pred_numeric <- c(
+  "age", "pteducat", "cdrsb", "adas_pc1",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravltf_pc1", "ldeltotal", "trabscor", "faq"
+)
+
+df_final <- bind_cols(
+  df_analytic[, c("rid", "converter")],
+  df_analytic[, pred_numeric],
+  cat_encoded
+)
+
+preproc <- preProcess(
+  df_final[, pred_numeric],
+  method = c("center", "scale")
+)
+df_final[, pred_numeric] <- predict(
+  preproc, df_final[, pred_numeric]
+)
+
+feature_names <- setdiff(names(df_final), c("rid", "converter"))
+```
+
+The ADAS scores (ADAS11, ADAS13, ADASQ4) exhibited pairwise correlations
+above 0.75 and were replaced by their first principal component (ADAS-PC1,
+explaining `r round(100 * summary(adas_pca)$importance[2, 1], 1)`\% of
+variance). Similarly, RAVLT-F and RAVLT-PF were replaced by RAVLT-F-PC1
+(`r round(100 * summary(ravltf_pca)$importance[2, 1], 1)`\% of variance).
+
+## Machine Learning Analysis
+
+We train several supervised ML algorithms following the Grassi methodology:
+logistic regression (LR), elastic net (EN), support vector machines with
+linear and radial kernels (SVM-Linear, SVM-RBF), random forest (RF),
+gradient tree boosting (GBM), and k-nearest neighbors (kNN). We use
+repeated 10-fold stratified cross-validation and evaluate via AUROC.
+
+```{r ml-setup, results='hide'}
+train_ctrl <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 5,
+  classProbs = TRUE,
+  summaryFunction = twoClassSummary,
+  savePredictions = "final"
+)
+
+x_train <- df_final[, feature_names]
+y_train <- df_final$converter
+```
+
+```{r ml-models, results='hide', cache=TRUE}
+fit_lr <- train(
+  x = x_train, y = y_train,
+  method = "glm", family = "binomial",
+  metric = "ROC", trControl = train_ctrl
+)
+
+fit_en <- train(
+  x = x_train, y = y_train,
+  method = "glmnet",
+  metric = "ROC", trControl = train_ctrl,
+  tuneLength = 10
+)
+
+fit_rf <- train(
+  x = x_train, y = y_train,
+  method = "rf",
+  metric = "ROC", trControl = train_ctrl,
+  tuneLength = 5
+)
+
+fit_svml <- train(
+  x = x_train, y = y_train,
+  method = "svmLinear",
+  metric = "ROC", trControl = train_ctrl
+)
+
+fit_svmr <- train(
+  x = x_train, y = y_train,
+  method = "svmRadial",
+  metric = "ROC", trControl = train_ctrl,
+  tuneLength = 5
+)
+
+fit_gbm <- train(
+  x = x_train, y = y_train,
+  method = "gbm", verbose = FALSE,
+  metric = "ROC", trControl = train_ctrl,
+  tuneLength = 5
+)
+
+fit_knn <- train(
+  x = x_train, y = y_train,
+  method = "knn",
+  metric = "ROC", trControl = train_ctrl,
+  tuneLength = 10
+)
+
+models <- list(
+  LR = fit_lr, EN = fit_en, RF = fit_rf,
+  `SVM-Linear` = fit_svml, `SVM-RBF` = fit_svmr,
+  GBM = fit_gbm, kNN = fit_knn
+)
+```
+
+## Weighted Rank Ensemble
+
+Following Grassi et al., we combine predictions from all trained algorithms
+using a weighted average of rescaled ranks, where weights are proportional
+to each algorithm's cross-validated AUROC.
+
+```{r ensemble, results='hide'}
+cv_aurocs <- map_dbl(models, function(m) {
+  max(m$results$ROC)
+})
+
+ensemble_preds <- map_dfc(models, function(m) {
+  pred_df <- m$pred |>
+    group_by(rowIndex) |>
+    dplyr::summarize(prob = mean(cAD), .groups = "drop") |>
+    arrange(rowIndex)
+  tibble(prob = pred_df$prob)
+})
+names(ensemble_preds) <- names(models)
+
+rank_preds <- map_dfc(ensemble_preds, function(col) {
+  rank(col[[1]]) / length(col[[1]])
+})
+
+weights <- cv_aurocs / sum(cv_aurocs)
+ensemble_score <- as.matrix(rank_preds) %*% weights
+
+roc_ensemble <- roc(
+  y_train, as.numeric(ensemble_score),
+  levels = c("NC", "cAD"), direction = "<"
+)
+auc_ensemble <- auc(roc_ensemble)
+ci_ensemble <- ci.auc(roc_ensemble, method = "bootstrap",
+                       boot.n = 2000, quiet = TRUE)
+```
 
 # Results
 
+## Model Performance
 
+```{r performance-table, results='asis'}
+perf_tbl <- tibble(
+  Algorithm = names(cv_aurocs),
+  `CV AUROC` = sprintf("%.3f", cv_aurocs)
+)
 
-# Code 
-```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
+ensemble_row <- tibble(
+  Algorithm = "Ensemble",
+  `CV AUROC` = sprintf(
+    "%.3f (%.3f--%.3f)",
+    auc_ensemble, ci_ensemble[1], ci_ensemble[3]
+  )
+)
+
+perf_tbl <- bind_rows(perf_tbl, ensemble_row)
+
+kbl(perf_tbl, booktabs = TRUE, linesep = "", escape = TRUE,
+    caption = "Cross-validated AUROC for each algorithm and the
+    weighted rank ensemble. Grassi et al. reported an ensemble
+    test AUROC of 0.88 (95\\% CI 0.85--0.91).") |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 10
+  )
+```
+
+## ROC Curve
+
+```{r roc-plot, results='markup', fig.width=4.5, fig.height=4.5}
+roc_list <- map(models, function(m) {
+  pred_df <- m$pred |>
+    group_by(rowIndex) |>
+    dplyr::summarize(
+      prob = mean(cAD),
+      obs = first(obs),
+      .groups = "drop"
+    )
+  roc(pred_df$obs, pred_df$prob,
+      levels = c("NC", "cAD"), direction = "<", quiet = TRUE)
+})
+roc_list[["Ensemble"]] <- roc_ensemble
+
+cols <- c(
+  LR = "blue", EN = "darkgreen", RF = "red",
+  `SVM-Linear` = "purple", `SVM-RBF` = "orange",
+  GBM = "brown", kNN = "gray50", Ensemble = "black"
+)
+
+plot(roc_list[["Ensemble"]], col = "black", lwd = 2,
+     main = "ROC Curves", legacy.axes = TRUE)
+iwalk(roc_list[names(roc_list) != "Ensemble"], function(r, nm) {
+  lines(r, col = cols[nm], lty = 2)
+})
+legend("bottomright",
+       legend = paste0(
+         names(roc_list), " (",
+         sprintf("%.3f", map_dbl(roc_list, auc)), ")"
+       ),
+       col = cols[names(roc_list)], lwd = c(rep(1, 7), 2),
+       lty = c(rep(2, 7), 1), cex = 0.6, bty = "n")
+```
+
+## Sensitivity and Specificity at Various Thresholds
+
+```{r threshold-table, results='asis'}
+sens_targets <- c(1.0, 0.975, 0.95, 0.90, 0.85, 0.80, 0.75)
+threshold_tbl <- map_dfr(sens_targets, function(s) {
+  coord <- coords(roc_ensemble, x = s, input = "sensitivity",
+                  ret = c("threshold", "sensitivity",
+                          "specificity"),
+                  best.method = "closest.topleft")
+  sens_actual <- coord$sensitivity
+  spec_actual <- coord$specificity
+  pred_class <- if_else(
+    as.numeric(ensemble_score) >= coord$threshold,
+    "cAD", "NC"
+  )
+  tp <- sum(pred_class == "cAD" & y_train == "cAD")
+  fp <- sum(pred_class == "cAD" & y_train == "NC")
+  fn <- sum(pred_class == "NC" & y_train == "cAD")
+  tn <- sum(pred_class == "NC" & y_train == "NC")
+  ppv <- tp / (tp + fp)
+  npv <- tn / (tn + fn)
+  bal_acc <- (sens_actual + spec_actual) / 2
+  f1 <- 2 * (ppv * sens_actual) / (ppv + sens_actual)
+
+  tibble(
+    `Target Sens.` = sprintf("%.1f", s),
+    `Sens. (actual)` = sprintf("%.1f", 100 * sens_actual),
+    `Spec. (pct)` = sprintf("%.1f", 100 * spec_actual),
+    `PPV (pct)` = sprintf("%.1f", 100 * ppv),
+    `NPV (pct)` = sprintf("%.1f", 100 * npv),
+    `Bal. Acc.` = sprintf("%.3f", bal_acc),
+    `F1` = sprintf("%.3f", f1)
+  )
+})
+
+kbl(threshold_tbl, booktabs = TRUE, linesep = "",
+    escape = TRUE,
+    caption = "Performance at various sensitivity thresholds
+    (cf. Grassi et al., 2019, Table 5).") |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  )
+```
+
+## Feature Importance
+
+Following Grassi et al., we assess feature importance by fitting
+univariate logistic regression models for each predictor and computing
+the test AUROC.
+
+```{r feature-importance, results='asis'}
+feat_auroc <- map_dfr(feature_names, function(f) {
+  roc_obj <- tryCatch({
+    mod <- glm(
+      converter ~ ., data = data.frame(
+        converter = y_train, x = x_train[[f]]
+      ),
+      family = "binomial"
+    )
+    pred_prob <- predict(mod, type = "response")
+    r <- roc(y_train, pred_prob,
+             levels = c("NC", "cAD"), direction = "<",
+             quiet = TRUE)
+    ci_r <- ci.auc(r, method = "bootstrap",
+                    boot.n = 2000, quiet = TRUE)
+    tibble(
+      Feature = f,
+      AUROC = auc(r),
+      CI_lo = ci_r[1],
+      CI_hi = ci_r[3]
+    )
+  }, error = function(e) {
+    tibble(Feature = f, AUROC = NA_real_,
+           CI_lo = NA_real_, CI_hi = NA_real_)
+  })
+  roc_obj
+})
+
+feat_auroc <- feat_auroc |>
+  dplyr::filter(!is.na(AUROC)) |>
+  arrange(desc(AUROC))
+
+feat_tbl <- feat_auroc |>
+  mutate(
+    AUROC_str = sprintf("%.3f", AUROC),
+    CI = sprintf("%.3f--%.3f", CI_lo, CI_hi)
+  ) |>
+  dplyr::select(Feature, AUROC = AUROC_str, `95\\% CI` = CI)
+
+kbl(feat_tbl, booktabs = TRUE, linesep = "", escape = TRUE,
+    caption = "Individual test AUROC of each feature via
+    univariate logistic regression (cf. Grassi et al., 2019,
+    Table 6).") |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  )
+```
+
+```{r feature-importance-plot, results='markup', fig.width=5, fig.height=5}
+feat_plot <- feat_auroc |>
+  mutate(Feature = fct_reorder(Feature, AUROC))
+
+ggplot(feat_plot, aes(x = AUROC, y = Feature)) +
+  geom_point() +
+  geom_errorbarh(
+    aes(xmin = CI_lo, xmax = CI_hi), height = 0.3
+  ) +
+  geom_vline(xintercept = 0.5, linetype = "dashed",
+             color = "gray50") +
+  labs(
+    x = "AUROC",
+    y = NULL,
+    title = "Individual Predictor AUROC",
+    subtitle = "with 95% bootstrap CI"
+  ) +
+  theme_minimal(base_size = 9) +
+  theme(panel.grid.minor = element_blank())
+```
+
+# Code
+```{r, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
 
 # References
 
-```{r cache=F, eval=FALSE}
-df <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4") |>
-  dplyr::select(RID, VISCODE, ORIGPROT, AGE, MMSE, DX, DX_bl,
-                ADAS11, ADAS13, ADASQ4) |>
-  rename_with(tolower) |>
-  dplyr::filter(dx_bl == "LMCI")
-
-# Filter for those with 3 or more visits
-df_cnt <- df |>
-  group_by(rid) |>
-  dplyr::summarize(N = n()) |>
-  dplyr::filter(N >= 3)
-
-df2 <- df |>
-  dplyr::filter(rid %in% df_cnt$rid) |>
-  arrange(rid, viscode) |>
-  group_by(rid)
-
-df3 <- df2 |>
-  dplyr::summarize(converter = any(dx == "Dementia"))
-
-# df2 |> tabyl(dx)
-# df |> tabyl(origprot)
-# df |> tabyl(dx_bl)
-# df3 |> tabyl(converter)
-
-foo <- head(df2, 100)
-df3foo <- foo |>
-  dplyr::summarize(converter = any(dx == "Dementia"))
-
-
-
-
-
-# tab1adni <- df |>
-#   tabyl(race) |>
-#   adorn_totals(where = "row")
-# tab1adni$race <- sub("\\/", "-", tab1adni$race)
-# out <- kbl(tab1adni, booktabs = TRUE, escape = FALSE,
-#            caption = "Race categorization for ADNI.") |>
-#   kable_paper(latex_options = "striped")
-
-# tab1badni <- df |>
-#   tabyl(race, ORIGPROT) |>
-#   adorn_totals(where = "row") |>
-#   adorn_totals(where = "col")
-# tab1badni$race <- sub("\\/", "-", tab1badni$race)
-# out <- kbl(tab1badni, booktabs = TRUE, escape = FALSE,
-#            caption = "Race categorization for ADNI by protocol.") |>
-#   kable_paper(latex_options = "striped") 
-dict <- read.csv("./data/ADNIMERGE_DICT.csv", na.strings = "-4") |>
-  dplyr::select(FLDNAME, TBLNAME, TEXT, CODE)  
-
-
-```
-
-
+- Grassi, M., Rouleaux, N., Caldirola, D., Loewenstein, D.,
+  Schruers, K., Perna, G., \& Dumontier, M. (2019). A novel
+  ensemble-based machine learning algorithm to predict the conversion
+  from mild cognitive impairment to Alzheimer's disease using
+  socio-demographic characteristics, clinical information, and
+  neuropsychological measures. *Frontiers in Neurology*, 10, 756.
+- Dimitriadis, S.I., et al. (2018). Random forest feature selection,
+  fusion and ensemble strategy. *Neurobiology of Aging*, 69, 216--228.
+- Gill, S., et al. (2020). Using machine learning to predict dementia
+  from neuropsychiatric symptom and neuroimaging data. *Journal of
+  Alzheimer's Disease*, 75(1), 277--288.
+- Haulcy, R., \& Glass, J. (2021). Classifying Alzheimer's disease
+  using audio and text-based representations of speech. *Frontiers in
+  Psychology*, 11, 624137.
+- Katabathula, S., et al. (2021). Predict Alzheimer's disease using
+  hippocampus MRI data. *BMC Medical Informatics and Decision Making*,
+  21(Suppl 2), 197.
