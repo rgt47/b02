@@ -457,7 +457,7 @@ PROMPT: Describe your validation approach
 # ============================================================
 # Data Preparation
 # ============================================================
-library(ADNIMERGE2)
+library(ADNIMERGE)
 library(tidyverse)
 library(caret)
 
