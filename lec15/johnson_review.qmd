@@ -1,0 +1,320 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Paper Review: Johnson et al. (2014) — Genetic Algorithm with Logistic Regression for Prediction of AD Progression"
+author: "Dr. Ronald G. Thomas"
+date: "February 24, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    code-copy: true
+    highlight-style: github
+    smaller: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+bibliography: references_traditional.bib
+---
+
+<style>
+.do-this {
+  background-color: #fff7e6;
+  border-left: 5px solid #fa8c16;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.checkpoint {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.warning-box {
+  background-color: #fff2f0;
+  border-left: 5px solid #ff4d4f;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+
+.concept-box {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
+}
+</style>
+
+
+## Purpose of This Review
+
+::: {.concept-box}
+**How to read an ADNI-adjacent paper for analysis strategies**
+
+When developing your own analysis plan, reviewing published
+approaches helps you identify variable selection strategies,
+validation methods, and performance benchmarks that may
+strengthen your work.
+:::
+
+**This paper** [@johnson2014genetic]:
+
+- Uses **logistic regression** (not ensemble ML) as the
+  prediction model
+- Applies a **genetic algorithm** for variable selection
+- Predicts progression to MCI or AD at 36 months
+- Relies exclusively on **neuropsychological tests**
+  (no imaging, no biomarkers)
+
+
+## Slide 1: Study Overview
+
+**Johnson P et al. (2014).** Genetic Algorithm with Logistic
+Regression for Prediction of Progression to Alzheimer's
+Disease. *BMC Bioinformatics*, 15(S16):S11.
+
+| Element | Detail |
+|---------|--------|
+| Data source | AIBL (Australian Imaging Biomarkers and Lifestyle Study) |
+| Sample | 797 HC, 77 MCI at baseline |
+| Outcome | Conversion at 36-month follow-up |
+| Prediction tasks | (1) HC $\rightarrow$ MCI/AD; (2) MCI $\rightarrow$ AD |
+| Method | Genetic algorithm + logistic regression |
+| Performance | AUC = 0.90 (HC$\rightarrow$MCI/AD); 0.86 (MCI$\rightarrow$AD) |
+
+::: {.checkpoint}
+**Note**: AIBL is an Australian cohort study, not ADNI. However,
+both studies use comparable neuropsychological batteries, and
+the analytic strategy is directly transferable to ADNIMERGE data.
+:::
+
+
+## Slide 2: The Clinical Question
+
+The paper addresses **two** prediction problems:
+
+1. **HC $\rightarrow$ MCI/AD**: Which healthy controls will develop
+   cognitive impairment within 3 years?
+   - N = 635 (31 converters, 604 stable) --- 4.9% conversion
+2. **MCI $\rightarrow$ AD**: Which MCI patients will progress to AD
+   within 3 years?
+   - N = 77 (47 converters, 30 stable) --- 61.0% conversion
+
+::: {.warning-box}
+**Compare with Grassi et al.**: Grassi studied only MCI $\rightarrow$ AD
+(N = 550, 35.8% conversion). Johnson's MCI cohort is much
+smaller (N = 77) but the conversion rate is notably higher,
+reflecting cohort differences between AIBL and ADNI.
+:::
+
+
+## Slide 3: Predictor Variables
+
+Johnson used **37 neuropsychological and mood measures**
+from 13 test instruments:
+
+| Source | Tests (examples) |
+|--------|-----------------|
+| MMSE | Global cognition (1 variable) |
+| Logical Memory I & II | Immediate and delayed story recall (3 variables) |
+| CVLT-II | Verbal learning, delayed recall, recognition d' (6 variables) |
+| Rey Complex Figure | Copy, delay, recognition (5 variables) |
+| D-KEFS | Letter fluency, category fluency, switching (4 variables) |
+| WAIS-III | Digit span, digit symbol-coding, IQ estimates (4 variables) |
+| Stroop | Dots, words, colours --- time and errors (7 variables) |
+| BNT | Boston Naming Test (2 variables) |
+| CDT / CDRSoB / WTAR / HADS | Clock drawing, dementia rating, reading, mood (5 variables) |
+
+::: {.concept-box}
+**Key design choice**: No imaging. No genetics. No CSF biomarkers.
+This mirrors Grassi et al.'s emphasis on clinical translatability.
+:::
+
+
+## Slide 4: The Genetic Algorithm
+
+::: {.concept-box}
+**Problem**: With 37 candidate variables, there are
+$2^{37} \approx$ 137 billion possible subsets. Exhaustive search is
+infeasible. The GA searches this space efficiently.
+:::
+
+**How the GA works here**:
+
+1. Each "genome" is a 37-bit binary string
+   (1 = variable selected, 0 = not)
+2. A population of 50 genomes is randomly initialized
+3. For each genome, fit logistic regression on the selected
+   variables and compute 5-fold cross-validated AUC
+4. Apply evolutionary operators:
+   - **Tournament selection** (size = 2) to choose parents
+   - **Two-point crossover** (90% rate) to combine parents
+   - **Single-bit mutation** (10% rate) to explore new solutions
+5. Repeat for 300 generations; keep the best solution
+
+**Fitness function** (penalizes large variable sets):
+
+$$\text{fitness} = \text{AUC} - \rho \cdot \frac{\ell}{n}$$
+
+where $\ell$ = number of selected features, $n$ = 37,
+and $\rho$ = 0.085.
+
+
+## Slide 5: Validation Strategy
+
+Johnson used a layered validation approach:
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| Within GA | 5-fold balanced stratified CV, repeated 5 times | Fitness evaluation during search |
+| Post-GA | Monte Carlo CV (80/20 split, 1,000 runs) | Unbiased AUC for each GA solution |
+| Stability | 50 independent GA runs | Assess consistency of selected features |
+| Benchmark | Comparison with stepwise selection (stepAIC) | Validate that GA outperforms traditional selection |
+| Random | 100 random variable sets per feature-set size | Confirm GA beats chance |
+
+::: {.warning-box}
+**Limitation**: No held-out test set or site-independent split.
+All validation is internal (cross-validation). Grassi et al.
+used a site-independent train/test split, which provides a
+stronger test of generalizability.
+:::
+
+
+## Slide 6: Results --- HC to MCI/AD
+
+**Best GA solution**: 3 variables, AUC = 0.90
+
+| Variable | Test | Domain |
+|----------|------|--------|
+| v3 | Logical Memory II | Delayed story recall |
+| v5 | CVLT-II Total Learning | Verbal learning (trials 1--5) |
+| v18 | D-KEFS Category Switching Total | Executive function / semantic fluency |
+
+These three variables appeared in **>80%** of the 50 GA runs.
+
+- No single variable exceeded AUC = 0.80 alone
+- Best 2-variable combination: AUC = 0.85
+- Adding a 4th variable did not improve performance
+
+::: {.checkpoint}
+**Interpretation**: Episodic memory consolidation (LM-II) and
+verbal learning (CVLT Total Learning) dominate prediction of
+early cognitive decline --- consistent with hippocampal
+pathology as the earliest AD signature.
+:::
+
+
+## Slide 7: Results --- MCI to AD
+
+**Best GA solutions**: 4--8 variables, AUC = 0.85--0.86
+
+Top features selected in >60% of GA runs:
+
+| Variable | Test | Domain |
+|----------|------|--------|
+| v10 | CVLT-II Recognition d' | Recognition memory |
+| v15 | Rey Complex Figure Recognition | Visual memory |
+| v19 | D-KEFS Category Switching (switches) | Semantic fluency |
+| v31 | Stroop Colour errors | Executive function |
+| v35 | CDR Sum of Boxes | Clinical staging |
+
+::: {.concept-box}
+**Critical observation**: The features that predict MCI$\rightarrow$AD
+are **different** from those that predict HC$\rightarrow$MCI/AD.
+Early decline is driven by *acquisition and consolidation*
+(learning, delayed recall); later progression is driven by
+*recognition failure and executive dysfunction*.
+:::
+
+
+## Slide 8: Comparison with Grassi et al.
+
+| Dimension | Johnson (2014) | Grassi (2019) |
+|-----------|---------------|---------------|
+| Data | AIBL (Australia) | ADNI (US/Canada) |
+| MCI sample | N = 77 | N = 550 |
+| Conversion rate | 61.0% | 35.8% |
+| Predictors | 37 neuropsych tests | 15 clinical/neuropsych variables |
+| Variable selection | Genetic algorithm | All variables retained |
+| Prediction model | Logistic regression | Ensemble of 13 ML algorithms |
+| MCI$\rightarrow$AD AUC | 0.86 | 0.88 |
+| Validation | Repeated 5-fold CV | Site-independent train/test split |
+| Interpretability | Explicit LR coefficients | Black-box ensemble |
+
+::: {.checkpoint}
+**Takeaway**: Logistic regression with intelligent variable
+selection (AUC = 0.86) approaches the performance of
+a 13-algorithm ensemble (AUC = 0.88). The 0.02 difference
+raises the question of whether the added complexity of
+ensemble ML is warranted for clinical deployment.
+:::
+
+
+## Slide 9: Lessons for Your Project
+
+::: {.do-this}
+**When reviewing papers for your analysis plan, extract**:
+:::
+
+1. **Cohort definition**: How were subjects selected? What
+   inclusion/exclusion criteria were applied? (Johnson:
+   AIBL, age 60+, 36-month follow-up)
+
+2. **Variable selection strategy**: Were all variables used,
+   or was a selection method applied? (Johnson: GA
+   with parsimony penalty; Grassi: PCA for correlated
+   variables but no formal selection)
+
+3. **Validation design**: Internal CV only, or held-out test
+   set? Site-independent? (Johnson: internal CV only;
+   Grassi: site-independent split --- stronger)
+
+4. **Performance metrics**: AUC, sensitivity, specificity,
+   PPV, NPV? At what threshold? (Johnson reports only
+   AUC; Grassi reports the full suite)
+
+5. **Feature importance**: Which variables drive prediction?
+   Do findings align across studies? (Both identify memory
+   and executive function as dominant predictors)
+
+
+## Slide 10: Implications for ADNIMERGE Analysis
+
+::: {.concept-box}
+**Translating Johnson's approach to your Project 2 data**
+:::
+
+ADNIMERGE contains analogous measures to the AIBL battery:
+
+| Johnson (AIBL) | ADNIMERGE equivalent |
+|----------------|---------------------|
+| Logical Memory II (v3) | LDELTOTAL |
+| CVLT-II Total Learning (v5) | RAVLT_immediate |
+| CVLT-II Recognition d' (v10) | Not directly available |
+| D-KEFS Category Switching (v18, v19) | Not directly available |
+| CDR Sum of Boxes (v35) | CDRSB |
+| Stroop Colour errors (v31) | Not in ADNIMERGE |
+| MMSE (v1) | MMSE |
+| Rey Complex Figure (v15) | Not in ADNIMERGE |
+
+::: {.warning-box}
+**Practical constraint**: ADNIMERGE has fewer neuropsychological
+measures than AIBL. You cannot replicate Johnson exactly, but
+you can apply the same *analytic logic*: use logistic regression
+with a principled variable selection method (e.g., LASSO, which
+serves a similar parsimony role to the GA penalty) and compare
+against the Grassi ensemble approach.
+:::
+
+
+## References
