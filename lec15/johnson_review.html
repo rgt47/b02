@@ -333,74 +333,152 @@ Dr.&nbsp;Ronald G. Thomas
 <p><strong>Key design choice</strong>: No imaging. No genetics. No CSF biomarkers. This mirrors Grassi et al.’s emphasis on clinical translatability.</p>
 </div>
 </section>
-<section id="slide-4-the-genetic-algorithm" class="slide level2">
-<h2>Slide 4: The Genetic Algorithm</h2>
-<div class="concept-box">
-<p><strong>Problem</strong>: With 37 candidate variables, there are <span class="math inline">\(2^{37} \approx\)</span> 137 billion possible subsets. Exhaustive search is infeasible. The GA searches this space efficiently.</p>
-</div>
-<p><strong>How the GA works here</strong>:</p>
-<ol type="1">
-<li>Each “genome” is a 37-bit binary string (1 = variable selected, 0 = not)</li>
-<li>A population of 50 genomes is randomly initialized</li>
-<li>For each genome, fit logistic regression on the selected variables and compute 5-fold cross-validated AUC</li>
-<li>Apply evolutionary operators:
+<section id="slide-4a-the-variable-selection-problem" class="slide level2">
+<h2>Slide 4a: The Variable Selection Problem</h2>
+<p>You have 37 neuropsychological tests. You want to find the <strong>smallest subset</strong> that best predicts AD conversion using logistic regression.</p>
+<p><strong>Why not try all subsets?</strong></p>
 <ul>
-<li><strong>Tournament selection</strong> (size = 2) to choose parents</li>
-<li><strong>Two-point crossover</strong> (90% rate) to combine parents</li>
-<li><strong>Single-bit mutation</strong> (10% rate) to explore new solutions</li>
-</ul></li>
-<li>Repeat for 300 generations; keep the best solution</li>
-</ol>
-<p><strong>Fitness function</strong> (penalizes large variable sets):</p>
-<p><span class="math display">\[\text{fitness} = \text{AUC} - \rho \cdot \frac{\ell}{n}\]</span></p>
-<p>where <span class="math inline">\(\ell\)</span> = number of selected features, <span class="math inline">\(n\)</span> = 37, and <span class="math inline">\(\rho\)</span> = 0.085.</p>
+<li>With 37 variables there are <span class="math inline">\(2^{37} \approx\)</span> 137 billion possible subsets</li>
+<li>Each subset requires fitting a logistic regression and computing cross-validated AUC</li>
+<li>Exhaustive search would take years of compute time</li>
+</ul>
+<p><strong>Why not use stepwise selection?</strong></p>
+<ul>
+<li>Stepwise adds or removes one variable at a time</li>
+<li>It is greedy: once a variable is added, it never reconsiders that choice in light of later additions</li>
+<li>It cannot discover that variables A and B are weak alone but powerful together</li>
+</ul>
+<div class="concept-box">
+<p><strong>We need a method that can search a vast space of variable combinations without evaluating all of them, and that is not trapped by greedy one-at-a-time decisions.</strong></p>
+</div>
 </section>
-<section id="slide-5-validation-strategy" class="slide level2">
-<h2>Slide 5: Validation Strategy</h2>
-<p>Johnson used a layered validation approach:</p>
+<section id="slide-4b-the-ga-by-analogy" class="slide level2">
+<h2>Slide 4b: The GA by Analogy</h2>
+<div class="concept-box">
+<p><strong>Analogy: Assembling a quiz bowl team from 37 candidates</strong></p>
+</div>
+<p>Imagine you must pick a small team from 37 students to compete in a quiz bowl. You cannot try all possible teams.</p>
+<p><strong>Generation 1 — Random start</strong>: Form 50 random teams of varying sizes. Each team plays a match (= fit logistic regression, compute AUC). Record the score of every team.</p>
+<p><strong>Selection — Survival of the fittest</strong>: Now you need to form Generation 2. You do <strong>not</strong> pick teams at random again. Instead, you hold a <strong>tournament</strong>: draw two teams at random, and the higher-scoring team earns the right to be a “parent.” Repeat to find a second parent. Low-scoring teams are rarely chosen; high-scoring teams are chosen repeatedly. This is how useful features survive — they ride along inside winning teams.</p>
+<p><strong>Crossover — Combine strengths</strong>: The two parents swap a segment of their rosters to produce two children. If Parent A is strong because it includes Logical Memory II, and Parent B is strong because it includes CDR-SB, a child may inherit both.</p>
+<p><strong>Mutation — Explore</strong>: Occasionally flip one member at random. This prevents the population from getting stuck and allows discovery of unexpectedly useful variables.</p>
+<p><strong>Elitism</strong>: The single best team from each generation is copied unchanged into the next generation, so the best solution found so far is never lost.</p>
+<p><strong>Generation 2–300 — Repeat</strong>: Each generation, the population shifts toward higher-scoring teams. Variables that contribute to high AUC appear in more and more teams across generations. Variables that do not help are progressively dropped because the teams carrying them lose tournaments and fail to reproduce.</p>
+<div class="checkpoint">
+<p><strong>Why good features are retained</strong>: A variable like Logical Memory II helps every team it appears on score higher. Teams with it win more tournaments, get selected as parents more often, and pass it to more children. After 300 generations, it appears in nearly every surviving team. A variable like Anxiety (HADS) does not improve team scores, so teams carrying it lose tournaments and it gradually disappears from the population.</p>
+</div>
+</section>
+<section id="slide-4c-the-ga-in-concrete-terms" class="slide level2">
+<h2>Slide 4c: The GA in Concrete Terms</h2>
+<p>Each candidate solution is a <strong>binary string of length 37</strong> — one bit per neuropsychological test:</p>
+<pre><code>Position:  1  2  3  4  5 ... 35 36 37
+Genome:    0  0  1  0  1 ...  1  0  0
+                 |     |      |
+               LM-II  CVLT   CDR-SB
+              (selected)    (selected)</code></pre>
+<p>This genome says: “Use Logical Memory II, CVLT Total Learning, and CDR Sum of Boxes in the logistic regression; exclude everything else.”</p>
+<p><strong>Two-point crossover</strong> picks two random cut points and swaps the segment between them. Each parent contributes one child:</p>
+<pre><code>                    cut 1       cut 2
+                      |           |
+Parent A:  0 0 | 1 0 1 0 0 | 1 0 0
+Parent B:  1 1 | 0 1 0 1 1 | 0 0 1
+               |   swap    |
+Child 1:   0 0 | 0 1 0 1 1 | 1 0 0  (A's edges, B's middle)
+Child 2:   1 1 | 1 0 1 0 0 | 0 0 1  (B's edges, A's middle)</code></pre>
+<p>Each child inherits some variable selections from each parent. If Parent A had a strong combination in positions 1–2 and Parent B had a strong combination in positions 3–7, Child 1 might inherit both strengths.</p>
+<p><strong>Mutation</strong> flips a single random bit — either adding a variable that was excluded, or dropping one that was included.</p>
+<p><strong>Fitness</strong> for each genome:</p>
+<p><span class="math display">\[\text{fitness} = \text{AUC} - 0.085 \cdot \frac{\ell}{37}\]</span></p>
+<p>where <span class="math inline">\(\ell\)</span> = number of 1s (selected variables). A model with 3 variables and AUC = 0.89 scores <span class="math inline">\(0.89 - 0.085 \times 3/37 = 0.883\)</span>. A model with 8 variables and AUC = 0.90 scores <span class="math inline">\(0.90 - 0.085 \times 8/37 = 0.882\)</span>. The simpler model wins despite lower raw AUC.</p>
+<div class="checkpoint">
+<p><strong>Key insight</strong>: The GA is not a prediction method. It is a <strong>variable selection</strong> method. The prediction model is always logistic regression. The GA simply decides which variables to feed into it.</p>
+</div>
+</section>
+<section id="slide-5-validation-within-the-ga" class="slide level2">
+<h2>Slide 5: Validation — Within the GA</h2>
+<p>Every candidate variable set must be scored during the GA search. Johnson uses <strong>repeated 5-fold balanced stratified cross-validation</strong>:</p>
+<ol type="1">
+<li>Split the data into 5 equal folds, ensuring each fold has roughly equal numbers of converters and non-converters (balanced + stratified)</li>
+<li>For each fold: train logistic regression on 4 folds, predict on the held-out fold, compute AUC</li>
+<li>Average the 5 AUC values</li>
+<li>Repeat the entire process 5 times with different random fold assignments (to reduce sensitivity to any one split)</li>
+<li>Average all 25 AUC values into a single fitness score</li>
+</ol>
+<p>This runs for <strong>every genome in every generation</strong> — with a population of 50 and 300 generations, that is up to 15,000 evaluations, each involving 25 logistic regressions.</p>
+<div class="concept-box">
+<p><strong>Why balanced folds?</strong> The MCI cohort has 47 converters and 30 non-converters. A naive random split could produce a fold with very few converters, making AUC unstable. Balancing ensures each fold has enough of both classes for a reliable estimate.</p>
+</div>
+</section>
+<section id="slide-5a-validation-after-the-ga" class="slide level2">
+<h2>Slide 5a: Validation — After the GA</h2>
+<p>Once the GA identifies a best variable set, two additional layers of validation are applied:</p>
+<p><strong>Monte Carlo cross-validation (1,000 runs)</strong>:</p>
+<ol type="1">
+<li>Randomly split 80% training / 20% testing</li>
+<li>Fit logistic regression on the training portion using only the GA-selected variables</li>
+<li>Compute AUC on the 20% test portion</li>
+<li>Repeat 1,000 times; report the average AUC</li>
+</ol>
+<p>This gives the final reported AUC (e.g., 0.86 for MCI <span class="math inline">\(\rightarrow\)</span> AD). The large number of random splits reduces the influence of any single lucky or unlucky partition.</p>
+<p><strong>Stability across 50 independent GA runs</strong>:</p>
+<ul>
+<li>The entire GA is re-run 50 times from different random starting populations</li>
+<li>Each run may find a different “best” variable set</li>
+<li>Variables appearing in &gt;80% of runs are considered robust (e.g., Logical Memory II for HC <span class="math inline">\(\rightarrow\)</span> MCI/AD)</li>
+<li>Variables appearing rarely are considered unstable</li>
+</ul>
+<p><strong>Benchmarking against alternatives</strong>:</p>
+<ul>
+<li><strong>Stepwise selection</strong> (<code>stepAIC</code>): GA-selected sets significantly outperformed stepwise for HC <span class="math inline">\(\rightarrow\)</span> MCI/AD (p = 0.002) but not for MCI <span class="math inline">\(\rightarrow\)</span> AD (p = 0.366)</li>
+<li><strong>Random selection</strong>: 100 random variable sets of each size tested; GA consistently outperformed random (p &lt; <span class="math inline">\(10^{-15}\)</span>)</li>
+</ul>
+<div class="warning-box">
+<p><strong>What is missing</strong>: There is no held-out test set and no site-independent split. All validation uses the same AIBL cohort. Grassi et al.&nbsp;split by ADNI site so the test data came from clinics the model had never seen — a stronger test of whether the model would work in a new setting.</p>
+</div>
+</section>
+<section id="slide-5b-what-does-auc-actually-mean" class="slide level2">
+<h2>Slide 5b: What Does AUC Actually Mean?</h2>
+<p>Each logistic regression produces a <strong>predicted probability</strong> of conversion for every subject. The question: how well do these probabilities separate converters from non-converters?</p>
+<div class="concept-box">
+<p><strong>The coin-flip test</strong>: Pick one random converter and one random non-converter from the dataset. The AUC is the probability that the model assigns a <strong>higher predicted probability</strong> to the converter than to the non-converter.</p>
+</div>
 <table class="caption-top">
 <colgroup>
-<col style="width: 29%">
-<col style="width: 33%">
-<col style="width: 37%">
+<col style="width: 35%">
+<col style="width: 64%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Layer</th>
-<th>Method</th>
-<th>Purpose</th>
+<th>AUC</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Within GA</td>
-<td>5-fold balanced stratified CV, repeated 5 times</td>
-<td>Fitness evaluation during search</td>
+<td>0.50</td>
+<td>No better than a coin flip — the model cannot tell converters from non-converters</td>
 </tr>
 <tr class="even">
-<td>Post-GA</td>
-<td>Monte Carlo CV (80/20 split, 1,000 runs)</td>
-<td>Unbiased AUC for each GA solution</td>
+<td>0.70</td>
+<td>If you randomly pick one converter and one non-converter, the model ranks the converter higher 70% of the time</td>
 </tr>
 <tr class="odd">
-<td>Stability</td>
-<td>50 independent GA runs</td>
-<td>Assess consistency of selected features</td>
+<td>0.86</td>
+<td>The model ranks the converter higher 86% of the time (Johnson’s MCI<span class="math inline">\(\rightarrow\)</span>AD result)</td>
 </tr>
 <tr class="even">
-<td>Benchmark</td>
-<td>Comparison with stepwise selection (stepAIC)</td>
-<td>Validate that GA outperforms traditional selection</td>
+<td>0.90</td>
+<td>The model ranks the converter higher 90% of the time (Johnson’s HC<span class="math inline">\(\rightarrow\)</span>MCI/AD result)</td>
 </tr>
 <tr class="odd">
-<td>Random</td>
-<td>100 random variable sets per feature-set size</td>
-<td>Confirm GA beats chance</td>
+<td>1.00</td>
+<td>Perfect separation — every converter scores higher than every non-converter</td>
 </tr>
 </tbody>
 </table>
-<div class="warning-box">
-<p><strong>Limitation</strong>: No held-out test set or site-independent split. All validation is internal (cross-validation). Grassi et al. used a site-independent train/test split, which provides a stronger test of generalizability.</p>
+<p><strong>Concrete example with N = 77 MCI subjects</strong> (47 converters, 30 stable): There are <span class="math inline">\(47 \times 30 = 1{,}410\)</span> possible pairs. An AUC of 0.86 means the model ranks the converter higher in approximately <span class="math inline">\(1{,}410 \times 0.86 \approx 1{,}213\)</span> of those pairs.</p>
+<div class="checkpoint">
+<p><strong>Why AUC and not accuracy?</strong> Accuracy depends on choosing a threshold (e.g., “predict conversion if probability &gt; 0.5”). AUC evaluates the model across <strong>all possible thresholds</strong> at once, making it a fairer summary of overall discrimination. This is why Johnson uses AUC as the fitness function in the GA.</p>
 </div>
 </section>
 <section id="slide-6-results-hc-to-mciad" class="slide level2">
