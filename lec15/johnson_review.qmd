@@ -99,6 +99,30 @@ the analytic strategy is directly transferable to ADNIMERGE data.
 :::
 
 
+## Slide 1b: AIBL and ADNI --- Sister Studies
+
+|  | AIBL | ADNI |
+|--|------|------|
+| **Full name** | Australian Imaging, Biomarkers and Lifestyle Study of Ageing | Alzheimer's Disease Neuroimaging Initiative |
+| **Launched** | November 2006 | October 2004 |
+| **Country** | Australia (Melbourne, Perth) | US and Canada |
+| **Sites** | 2 centres | 67 sites |
+| **Baseline N** | 1,112 (768 HC, 133 MCI, 211 AD) | 2,306 (521 CN, 303 SMC, 404 EMCI, 659 LMCI, 400 AD) |
+| **Enrichment** | +1,247 added over time (total 3,045) | Additional enrollment via ADNI-GO, ADNI-2, ADNI-3 |
+| **Follow-up** | Every 18 months | 6--12 month intervals |
+| **Assessments** | Cognitive battery, blood (80 mL), PiB-PET and MRI (25% of sample), lifestyle questionnaires | Cognitive battery, MRI, PET, CSF, blood, genetics |
+| **Data access** | LONI IDA (same portal as ADNI) | LONI IDA |
+| **PI** | Colin Masters (Florey Institute) | Michael Weiner (UCSF) |
+
+::: {.concept-box}
+**Why this comparison matters**: AIBL and ADNI are
+complementary cohorts with harmonized imaging protocols and
+overlapping cognitive batteries. A method developed on one
+dataset can often be applied to the other --- which is
+exactly what your Project 2 can do with Johnson's approach.
+:::
+
+
 ## Slide 2: The Clinical Question
 
 The paper addresses **two** prediction problems:
