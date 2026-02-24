@@ -103,9 +103,10 @@ the analytic strategy is directly transferable to ADNIMERGE data.
 
 The paper addresses **two** prediction problems:
 
-1. **HC $\rightarrow$ MCI/AD**: Which healthy controls will develop
-   cognitive impairment within 3 years?
+1. **HC $\rightarrow$ MCI/AD**: Which healthy controls (HC) will
+   develop cognitive impairment within 3 years?
    - N = 635 (31 converters, 604 stable) --- 4.9% conversion
+   - HC is equivalent to "CN" (Cognitively Normal) in ADNI
 2. **MCI $\rightarrow$ AD**: Which MCI patients will progress to AD
    within 3 years?
    - N = 77 (47 converters, 30 stable) --- 61.0% conversion
@@ -141,33 +142,112 @@ This mirrors Grassi et al.'s emphasis on clinical translatability.
 :::
 
 
-## Slide 4: The Genetic Algorithm
+## Slide 4a: The Variable Selection Problem
+
+You have 37 neuropsychological tests. You want to find the
+**smallest subset** that best predicts AD conversion using
+logistic regression.
+
+**Why not try all subsets?**
+
+- With 37 variables there are $2^{37} \approx$ 137 billion
+  possible subsets
+- Each subset requires fitting a logistic regression and
+  computing cross-validated AUC
+- Exhaustive search would take years of compute time
+
+**Why not use stepwise selection?**
+
+- Stepwise adds or removes one variable at a time
+- It is greedy: once a variable is added, it never
+  reconsiders that choice in light of later additions
+- It cannot discover that variables A and B are weak alone
+  but powerful together
 
 ::: {.concept-box}
-**Problem**: With 37 candidate variables, there are
-$2^{37} \approx$ 137 billion possible subsets. Exhaustive search is
-infeasible. The GA searches this space efficiently.
+**We need a method that can search a vast space of variable
+combinations without evaluating all of them, and that is not
+trapped by greedy one-at-a-time decisions.**
 :::
 
-**How the GA works here**:
 
-1. Each "genome" is a 37-bit binary string
-   (1 = variable selected, 0 = not)
-2. A population of 50 genomes is randomly initialized
-3. For each genome, fit logistic regression on the selected
-   variables and compute 5-fold cross-validated AUC
-4. Apply evolutionary operators:
-   - **Tournament selection** (size = 2) to choose parents
-   - **Two-point crossover** (90% rate) to combine parents
-   - **Single-bit mutation** (10% rate) to explore new solutions
-5. Repeat for 300 generations; keep the best solution
+## Slide 4b: The GA by Analogy
 
-**Fitness function** (penalizes large variable sets):
+::: {.concept-box}
+**Analogy: Assembling a quiz bowl team from 37 candidates**
+:::
 
-$$\text{fitness} = \text{AUC} - \rho \cdot \frac{\ell}{n}$$
+Imagine you must pick a small team from 37 students to
+compete in a quiz bowl. You cannot try all possible teams.
 
-where $\ell$ = number of selected features, $n$ = 37,
-and $\rho$ = 0.085.
+**Round 1 --- Random start**:
+Form 50 random teams of varying sizes. Each team plays a
+match (= fit logistic regression, compute AUC). Record scores.
+
+**Round 2 --- Selection and breeding**:
+Take two high-scoring teams. **Crossover**: swap some members
+between them to create two new teams. Maybe Team A's
+strength in history combines well with Team B's strength
+in science. **Mutation**: occasionally swap one member at
+random to explore unexpected talent.
+
+**Round 3--300 --- Iterate**:
+Repeat. Over many rounds, teams get stronger. Weak members
+are gradually dropped; strong combinations persist.
+
+**Parsimony pressure**: Larger teams are penalized slightly,
+so the process favors small, efficient teams over sprawling
+rosters that overfit to one match.
+
+After 300 rounds, the best team (= best variable subset)
+is your final logistic regression model.
+
+
+## Slide 4c: The GA in Concrete Terms
+
+Each candidate solution is a **binary string of length 37**
+--- one bit per neuropsychological test:
+
+```
+Position:  1  2  3  4  5 ... 35 36 37
+Genome:    0  0  1  0  1 ...  1  0  0
+                 |     |      |
+               LM-II  CVLT   CDR-SB
+              (selected)    (selected)
+```
+
+This genome says: "Use Logical Memory II, CVLT Total
+Learning, and CDR Sum of Boxes in the logistic regression;
+exclude everything else."
+
+**Crossover** combines two parent genomes:
+
+```
+Parent A:  0 0 [1 0 1 0 0] 1 0 0 ...
+Parent B:  1 1 [0 1 0 1 1] 0 0 1 ...
+                 swap
+Child:     0 0 [0 1 0 1 1] 1 0 0 ...
+```
+
+**Mutation** flips a single random bit (adds or drops one
+variable).
+
+**Fitness** for each genome:
+
+$$\text{fitness} = \text{AUC} - 0.085 \cdot \frac{\ell}{37}$$
+
+where $\ell$ = number of 1s (selected variables). A model
+with 3 variables and AUC = 0.89 scores
+$0.89 - 0.085 \times 3/37 = 0.883$. A model with 8 variables
+and AUC = 0.90 scores $0.90 - 0.085 \times 8/37 = 0.882$.
+The simpler model wins despite lower raw AUC.
+
+::: {.checkpoint}
+**Key insight**: The GA is not a prediction method. It is a
+**variable selection** method. The prediction model is always
+logistic regression. The GA simply decides which variables
+to feed into it.
+:::
 
 
 ## Slide 5: Validation Strategy
