@@ -1,0 +1,455 @@
+---
+title: "Predicting MCI to AD Conversion Using Machine Learning"
+subtitle: "PHB 243b Project 2 Report"
+author: "[Your Name Here]"
+date: last-modified
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    fig-pos: "H"
+bibliography: export.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa.csl
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(knitr)
+library(pROC)
+library(caret)
+# library(ADNIMERGE2)  # Uncomment when data available
+
+# Set global options
+opts_chunk$set(fig.width = 6, fig.height = 4, dpi = 150)
+```
+
+# Abstract
+
+<!--
+PROMPT: Write a structured abstract (250 words max) with:
+- Background (1-2 sentences)
+- Objective (1 sentence)
+- Methods (2-3 sentences)
+- Results (2-3 sentences with key numbers)
+- Conclusion (1-2 sentences)
+-->
+
+**Background:** Mild Cognitive Impairment (MCI) often precedes Alzheimer's
+disease (AD), but not all MCI patients progress to dementia. Identifying
+individuals at high risk for conversion is critical for clinical management
+and trial enrollment.
+
+**Objective:** To develop and validate machine learning models for predicting
+3-year conversion from MCI to AD using baseline clinical and cognitive data.
+
+**Methods:** [Describe your methods in 2-3 sentences]
+
+**Results:** [Report key findings: sample size, best model AUROC, top
+predictors]
+
+**Conclusion:** [Summarize clinical implications in 1-2 sentences]
+
+**Keywords:** Alzheimer's disease, mild cognitive impairment, machine learning,
+prediction, ADNI
+
+# Introduction
+
+## Background
+
+Alzheimer's disease (AD) is the most common cause of dementia, affecting
+an estimated 6.7 million Americans aged 65 and older [@Grassi2019]. The
+disease is characterized by progressive cognitive decline, ultimately
+leading to loss of independence and death. Mild Cognitive Impairment (MCI)
+represents a transitional state between normal aging and dementia, with
+annual conversion rates to AD of approximately 10-15% [@Petersen2004].
+
+<!--
+PROMPT: Expand on:
+- The clinical importance of early prediction
+- Current approaches to MCI diagnosis and prognosis
+- Limitations of existing prediction methods
+- The potential of machine learning approaches
+-->
+
+[Your expanded background here - 2-3 paragraphs]
+
+## Rationale
+
+Grassi et al. (2019) demonstrated that machine learning algorithms using
+only clinically-available measures (sociodemographic characteristics,
+clinical scales, and neuropsychological tests) could predict MCI-to-AD
+conversion with an AUROC of 0.88 [@Grassi2019]. This approach prioritizes
+clinical translatability over maximum predictive accuracy, excluding
+expensive imaging and genetic biomarkers.
+
+## Objectives
+
+The primary objective of this study was to replicate and extend the
+approach of Grassi et al. (2019) using data from the Alzheimer's Disease
+Neuroimaging Initiative (ADNI).
+
+**Specific aims:**
+
+1. Develop machine learning models to predict 3-year MCI-to-AD conversion
+2. Compare performance across multiple algorithms
+3. Identify the most important predictive features
+
+# Methods
+
+## Data Source
+
+Data were obtained from the Alzheimer's Disease Neuroimaging Initiative
+(ADNI) via the ADNIMERGE2 R package [@Donohue2026]. ADNI is a longitudinal
+multicenter study designed to develop clinical, imaging, genetic, and
+biochemical biomarkers for early detection and tracking of Alzheimer's
+disease. Data were downloaded on [DATE].
+
+## Study Population
+
+### Inclusion Criteria
+
+1. Baseline diagnosis of Mild Cognitive Impairment (EMCI or LMCI)
+2. At least one follow-up visit with diagnostic assessment
+3. Complete data on primary predictor variables
+
+### Exclusion Criteria
+
+1. Baseline diagnosis of Cognitively Normal (CN) or Dementia
+2. No follow-up visits after baseline
+
+```{r}
+#| label: fig-flowchart
+#| fig-cap: "Cohort selection flow diagram"
+#| eval: false
+
+# Create flow diagram showing:
+# - Total MCI subjects
+# - Exclusions (with reasons)
+# - Final analytic sample
+# - Converters vs. Stable
+```
+
+## Outcome Definition
+
+The primary outcome was conversion from MCI to AD dementia, defined as
+any follow-up diagnosis of "Dementia" within 3 years of baseline assessment.
+Subjects who remained MCI throughout follow-up or reverted to CN were
+classified as stable (sMCI). Subjects who progressed to dementia were
+classified as converters (cAD).
+
+## Predictor Variables
+
+Following Grassi et al. (2019), we included predictor variables from
+four categories:
+
+**Sociodemographic:** Age, years of education, sex, marital status
+
+**Clinical scales:** Clinical Dementia Rating Sum of Boxes (CDR-SB),
+Functional Activities Questionnaire (FAQ)
+
+**Neuropsychological tests:** Mini-Mental State Examination (MMSE),
+Alzheimer's Disease Assessment Scale-Cognitive 13-item (ADAS-Cog-13),
+Rey Auditory Verbal Learning Test (RAVLT) immediate recall, learning,
+and forgetting scores, Logical Memory delayed recall (LDELTOTAL),
+Trail Making Test Part B (TMT-B)
+
+**MCI subtype:** Early MCI (EMCI) vs. Late MCI (LMCI)
+
+Imaging and genetic variables were intentionally excluded to maximize
+clinical translatability.
+
+## Statistical Analysis
+
+### Descriptive Statistics
+
+Baseline characteristics were summarized by conversion status using means
+and standard deviations for continuous variables and frequencies and
+percentages for categorical variables. Group comparisons used t-tests
+for continuous variables and chi-square tests for categorical variables.
+
+### Machine Learning Models
+
+We implemented three classification algorithms:
+
+1. **Logistic Regression:** Baseline linear classifier with L2 regularization
+2. **Random Forest:** Ensemble of decision trees with 500 trees
+3. **Gradient Boosting (XGBoost):** Sequential tree ensemble
+
+### Model Training and Validation
+
+The dataset was split into training (70%) and test (30%) sets using
+stratified random sampling to preserve the proportion of converters.
+Hyperparameter tuning was performed using 5-fold cross-validation within
+the training set. Final model performance was evaluated on the held-out
+test set.
+
+### Evaluation Metrics
+
+Model discrimination was assessed using the area under the receiver
+operating characteristic curve (AUROC). Additional metrics included
+sensitivity, specificity, positive predictive value (PPV), and negative
+predictive value (NPV). The optimal classification threshold was determined
+using Youden's J statistic.
+
+### Feature Importance
+
+Variable importance was assessed using:
+
+- Logistic regression: Standardized coefficients
+- Random Forest: Mean decrease in Gini impurity
+- XGBoost: Gain-based importance
+
+### Software
+
+All analyses were conducted in R version 4.4.x using the following packages:
+tidyverse, caret, randomForest, xgboost, pROC, and ADNIMERGE2.
+
+# Results
+
+## Study Population
+
+```{r}
+#| label: tbl-characteristics
+#| tbl-cap: "Baseline characteristics by conversion status"
+#| eval: false
+
+# Create Table 1 showing:
+# - Demographics (age, education, sex)
+# - Clinical measures (MMSE, ADAS-Cog-13, CDR-SB, FAQ)
+# - Neuropsychological tests (RAVLT, LDELTOTAL, TMT-B)
+# - MCI subtype (EMCI vs LMCI)
+# Stratified by sMCI vs cAD with p-values
+```
+
+<!--
+PROMPT: Describe the study sample:
+- Total N and conversion rate
+- Key demographic differences between groups
+- Key clinical/cognitive differences
+-->
+
+[Your results description here]
+
+## Model Performance
+
+```{r}
+#| label: fig-roc
+#| fig-cap: "ROC curves comparing classification algorithms"
+#| eval: false
+
+# Create overlaid ROC curves for all models
+# Include AUROC values in legend
+```
+
+```{r}
+#| label: tbl-performance
+#| tbl-cap: "Model performance metrics on test set"
+#| eval: false
+
+# Create table showing:
+# - AUROC (95% CI)
+# - Sensitivity
+# - Specificity
+# - PPV
+# - NPV
+# - Accuracy
+# For each model
+```
+
+<!--
+PROMPT: Describe model performance:
+- Which model performed best?
+- How does performance compare to Grassi et al. (2019)?
+- Sensitivity/specificity at optimal threshold
+-->
+
+[Your model performance results here]
+
+## Feature Importance
+
+```{r}
+#| label: fig-importance
+#| fig-cap: "Top 10 predictive features by importance"
+#| eval: false
+
+# Create bar chart or dot plot showing feature importance
+# For best-performing model
+```
+
+```{r}
+#| label: tbl-importance
+#| tbl-cap: "Feature importance rankings across models"
+#| eval: false
+
+# Create table showing top 5-10 features for each model
+```
+
+<!--
+PROMPT: Describe feature importance:
+- Which variables were most predictive?
+- Was importance consistent across models?
+- How does this compare to Grassi et al. findings?
+-->
+
+[Your feature importance results here]
+
+## Sensitivity Analyses
+
+<!--
+PROMPT: Report results of sensitivity analyses:
+- EMCI-only analysis
+- LMCI-only analysis
+- Alternative model specifications
+-->
+
+[Your sensitivity analysis results here]
+
+# Discussion
+
+## Principal Findings
+
+<!--
+PROMPT: Summarize key findings (1-2 paragraphs):
+- Best model and its performance
+- Most important predictors
+- Comparison to prior work
+-->
+
+[Your principal findings here]
+
+## Comparison with Prior Work
+
+Our findings are [consistent with / different from] those of Grassi et al.
+(2019), who reported an AUROC of 0.88 using a similar approach. [Discuss
+similarities and differences in performance, feature importance, etc.]
+
+<!--
+PROMPT: Compare your results to:
+- Grassi et al. (2019)
+- Rye et al. (2022)
+- Other relevant studies
+-->
+
+[Your comparison discussion here]
+
+## Clinical Implications
+
+<!--
+PROMPT: Discuss practical applications:
+- How could this model be used in clinical practice?
+- What are the implications of the sensitivity/specificity trade-off?
+- Who would benefit most from this prediction tool?
+-->
+
+[Your clinical implications discussion here]
+
+## Strengths and Limitations
+
+**Strengths:**
+
+1. Use of well-characterized ADNI cohort with standardized assessments
+2. Focus on clinically-available predictors for translatability
+3. Comparison of multiple machine learning algorithms
+4. Rigorous cross-validation methodology
+
+**Limitations:**
+
+1. ADNI population may not generalize to community settings
+2. Retrospective design cannot establish causation
+3. No external validation cohort
+4. [Additional limitations specific to your analysis]
+
+## Future Directions
+
+<!--
+PROMPT: Suggest next steps:
+- External validation in other cohorts
+- Addition of biomarkers for comparison
+- Longitudinal prediction models
+- Implementation studies
+-->
+
+[Your future directions here]
+
+# Conclusion
+
+<!--
+PROMPT: Write a concise conclusion (1 paragraph):
+- Restate main finding
+- Emphasize clinical relevance
+- Note key limitation
+- Suggest implication for practice or research
+-->
+
+[Your conclusion here]
+
+# References
+
+::: {#refs}
+:::
+
+# Supplementary Material
+
+## Supplementary Table S1: Complete Model Coefficients
+
+```{r}
+#| label: tbl-coefficients
+#| tbl-cap: "Logistic regression coefficients with 95% CI"
+#| eval: false
+
+# Full coefficient table from logistic regression
+```
+
+## Supplementary Figure S1: Calibration Plots
+
+```{r}
+#| label: fig-calibration
+#| fig-cap: "Calibration plots for each model"
+#| eval: false
+
+# Predicted vs observed probability plots
+```
+
+## Supplementary Figure S2: Learning Curves
+
+```{r}
+#| label: fig-learning
+#| fig-cap: "Learning curves showing training vs validation performance"
+#| eval: false
+
+# Plot showing performance vs training set size
+```
+
+# Session Information
+
+```{r}
+#| label: session-info
+#| echo: true
+sessionInfo()
+```
+
+<!--
+CHECKLIST before submitting:
+
+[ ] Abstract complete with all required sections
+[ ] Introduction provides adequate background and rationale
+[ ] Methods fully reproducible (another analyst could replicate)
+[ ] Results presented clearly with appropriate tables/figures
+[ ] Discussion interprets findings in context of prior work
+[ ] Limitations honestly acknowledged
+[ ] All figures have captions and are referenced in text
+[ ] All tables have titles and are referenced in text
+[ ] References properly formatted
+[ ] Code runs without errors
+[ ] Document renders to PDF without errors
+-->

@@ -1,0 +1,474 @@
+---
+title: "Lecture 13: Speaker Notes"
+subtitle: "Introduction to ADNI and Modeling MCI Progression"
+date: "February 17, 2026"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+---
+
+# Overview
+
+**Lecture Duration**: 80 minutes
+**Format**: Presentation with discussion
+**Goal**: Introduce ADNI dataset and establish Project 2 hypothesis (Grassi et al.
+replication)
+
+## Prerequisites
+
+Before class, verify:
+
+- [ ] Students have completed Lecture 12 (renv + Docker setup)
+- [ ] ADNI Data Use Agreement process explained
+- [ ] Grassi et al. (2019) PDF posted to Canvas
+- [ ] Donohue et al. (2026) PDF posted to Canvas
+- [ ] table2.png displays correctly in slides
+
+## Materials Needed
+
+- Slides (slides.pdf or slides.html)
+- Research papers: Grassi (2019), Rye (2022), Donohue (2026)
+- table2.png (Grassi Table 2 for visual reference)
+- ADNI website open: adni.loni.usc.edu
+
+
+# Timing Plan
+
+| Time | Cumulative | Section | Notes |
+|------|------------|---------|-------|
+| 0:00 | 0 min | Title, Course Info | Quick start |
+| 0:02 | 2 min | Today's Topics | Overview of 7 topics |
+| 0:05 | 5 min | Part I: ADNI Study | History and design |
+| 0:15 | 20 min | Part II: Understanding MCI | Clinical context |
+| 0:10 | 30 min | Part III: Project Hypothesis | Grassi approach |
+| 0:15 | 45 min | Part IV: Key Predictors | Feature categories |
+| 0:10 | 55 min | Part V: ML Methods | Algorithm overview |
+| 0:15 | 70 min | Part VI: Project Assignment | Requirements |
+| 0:10 | 80 min | Summary, Q&A | Wrap-up |
+
+
+# Part I: The ADNI Study (15 min)
+
+## What is ADNI? (Slide 8)
+
+**Key points**:
+
+- Emphasize ADNI as the "gold standard" for AD research data
+- Started 2004 under Michael Weiner (UCSF) and Leon Thal (UCSD)
+- Public-private partnership model
+- Data freely available (with DUA)
+
+**Discussion prompt**: "How many of you have heard of ADNI before?"
+
+## ADNI Study Design (Slide 9)
+
+**Key points**:
+
+- Walk through each phase and its focus
+- Highlight the evolution: ADNI-1 established methods, later phases added
+  biomarkers
+- ADNI-4 focuses on diversity and novel digital biomarkers
+- Total N = 3,032 is substantial for AD research
+
+**Anticipated question**: "Why so many phases?"
+**Answer**: Science evolves; new biomarkers (tau PET) and populations (diverse
+recruitment) require new cohorts.
+
+## Diagnostic Groups (Slide 10)
+
+**Key points**:
+
+- CN = Cognitively Normal (healthy controls)
+- EMCI vs LMCI distinction based on Logical Memory II scores
+- Emphasize that ADNI uses specific, operationalized criteria
+
+**Teaching tip**: Draw the progression on board: CN → EMCI → LMCI → Dementia
+
+## The alzverse (Slides 11-12)
+
+**Key points**:
+
+- NEW in 2026: ADNIMERGE2 replaces original ADNIMERGE
+- Emphasize reproducibility benefits: vignettes, ADaM format
+- Show GitHub documentation links
+- Mention ~250 citations for original package
+
+**Anticipated question**: "Can I still use the old ADNIMERGE?"
+**Answer**: Yes, but ADNIMERGE2 has updated data and better documentation.
+Recommend using ADNIMERGE2 for new projects.
+
+## ADNI Baseline Characteristics (Slide 14)
+
+**Key points**:
+
+- 44% MCI at baseline - this is our target population
+- Note diversity improvements in recent phases (ADNI-4: 35% Black/AA)
+- Mean age ~72 years, well-educated sample (16 years)
+
+**Discussion**: "What are limitations of this sample for generalizability?"
+
+
+# Part II: Understanding MCI (10 min)
+
+## MCI Definition (Slide 17)
+
+**Key points**:
+
+- Petersen criteria are the standard
+- Emphasize: NOT demented, but NOT normal
+- Subjective complaint + objective impairment
+- ADLs preserved (distinguishes from dementia)
+
+**Teaching tip**: Ask students to articulate why each criterion matters.
+
+## MCI Subtypes (Slide 18)
+
+**Key points**:
+
+- Amnestic vs non-amnestic: memory primary or not
+- Single vs multi-domain: how many cognitive areas affected
+- ADNI focuses on amnestic MCI (highest AD risk)
+
+## The Clinical Problem (Slide 19)
+
+**Key points**:
+
+- THIS IS THE MOTIVATION for the project
+- Not all MCI converts - only 10-15% annually
+- Clinical need: who will progress vs remain stable?
+- Applications: treatment planning, trial enrollment, counseling
+
+**Anticipated question**: "Why not just wait and see?"
+**Answer**: Early intervention may be more effective; patients/families want
+to plan; clinical trials need enriched populations.
+
+## MCI to AD Conversion Rates (Slide 20)
+
+**Key points**:
+
+- From Grassi: 36% converted over 3 years
+- This is the outcome students will predict
+- Emphasize binary classification: converter vs stable
+
+
+# Part III: Project 2 Hypothesis (10 min)
+
+## Grassi et al. Study (Slide 22)
+
+**Key points**:
+
+- This paper defines the student project
+- "Clinically translatable" = uses only standard clinical measures
+- No imaging, no genetics (intentionally)
+- Goal: practical tool for community clinics
+
+**Read the abstract aloud** or have students read key sentences.
+
+## Study Design (Slide 23)
+
+**Key points**:
+
+- N = 550 MCI subjects
+- Baseline only (no longitudinal features)
+- 3-year follow-up window
+- Site-independent split is critical for generalization
+
+## Key Results (Slide 24)
+
+**Key points**:
+
+- AUROC 0.88 is excellent for clinical prediction
+- Sensitivity 77.7%: catches most converters
+- Specificity 79.9%: few false alarms
+- PPV/NPV are clinically meaningful
+
+**Teaching tip**: Have students interpret: "If you test positive, what's the
+probability you'll actually convert?" (PPV = 71.9%)
+
+## Table 2 Image (Slide 25)
+
+**Key points**:
+
+- Show the actual table from the paper
+- This is what students should reproduce
+- Compare converters vs stable on each variable
+- Note which variables differ significantly
+
+## Why This Approach? (Slide 26)
+
+**Key points**:
+
+- Clinical translatability is the key innovation
+- Contrast with high-tech approaches (PET, CSF, genetics)
+- Community clinics can use these measures
+- Trade accuracy for accessibility
+
+
+# Part IV: Key Predictors (15 min)
+
+## Feature Categories (Slide 28)
+
+**Key points**:
+
+- Four categories: sociodemographic, clinical scales, neuropsych, MCI subtype
+- Note what's EXCLUDED: imaging, genetics
+- This is a deliberate choice for clinical applicability
+
+## Sociodemographic Features (Slide 29)
+
+**Key points**:
+
+- Age, education, sex, marital status
+- These are "free" - already collected in clinic
+- Marital status may proxy for social support/cognitive reserve
+
+## Clinical Scales (Slide 30)
+
+**Key points**:
+
+- CDR-SB: Clinical Dementia Rating - Sum of Boxes
+  - Clinician-rated based on interview
+  - 6 domains, 0-18 scale
+- FAQ: Functional Activities Questionnaire
+  - Informant-rated
+  - Instrumental ADLs
+
+**Teaching tip**: Show example CDR-SB items if time permits.
+
+## Neuropsychological Tests (Slide 31)
+
+**Key points**:
+
+- Walk through each test briefly
+- MMSE: screening, ceiling effects in MCI
+- ADAS-Cog: more detailed, designed for AD trials
+- RAVLT: verbal memory, very sensitive to AD
+- LDELTOTAL: Logical Memory delayed recall
+- TMTB: executive function, processing speed
+
+## ADAS-Cog Detail (Slide 32)
+
+**Key points**:
+
+- ADAS11 vs ADAS13: 13 adds delayed recall + cancellation
+- ADAS13 is more sensitive to change
+- Higher scores = worse performance (counterintuitive)
+
+## RAVLT Detail (Slide 33)
+
+**Key points**:
+
+- 15-word list, 5 learning trials
+- Interference list, then recall
+- 30-minute delayed recall
+- Derived scores: immediate, learning, forgetting
+
+**Teaching tip**: Demonstrate briefly: "I'll read 15 words, you try to
+remember as many as possible..."
+
+## Feature Importance (Slide 34)
+
+**Key points**:
+
+- ADAS13 most important overall
+- CDR-SB and FAQ: clinical staging
+- RAVLT forgetting: memory retention is key
+- MMSE less important than expected (ceiling effects)
+
+**Discussion**: "Why might memory retention be more predictive than learning?"
+
+
+# Part V: Machine Learning Methods (10 min)
+
+## Overview (Slide 36)
+
+**Key points**:
+
+- Ensemble of 13 algorithms
+- No single best algorithm
+- Weighted rank averaging for final prediction
+
+## Individual Algorithms (Slide 37)
+
+**Key points**:
+
+- Walk through categories briefly
+- Students don't need to implement all 13
+- Project requires at least 3 different algorithms
+
+## Random Forest Example (Slide 38)
+
+**Key points**:
+
+- Show code structure
+- ntree, mtry parameters
+- Variable importance output
+
+**Note**: Students can use caret or tidymodels to simplify this.
+
+## Cross-Validation Strategy (Slide 39)
+
+**Key points**:
+
+- Site-independent split is KEY
+- This prevents "cheating" on generalization
+- 5-fold CV within training set
+- Held-out test set for final evaluation
+
+**Anticipated question**: "Why site-independent?"
+**Answer**: Sites have systematic differences (equipment, protocols, patient
+populations). Testing on new sites simulates real deployment.
+
+## Evaluation Metrics (Slides 40-41)
+
+**Key points**:
+
+- Define each metric clearly
+- AUROC: overall discrimination
+- Sensitivity/specificity: threshold-dependent
+- ROC curve shows trade-off
+
+
+# Part VI: Project Assignment (15 min)
+
+## Project Overview (Slide 43)
+
+**Key points**:
+
+- Read requirements clearly
+- Due March 3, 2026
+- Four deliverables: SAP, code, report, presentation
+
+## Required Components (Slide 44)
+
+**Key points**:
+
+- Data preparation: cohort selection, feature extraction
+- Model development: at least 3 algorithms
+- Evaluation: ROC, sensitivity/specificity, importance
+
+## Data Preparation Code (Slides 45-46)
+
+**Key points**:
+
+- Walk through code step by step
+- ADSL for subject-level data
+- ADQS for cognitive outcomes
+- Show how to define converter status
+
+**Teaching tip**: Have students try this code in class if time permits.
+
+## Timeline (Slide 47)
+
+**Key points**:
+
+- 3 weeks total
+- Week 1: data prep
+- Week 2: modeling
+- Week 3: evaluation and report
+
+**Emphasize**: Start early! Data cleaning takes time.
+
+## Resources (Slide 48)
+
+**Key points**:
+
+- Papers on Canvas
+- ADNIMERGE2 from ADNI website
+- alzverse documentation online
+- Office hours available
+
+
+# Summary and Q&A (10 min)
+
+## Summary (Slide 49)
+
+**Review key points**:
+
+1. ADNI: major resource, N=3,032, public data
+2. MCI: transitional state, 36% convert in 3 years
+3. Grassi approach: clinical measures only, AUROC=0.88
+4. Your project: replicate with ADNIMERGE2
+
+## Next Steps (Slide 50)
+
+**Action items**:
+
+1. Apply for ADNI access TODAY
+2. Download ADNIMERGE2 when approved
+3. Read Grassi paper thoroughly
+4. Start data exploration
+5. Draft SAP
+
+
+# Troubleshooting Guide
+
+## Common Issues
+
+**"ADNI access is taking too long"**
+
+- DUA approval can take 1-2 weeks
+- Students should apply immediately
+- Instructor can provide subset for initial exploration
+
+**"ADNIMERGE2 won't install"**
+
+- Check R version (needs 4.0+)
+- Install dependencies first
+- Try: `install.packages("ADNIMERGE2_x.x.x.tar.gz", repos = NULL,
+  type = "source")`
+
+**"Can't find MCI subjects"**
+
+- Filter on DX_BL (baseline diagnosis)
+- Use: `filter(DX_BL %in% c("EMCI", "LMCI"))`
+
+**"How do I define converters?"**
+
+- Any subsequent diagnosis of "Dementia"
+- Use longitudinal DX variable, not just baseline
+
+**"My AUROC is much lower than Grassi"**
+
+- Check feature engineering
+- Verify train/test split
+- Consider different algorithms
+- 0.70-0.80 is still acceptable for student project
+
+
+# Anticipated Questions
+
+**Q: Do we need to use all 13 algorithms like Grassi?**
+
+A: No. Minimum 3 different algorithms required. Focus on understanding the
+methods rather than replicating everything.
+
+**Q: Can we include imaging or genetic features?**
+
+A: For the core project, follow Grassi (clinical only). You may explore
+imaging/genetics as an extension if time permits.
+
+**Q: What if my results differ from Grassi?**
+
+A: Expected! Different random seeds, slightly different cohort selection,
+different software versions. Focus on methodology, not exact replication.
+
+**Q: How do I handle missing data?**
+
+A: Document your approach. Options: complete case analysis, imputation,
+or exclude variables with high missingness. Justify your choice.
+
+**Q: Can we work in groups?**
+
+A: Analysis should be individual. You may discuss concepts and debug code
+together, but each student submits their own work.
+
+
+# Post-Lecture Checklist
+
+- [ ] Remind students to apply for ADNI access today
+- [ ] Post Donohue et al. (2026) to Canvas
+- [ ] Update Canvas assignment with due date
+- [ ] Schedule office hours for data questions
+- [ ] Prepare ADNIMERGE2 demo for next class if needed
