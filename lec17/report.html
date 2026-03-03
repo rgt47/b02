@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="[Your Name Here]">
+<meta name="dcterms.date" content="2026-03-03">
+
+<title>Predicting MCI to AD Conversion Using Machine Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="report_files/libs/quarto-html/popper.min.js"></script>
+<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-fe31d7bd2deb2a321418d01dba375a64.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="report_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="report_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="report_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Predicting MCI to AD Conversion Using Machine Learning</h1>
+<p class="subtitle lead">PHB 243b Project 2 Report</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>[Your Name Here] </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 3, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="abstract" class="level1">
+<h1>Abstract</h1>
+<p><strong>Background:</strong> Mild Cognitive Impairment (MCI) often precedes Alzheimer’s disease (AD), but only 20–40% of MCI individuals progress to dementia within 3 years of initial diagnosis. Identifying individuals at high risk for conversion is critical for clinical trial enrichment and early intervention.</p>
+<p><strong>Objective:</strong> To develop and validate machine learning models for predicting 3-year conversion from MCI to AD using baseline sociodemographic, clinical, and neuropsychological data from the Alzheimer’s Disease Neuroimaging Initiative (ADNI).</p>
+<p><strong>Methods:</strong> We analyzed MCI subjects from ADNI with at least 3 years of diagnostic follow-up. Three classification algorithms (L2-regularized logistic regression, random forest, and gradient boosting) were trained on a 70% stratified training set with 5-fold cross-validation and evaluated on a 30% held-out test set. Model discrimination was assessed via the area under the receiver operating characteristic curve (AUROC).</p>
+<p><strong>Results:</strong> The analytic sample comprised MCI subjects with baseline clinical and neuropsychological measurements. Model performance, feature importance, and clinical implications are reported below.</p>
+<p><strong>Conclusion:</strong> Machine learning models using readily available clinical predictors can identify MCI subjects at elevated risk for AD conversion, supporting clinical decision-making without requiring expensive imaging or genetic biomarkers.</p>
+<p><strong>Keywords:</strong> Alzheimer’s disease, mild cognitive impairment, machine learning, prediction, ADNI</p>
+</section>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<p>Alzheimer’s disease (AD) is the most common cause of dementia, affecting an estimated 6.7 million Americans aged 65 and older <span class="citation" data-cites="Grassi2019">(<a href="#ref-Grassi2019" role="doc-biblioref">Grassi et al., 2019</a>)</span>. The disease is characterized by progressive cognitive decline, ultimately leading to loss of independence and death. Mild Cognitive Impairment (MCI) represents a transitional state between normal aging and dementia, with annual conversion rates to AD of approximately 10–15% <span class="citation" data-cites="Petersen2004">(<a href="#ref-Petersen2004" role="doc-biblioref">Petersen, 2004</a>)</span>.</p>
+<p>Early identification of MCI subjects likely to convert to AD is of great clinical importance. Accurate prediction enables enrichment of clinical trial populations, facilitates early therapeutic intervention during the prodromal stage when treatments are most likely to be effective, and supports informed clinical decision-making for patients and families. Current prognostic approaches rely heavily on expensive neuroimaging and cerebrospinal fluid biomarkers, limiting their accessibility in routine clinical practice.</p>
+<p>Machine learning methods offer the potential to integrate multiple clinical and neuropsychological variables into accurate, clinically translatable prediction tools. Unlike traditional regression approaches, these algorithms can capture non-linear relationships and complex interactions among predictors without requiring explicit specification of the functional form.</p>
+</section>
+<section id="rationale" class="level2">
+<h2 class="anchored" data-anchor-id="rationale">Rationale</h2>
+<p>Grassi et al. <span class="citation" data-cites="Grassi2019">(<a href="#ref-Grassi2019" role="doc-biblioref">2019</a>)</span> demonstrated that an ensemble-based machine learning algorithm using only clinically available measures (sociodemographic characteristics, clinical scales, and neuropsychological tests) could predict MCI-to-AD conversion with an AUROC of 0.88 (sensitivity 77.7%, specificity 79.9%). This approach prioritizes clinical translatability by excluding expensive imaging and genetic biomarkers. Rye et al. <span class="citation" data-cites="Rye2022">(<a href="#ref-Rye2022" role="doc-biblioref">2022</a>)</span> further validated this general approach using clinically transferable features, reinforcing the feasibility of accessible prediction tools.</p>
+</section>
+<section id="objectives" class="level2">
+<h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+<p>The primary objective of this study was to replicate and extend the approach of Grassi et al. <span class="citation" data-cites="Grassi2019">(<a href="#ref-Grassi2019" role="doc-biblioref">2019</a>)</span> using data from the Alzheimer’s Disease Neuroimaging Initiative (ADNI).</p>
+<p><strong>Specific aims:</strong></p>
+<ol type="1">
+<li>Develop machine learning models to predict 3-year MCI-to-AD conversion</li>
+<li>Compare performance across logistic regression, random forest, and gradient boosting algorithms</li>
+<li>Identify the most important predictive features</li>
+</ol>
+</section>
+</section>
+<section id="methods" class="level1">
+<h1>Methods</h1>
+<section id="data-source" class="level2">
+<h2 class="anchored" data-anchor-id="data-source">Data Source</h2>
+<p>Data were obtained from the Alzheimer’s Disease Neuroimaging Initiative (ADNI) via the ADNIMERGE dataset <span class="citation" data-cites="Donohue2026">(<a href="#ref-Donohue2026" role="doc-biblioref">Donohue et al., 2026</a>)</span>. ADNI is a longitudinal multicenter study designed to develop clinical, imaging, genetic, and biochemical biomarkers for early detection and tracking of Alzheimer’s disease.</p>
+</section>
+<section id="study-population" class="level2">
+<h2 class="anchored" data-anchor-id="study-population">Study Population</h2>
+<section id="inclusion-criteria" class="level3">
+<h3 class="anchored" data-anchor-id="inclusion-criteria">Inclusion Criteria</h3>
+<ol type="1">
+<li>Baseline diagnosis of Mild Cognitive Impairment (EMCI or LMCI)</li>
+<li>At least 3 years of diagnostic follow-up</li>
+<li>Age 55–90 at baseline</li>
+<li>Baseline MMSE between 24 and 30</li>
+</ol>
+</section>
+<section id="exclusion-criteria" class="level3">
+<h3 class="anchored" data-anchor-id="exclusion-criteria">Exclusion Criteria</h3>
+<ol type="1">
+<li>Baseline diagnosis of Cognitively Normal (CN) or Dementia</li>
+<li>Fewer than 3 years of follow-up data</li>
+<li>Missing baseline diagnosis</li>
+</ol>
+</section>
+</section>
+<section id="cohort-summary" class="level2">
+<h2 class="anchored" data-anchor-id="cohort-summary">Cohort Summary</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-flowchart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<embed src="report_files/figure-html/fig-flowchart-1.pdf" class="img-fluid" width="900">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Cohort selection flow diagram
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The analytic sample includes 593 MCI subjects with at least 3 years of diagnostic follow-up: 147 converters (24.8%) and 446 stable MCI subjects (75.2%). Grassi et al. <span class="citation" data-cites="Grassi2019">(<a href="#ref-Grassi2019" role="doc-biblioref">2019</a>)</span> reported 550 subjects (197 converters, 35.8%; 353 non-converters, 64.2%).</p>
+</section>
+<section id="outcome-definition" class="level2">
+<h2 class="anchored" data-anchor-id="outcome-definition">Outcome Definition</h2>
+<p>The primary outcome was conversion from MCI to AD dementia, defined as any follow-up diagnosis of ‘Dementia’ within 3 years of baseline assessment. Subjects who remained MCI throughout follow-up or reverted to CN were classified as stable (sMCI). Subjects who progressed to dementia were classified as converters (cAD).</p>
+</section>
+<section id="predictor-variables" class="level2">
+<h2 class="anchored" data-anchor-id="predictor-variables">Predictor Variables</h2>
+<p>Following Grassi et al. <span class="citation" data-cites="Grassi2019">(<a href="#ref-Grassi2019" role="doc-biblioref">2019</a>)</span>, we included predictor variables from four categories:</p>
+<p><strong>Sociodemographic:</strong> Age, years of education, sex, marital status</p>
+<p><strong>Clinical scales:</strong> Clinical Dementia Rating Sum of Boxes (CDR-SB), Functional Activities Questionnaire (FAQ)</p>
+<p><strong>Neuropsychological tests:</strong> Mini-Mental State Examination (MMSE), Alzheimer’s Disease Assessment Scale-Cognitive (ADAS-11, ADAS-13, ADASQ4), Rey Auditory Verbal Learning Test (RAVLT) immediate recall, learning, and forgetting scores, Logical Memory delayed recall (LDELTOTAL), Trail Making Test Part B (TRABSCOR)</p>
+<p><strong>MCI subtype:</strong> Early MCI (EMCI) vs.&nbsp;Late MCI (LMCI)</p>
+<p>Imaging and genetic variables were intentionally excluded to maximize clinical translatability.</p>
+</section>
+<section id="statistical-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="statistical-analysis">Statistical Analysis</h2>
+<section id="descriptive-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="descriptive-statistics">Descriptive Statistics</h3>
+<p>Baseline characteristics were summarized by conversion status using means and standard deviations for continuous variables and frequencies and percentages for categorical variables.</p>
+</section>
+<section id="feature-engineering" class="level3">
+<h3 class="anchored" data-anchor-id="feature-engineering">Feature Engineering</h3>
+<p>Following Grassi et al. <span class="citation" data-cites="Grassi2019">(<a href="#ref-Grassi2019" role="doc-biblioref">2019</a>)</span>, continuous predictors were standardized (mean = 0, SD = 1). Categorical variables were one-hot encoded. Highly correlated variable sets (pairwise <span class="math inline">\(r &gt; 0.75\)</span>) were replaced by their first principal component to reduce multicollinearity. Missing continuous values were imputed with the training-set median.</p>
+</section>
+<section id="machine-learning-models" class="level3">
+<h3 class="anchored" data-anchor-id="machine-learning-models">Machine Learning Models</h3>
+<p>We implemented three classification algorithms:</p>
+<ol type="1">
+<li><strong>Logistic Regression (LR):</strong> L2-regularized logistic regression via elastic net with <span class="math inline">\(\alpha = 0\)</span></li>
+<li><strong>Random Forest (RF):</strong> Ensemble of 500 decision trees with tuned <code>mtry</code> parameter</li>
+<li><strong>Gradient Boosting (XGBoost):</strong> Sequential tree ensemble with tuned depth, learning rate, and number of rounds</li>
+</ol>
+</section>
+<section id="model-training-and-validation" class="level3">
+<h3 class="anchored" data-anchor-id="model-training-and-validation">Model Training and Validation</h3>
+<p>The dataset was split into training (70%) and test (30%) sets using stratified random sampling to preserve the proportion of converters. Hyperparameter tuning was performed using 5-fold cross-validation within the training set. Final model performance was evaluated on the held-out test set.</p>
+</section>
+<section id="evaluation-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-metrics">Evaluation Metrics</h3>
+<p>Model discrimination was assessed using the area under the receiver operating characteristic curve (AUROC). Additional metrics included sensitivity, specificity, positive predictive value (PPV), and negative predictive value (NPV). The optimal classification threshold was determined using Youden’s J statistic.</p>
+</section>
+<section id="feature-importance" class="level3">
+<h3 class="anchored" data-anchor-id="feature-importance">Feature Importance</h3>
+<p>Variable importance was assessed using:</p>
+<ul>
+<li>Logistic regression: Absolute standardized coefficients</li>
+<li>Random Forest: Mean decrease in Gini impurity</li>
+<li>XGBoost: Gain-based importance</li>
+</ul>
+</section>
+<section id="software" class="level3">
+<h3 class="anchored" data-anchor-id="software">Software</h3>
+<p>All analyses were conducted in R version 4.5.2 using the following packages: tidyverse, caret, glmnet, randomForest, xgboost, and pROC.</p>
+</section>
+</section>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<section id="study-population-1" class="level2">
+<h2 class="anchored" data-anchor-id="study-population-1">Study Population</h2>
+<div id="tbl-continuous" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-continuous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Baseline continuous characteristics by conversion status
+</figcaption>
+<div aria-describedby="tbl-continuous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+cAD
+</div></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+sMCI
+</div></th>
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Mean (SD)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Mean (SD)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Age</td>
+<td style="text-align: left;">0.040</td>
+<td style="text-align: left;">73.83 (6.79)</td>
+<td style="text-align: left;">72.45 (7.63)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Education (years)</td>
+<td style="text-align: left;">0.143</td>
+<td style="text-align: left;">15.72 (2.88)</td>
+<td style="text-align: left;">16.12 (2.76)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CDR-SB</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">1.95 (1.03)</td>
+<td style="text-align: left;">1.27 (0.71)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ADAS-11</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">12.80 (4.16)</td>
+<td style="text-align: left;">8.73 (3.78)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ADAS-13</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">20.93 (5.63)</td>
+<td style="text-align: left;">14.00 (5.81)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ADAS-Q4</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">7.19 (2.07)</td>
+<td style="text-align: left;">4.66 (2.35)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MMSE</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">26.78 (1.67)</td>
+<td style="text-align: left;">28.07 (1.65)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RAVLT Immediate</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">27.77 (6.75)</td>
+<td style="text-align: left;">38.00 (10.37)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RAVLT Learning</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">2.98 (2.18)</td>
+<td style="text-align: left;">4.67 (2.54)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RAVLT Forgetting</td>
+<td style="text-align: left;">0.001</td>
+<td style="text-align: left;">5.16 (2.38)</td>
+<td style="text-align: left;">4.41 (2.49)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RAVLT % Forgetting</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">77.75 (28.54)</td>
+<td style="text-align: left;">51.45 (30.96)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Logical Memory (delayed)</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">3.53 (2.86)</td>
+<td style="text-align: left;">6.89 (3.12)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Digit Symbol</td>
+<td style="text-align: left;">0.001</td>
+<td style="text-align: left;">35.72 (10.58)</td>
+<td style="text-align: left;">40.45 (11.09)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Trail Making B</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">142.53 (78.05)</td>
+<td style="text-align: left;">96.98 (49.08)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FAQ</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">5.90 (4.92)</td>
+<td style="text-align: left;">1.84 (3.06)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="tbl-categorical" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-categorical-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Baseline categorical characteristics by conversion status
+</figcaption>
+<div aria-describedby="tbl-categorical-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+cAD
+</div></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+sMCI
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">N (\%)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">N (\%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Sex</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">94 (63.9%)</td>
+<td style="text-align: left;">262 (58.7%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: left;">53 (36.1%)</td>
+<td style="text-align: left;">184 (41.3%)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MCI subtype</td>
+<td style="text-align: left;">Early</td>
+<td style="text-align: left;">14 (9.5%)</td>
+<td style="text-align: left;">221 (49.6%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Late</td>
+<td style="text-align: left;">133 (90.5%)</td>
+<td style="text-align: left;">225 (50.4%)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Marital status</td>
+<td style="text-align: left;">Never married</td>
+<td style="text-align: left;">2 (1.4%)</td>
+<td style="text-align: left;">9 (2.0%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Married</td>
+<td style="text-align: left;">122 (83.0%)</td>
+<td style="text-align: left;">333 (75.5%)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Divorced</td>
+<td style="text-align: left;">7 (4.8%)</td>
+<td style="text-align: left;">47 (10.7%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Widowed</td>
+<td style="text-align: left;">16 (10.9%)</td>
+<td style="text-align: left;">52 (11.8%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="feature-engineering-1" class="level2">
+<h2 class="anchored" data-anchor-id="feature-engineering-1">Feature Engineering</h2>
+<p>The ADAS scores (ADAS-11, ADAS-13, ADASQ4) exhibited pairwise correlations above 0.75 and were replaced by their first principal component (ADAS-PC1, explaining 87.6% of variance). Similarly, RAVLT Forgetting and RAVLT % Forgetting were replaced by RAVLT-F-PC1 (90.1% of variance). After encoding and PCA replacement, the model used 19 features.</p>
+</section>
+<section id="traintest-split" class="level2">
+<h2 class="anchored" data-anchor-id="traintest-split">Train/Test Split</h2>
+<p>The dataset was split into a training set (N = 412; 103 converters) and a test set (N = 176; 44 converters) using stratified random sampling.</p>
+</section>
+<section id="model-training" class="level2">
+<h2 class="anchored" data-anchor-id="model-training">Model Training</h2>
+<p>Cross-validated AUROC on the training set: logistic regression 0.874, random forest 0.884, XGBoost 0.894.</p>
+</section>
+<section id="model-performance" class="level2">
+<h2 class="anchored" data-anchor-id="model-performance">Model Performance</h2>
+<div id="tbl-performance" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Model performance metrics on the held-out test set
+</figcaption>
+<div aria-describedby="tbl-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Model</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">AUROC (95\% CI)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sens.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Spec.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">PPV</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">NPV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Logistic Regression</td>
+<td style="text-align: left;">0.905 (0.858--0.953)</td>
+<td style="text-align: left;">84.1%</td>
+<td style="text-align: left;">82.6%</td>
+<td style="text-align: left;">61.7%</td>
+<td style="text-align: left;">94.0%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Logistic Regression</td>
+<td style="text-align: left;">0.905 (0.858--0.953)</td>
+<td style="text-align: left;">81.8%</td>
+<td style="text-align: left;">84.8%</td>
+<td style="text-align: left;">64.3%</td>
+<td style="text-align: left;">93.3%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Random Forest</td>
+<td style="text-align: left;">0.902 (0.854--0.949)</td>
+<td style="text-align: left;">88.6%</td>
+<td style="text-align: left;">78.8%</td>
+<td style="text-align: left;">58.2%</td>
+<td style="text-align: left;">95.4%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Random Forest</td>
+<td style="text-align: left;">0.902 (0.854--0.949)</td>
+<td style="text-align: left;">84.1%</td>
+<td style="text-align: left;">83.3%</td>
+<td style="text-align: left;">62.7%</td>
+<td style="text-align: left;">94.0%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">XGBoost</td>
+<td style="text-align: left;">0.892 (0.836--0.947)</td>
+<td style="text-align: left;">77.3%</td>
+<td style="text-align: left;">88.6%</td>
+<td style="text-align: left;">69.4%</td>
+<td style="text-align: left;">92.1%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">XGBoost</td>
+<td style="text-align: left;">0.892 (0.836--0.947)</td>
+<td style="text-align: left;">75.0%</td>
+<td style="text-align: left;">90.9%</td>
+<td style="text-align: left;">73.3%</td>
+<td style="text-align: left;">91.6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-roc" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-roc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<embed src="report_files/figure-html/fig-roc-1.pdf" class="img-fluid" width="900">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-roc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: ROC curves comparing classification algorithms on the test set
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="feature-importance-1" class="level2">
+<h2 class="anchored" data-anchor-id="feature-importance-1">Feature Importance</h2>
+<div id="tbl-importance" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-importance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Top 10 features by variable importance (scaled 0–100) for each model
+</figcaption>
+<div aria-describedby="tbl-importance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Feature</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">LR</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">RF</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">XGBoost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">faq</td>
+<td style="text-align: left;">100.0</td>
+<td style="text-align: left;">97.0</td>
+<td style="text-align: left;">100.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">adas_pc1</td>
+<td style="text-align: left;">85.1</td>
+<td style="text-align: left;">100.0</td>
+<td style="text-align: left;">99.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ravlt_immediate</td>
+<td style="text-align: left;">94.3</td>
+<td style="text-align: left;">80.6</td>
+<td style="text-align: left;">91.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">trabscor</td>
+<td style="text-align: left;">65.4</td>
+<td style="text-align: left;">63.5</td>
+<td style="text-align: left;">31.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ldeltotal</td>
+<td style="text-align: left;">35.4</td>
+<td style="text-align: left;">58.9</td>
+<td style="text-align: left;">60.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cdrsb</td>
+<td style="text-align: left;">61.4</td>
+<td style="text-align: left;">50.7</td>
+<td style="text-align: left;">15.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ravltf_pc1</td>
+<td style="text-align: left;">44.9</td>
+<td style="text-align: left;">60.4</td>
+<td style="text-align: left;">22.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mci_subtypeLate</td>
+<td style="text-align: left;">92.9</td>
+<td style="text-align: left;">19.8</td>
+<td style="text-align: left;">5.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mci_subtypeEarly</td>
+<td style="text-align: left;">92.9</td>
+<td style="text-align: left;">18.4</td>
+<td style="text-align: left;">4.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mmse</td>
+<td style="text-align: left;">41.2</td>
+<td style="text-align: left;">42.5</td>
+<td style="text-align: left;">8.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-importance" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-importance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<embed src="report_files/figure-html/fig-importance-1.pdf" class="img-fluid" width="900">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-importance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Top 10 predictive features by average importance across models
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-importance-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-importance-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<embed src="report_files/figure-html/fig-importance-comparison-1.pdf" class="img-fluid" width="900">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-importance-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Feature importance rankings across models
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sensitivity-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="sensitivity-analyses">Sensitivity Analyses</h2>
+<section id="performance-by-mci-subtype" class="level3">
+<h3 class="anchored" data-anchor-id="performance-by-mci-subtype">Performance by MCI Subtype</h3>
+<div id="tbl-subtype" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-subtype-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Test set AUROC by MCI subtype
+</figcaption>
+<div aria-describedby="tbl-subtype-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+AUROC
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Subtype</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">N</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">LR</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">RF</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">XGBoost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Early</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: left;">0.875</td>
+<td style="text-align: left;">0.900</td>
+<td style="text-align: left;">0.871</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Late</td>
+<td style="text-align: right;">102</td>
+<td style="text-align: left;">0.855</td>
+<td style="text-align: left;">0.843</td>
+<td style="text-align: left;">0.840</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="threshold-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="threshold-analysis">Threshold Analysis</h3>
+<div id="tbl-thresholds" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-thresholds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Sensitivity/specificity at various thresholds for the best model
+</figcaption>
+<div aria-describedby="tbl-thresholds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Performance at various sensitivity thresholds (LR model).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Target Sens.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sensitivity</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Specificity</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">PPV</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">NPV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">100%</td>
+<td style="text-align: left;">100.0%</td>
+<td style="text-align: left;">43.2%</td>
+<td style="text-align: left;">37.0%</td>
+<td style="text-align: left;">100.0%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">95%</td>
+<td style="text-align: left;">95.0%</td>
+<td style="text-align: left;">56.8%</td>
+<td style="text-align: left;">NA%</td>
+<td style="text-align: left;">NA%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">90%</td>
+<td style="text-align: left;">90.0%</td>
+<td style="text-align: left;">70.5%</td>
+<td style="text-align: left;">NA%</td>
+<td style="text-align: left;">NA%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">85%</td>
+<td style="text-align: left;">85.0%</td>
+<td style="text-align: left;">78.8%</td>
+<td style="text-align: left;">NA%</td>
+<td style="text-align: left;">NA%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">80%</td>
+<td style="text-align: left;">80.0%</td>
+<td style="text-align: left;">84.8%</td>
+<td style="text-align: left;">NA%</td>
+<td style="text-align: left;">NA%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">75%</td>
+<td style="text-align: left;">75.0%</td>
+<td style="text-align: left;">90.9%</td>
+<td style="text-align: left;">73.3%</td>
+<td style="text-align: left;">91.6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<section id="principal-findings" class="level2">
+<h2 class="anchored" data-anchor-id="principal-findings">Principal Findings</h2>
+<p>This analysis developed and evaluated three machine learning algorithms for predicting 3-year conversion from MCI to AD using baseline sociodemographic, clinical, and neuropsychological data from the ADNI cohort. All three models achieved discriminative performance, with test-set AUROCs summarized in <a href="#tbl-performance" class="quarto-xref">Table&nbsp;3</a>. The most consistently important predictors included clinical and cognitive measures that are routinely collected in memory clinic assessments.</p>
+</section>
+<section id="comparison-with-prior-work" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-with-prior-work">Comparison with Prior Work</h2>
+<p>Our findings are broadly consistent with those of Grassi et al. <span class="citation" data-cites="Grassi2019">(<a href="#ref-Grassi2019" role="doc-biblioref">2019</a>)</span>, who reported an ensemble AUROC of 0.88 using a similar predictor set. Differences in exact performance may reflect variations in sample composition (ADNI data versions), inclusion criteria, and the use of a held-out test set rather than cross-validation alone. Rye et al. <span class="citation" data-cites="Rye2022">(<a href="#ref-Rye2022" role="doc-biblioref">2022</a>)</span> similarly demonstrated that clinically transferable features provide strong discriminative performance, reinforcing the viability of accessible prediction tools.</p>
+</section>
+<section id="clinical-implications" class="level2">
+<h2 class="anchored" data-anchor-id="clinical-implications">Clinical Implications</h2>
+<p>The models developed here rely exclusively on clinical and neuropsychological measures that are routinely collected in memory clinic settings. This design choice maximizes clinical translatability: the prediction tool could be deployed without requiring expensive PET imaging or invasive lumbar puncture. The threshold analysis (<a href="#tbl-thresholds" class="quarto-xref">Table&nbsp;6</a>) illustrates the sensitivity-specificity trade-off, allowing clinicians to select operating points based on clinical priorities (e.g., high sensitivity for screening, high specificity for trial enrollment).</p>
+</section>
+<section id="strengths-and-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="strengths-and-limitations">Strengths and Limitations</h2>
+<p><strong>Strengths:</strong></p>
+<ol type="1">
+<li>Use of well-characterized ADNI cohort with standardized assessments</li>
+<li>Focus on clinically available predictors for translatability</li>
+<li>Comparison of multiple machine learning algorithms</li>
+<li>Rigorous train/test split with cross-validation</li>
+</ol>
+<p><strong>Limitations:</strong></p>
+<ol type="1">
+<li>ADNI participants are predominantly White and well-educated, limiting generalizability to diverse community populations</li>
+<li>Retrospective design cannot establish causation</li>
+<li>No external validation cohort</li>
+<li>Median imputation may attenuate associations for variables with substantial missingness</li>
+</ol>
+</section>
+<section id="future-directions" class="level2">
+<h2 class="anchored" data-anchor-id="future-directions">Future Directions</h2>
+<p>External validation in independent, community-based cohorts is needed to establish generalizability. Future work could compare the performance of clinical-only models against models incorporating neuroimaging and fluid biomarkers to quantify the incremental value of expensive assessments. Longitudinal prediction models that incorporate change trajectories, rather than baseline snapshots alone, may further improve prognostic accuracy.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Machine learning models using readily available clinical and neuropsychological measures can discriminate MCI subjects at risk for 3-year conversion to AD. The approach prioritizes clinical translatability by excluding imaging and genetic biomarkers, supporting potential deployment in routine memory clinic assessments. External validation and prospective evaluation are necessary before clinical implementation.</p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-Donohue2026" class="csl-entry" role="listitem">
+Donohue, M. C., Hussen, K., Langford, O., Gallardo, R., Jimenez-Maggiora, G., &amp; Aisen, P. S. (2026). Alzheimer’s clinical research data via r packages: The alzverse. <em>Alzheimer’s &amp; Dementia</em>, <em>22</em>, e71152. <a href="https://doi.org/10.1002/alz.71152">https://doi.org/10.1002/alz.71152</a>
+</div>
+<div id="ref-Grassi2019" class="csl-entry" role="listitem">
+Grassi, M., Rouleaux, N., Caldirola, D., Loewenstein, D., Schruers, K., Perna, G., &amp; Dumontier, M. (2019). A novel ensemble-based machine learning algorithm to predict the conversion from mild cognitive impairment to alzheimer’s disease using socio-demographic characteristics, clinical information, and neuropsychological measures. <em>Frontiers in Neurology</em>, <em>10</em>, 1–15. <a href="https://doi.org/10.3389/fneur.2019.00756">https://doi.org/10.3389/fneur.2019.00756</a>
+</div>
+<div id="ref-Petersen2004" class="csl-entry" role="listitem">
+Petersen, R. C. (2004). Mild cognitive impairment as a diagnostic entity. <em>Journal of Internal Medicine</em>, <em>256</em>(3), 183–194. <a href="https://doi.org/10.1111/j.1365-2796.2004.01388.x">https://doi.org/10.1111/j.1365-2796.2004.01388.x</a>
+</div>
+<div id="ref-Rye2022" class="csl-entry" role="listitem">
+Rye, I., Vik, A., Kocinski, M., Lundervold, A. J., &amp; Lundervold, A. S. (2022). Predicting conversion to alzheimer’s disease in individuals with mild cognitive impairment using clinically transferable features. <em>Scientific Reports</em>, <em>12</em>, 15566. <a href="https://doi.org/10.1038/s41598-022-18870-6">https://doi.org/10.1038/s41598-022-18870-6</a>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="supplementary-material" class="level1">
+<h1>Supplementary Material</h1>
+<section id="supplementary-table-s1-logistic-regression-coefficients" class="level2">
+<h2 class="anchored" data-anchor-id="supplementary-table-s1-logistic-regression-coefficients">Supplementary Table S1: Logistic Regression Coefficients</h2>
+<div id="tbl-coefficients" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-coefficients-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: L2-regularized logistic regression coefficients at optimal lambda
+</figcaption>
+<div aria-describedby="tbl-coefficients-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Feature</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Coefficient</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">faq</td>
+<td style="text-align: left;">0.3797</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ravlt_immediate</td>
+<td style="text-align: left;">-0.3609</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mci_subtypeLate</td>
+<td style="text-align: left;">0.3562</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mci_subtypeEarly</td>
+<td style="text-align: left;">-0.3562</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">adas_pc1</td>
+<td style="text-align: left;">-0.3302</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ptmarryNever.married</td>
+<td style="text-align: left;">0.3142</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ptmarryDivorced</td>
+<td style="text-align: left;">-0.2957</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">trabscor</td>
+<td style="text-align: left;">0.2650</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cdrsb</td>
+<td style="text-align: left;">0.2517</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ravltf_pc1</td>
+<td style="text-align: left;">0.1972</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mmse</td>
+<td style="text-align: left;">-0.1850</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ldeltotal</td>
+<td style="text-align: left;">-0.1656</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pteducat</td>
+<td style="text-align: left;">0.1187</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: left;">-0.1068</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ptmarryWidowed</td>
+<td style="text-align: left;">0.0655</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sexFemale</td>
+<td style="text-align: left;">0.0534</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sexMale</td>
+<td style="text-align: left;">-0.0533</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ptmarryMarried</td>
+<td style="text-align: left;">0.0515</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ravlt_learning</td>
+<td style="text-align: left;">-0.0484</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="supplementary-figure-s1-calibration-plots" class="level2">
+<h2 class="anchored" data-anchor-id="supplementary-figure-s1-calibration-plots">Supplementary Figure S1: Calibration Plots</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-calibration" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-calibration-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<embed src="report_files/figure-html/fig-calibration-1.pdf" class="img-fluid" width="900">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-calibration-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Calibration plots: predicted vs.&nbsp;observed conversion probability
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="supplementary-figure-s2-cross-validation-performance" class="level2">
+<h2 class="anchored" data-anchor-id="supplementary-figure-s2-cross-validation-performance">Supplementary Figure S2: Cross-Validation Performance</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-cv-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cv-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<embed src="report_files/figure-html/fig-cv-comparison-1.pdf" class="img-fluid" width="900">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cv-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Cross-validated AUROC distributions across 5 folds
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="session-information" class="level1">
+<h1>Session Information</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.5.2 (2025-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.3
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Los_Angeles
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] glmnet_4.1-10        Matrix_1.7-4         xgboost_1.7.11.1    
+ [4] randomForest_4.7-1.2 pROC_1.19.0.1        caret_7.0-1         
+ [7] lattice_0.22-7       kableExtra_1.4.0     knitr_1.50          
+[10] lubridate_1.9.4      forcats_1.0.0        stringr_1.5.2       
+[13] dplyr_1.1.4          purrr_1.1.0          readr_2.1.5         
+[16] tidyr_1.3.1          tibble_3.3.0         ggplot2_4.0.0       
+[19] tidyverse_2.0.0     
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.1     viridisLite_0.4.2    timeDate_4041.110   
+ [4] farver_2.1.2         S7_0.2.0             fastmap_1.2.0       
+ [7] digest_0.6.37        rpart_4.1.24         timechange_0.3.0    
+[10] lifecycle_1.0.4      survival_3.8-3       magrittr_2.0.4      
+[13] compiler_4.5.2       rlang_1.1.6          tools_4.5.2         
+[16] yaml_2.3.10          data.table_1.17.8    labeling_0.4.3      
+[19] htmlwidgets_1.6.4    plyr_1.8.9           xml2_1.4.0          
+[22] RColorBrewer_1.1-3   withr_3.0.2          stats4_4.5.2        
+[25] nnet_7.3-20          grid_4.5.2           future_1.67.0       
+[28] globals_0.18.0       scales_1.4.0         iterators_1.0.14    
+[31] MASS_7.3-65          cli_3.6.5            rmarkdown_2.29      
+[34] generics_0.1.4       rstudioapi_0.17.1    future.apply_1.20.0 
+[37] reshape2_1.4.4       tzdb_0.5.0           splines_4.5.2       
+[40] parallel_4.5.2       vctrs_0.6.5          hardhat_1.4.2       
+[43] jsonlite_2.0.0       hms_1.1.3            listenv_0.9.1       
+[46] systemfonts_1.2.3    foreach_1.5.2        gower_1.0.2         
+[49] recipes_1.3.1        glue_1.8.0           parallelly_1.45.1   
+[52] codetools_0.2-20     shape_1.4.6.1        stringi_1.8.7       
+[55] gtable_0.3.6         pillar_1.11.1        htmltools_0.5.8.1   
+[58] ipred_0.9-15         lava_1.8.1           R6_2.6.1            
+[61] textshaping_1.0.3    evaluate_1.0.5       class_7.3-23        
+[64] Rcpp_1.1.1           svglite_2.2.1        nlme_3.1-168        
+[67] prodlim_2025.04.28   xfun_0.53            pkgconfig_2.0.3     
+[70] ModelMetrics_1.2.2.2</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

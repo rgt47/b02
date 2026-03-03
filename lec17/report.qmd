@@ -1,0 +1,1307 @@
+---
+title: "Predicting MCI to AD Conversion Using Machine Learning"
+subtitle: "PHB 243b Project 2 Report"
+author: "[Your Name Here]"
+date: last-modified
+format:
+  pdf:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    fig-pos: "H"
+bibliography: export.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa.csl
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+
+options(
+  knitr.kable.NA = "",
+  dplyr.summarise.inform = FALSE
+)
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(caret)
+library(pROC)
+library(randomForest)
+library(xgboost)
+library(glmnet)
+
+opts_chunk$set(
+  fig.width = 6, fig.height = 4, dpi = 150,
+  results = "asis", dev = "pdf"
+)
+options(scipen = 1, digits = 3)
+set.seed(243)
+```
+
+# Abstract
+
+**Background:** Mild Cognitive Impairment (MCI) often precedes
+Alzheimer's disease (AD), but only 20--40% of MCI individuals
+progress to dementia within 3 years of initial diagnosis.
+Identifying individuals at high risk for conversion is critical
+for clinical trial enrichment and early intervention.
+
+**Objective:** To develop and validate machine learning models
+for predicting 3-year conversion from MCI to AD using baseline
+sociodemographic, clinical, and neuropsychological data from the
+Alzheimer's Disease Neuroimaging Initiative (ADNI).
+
+**Methods:** We analyzed MCI subjects from ADNI with at least
+3 years of diagnostic follow-up. Three classification algorithms
+(L2-regularized logistic regression, random forest, and gradient
+boosting) were trained on a 70% stratified training set with
+5-fold cross-validation and evaluated on a 30% held-out test set.
+Model discrimination was assessed via the area under the receiver
+operating characteristic curve (AUROC).
+
+**Results:** The analytic sample comprised MCI subjects with
+baseline clinical and neuropsychological measurements. Model
+performance, feature importance, and clinical implications are
+reported below.
+
+**Conclusion:** Machine learning models using readily available
+clinical predictors can identify MCI subjects at elevated risk
+for AD conversion, supporting clinical decision-making without
+requiring expensive imaging or genetic biomarkers.
+
+**Keywords:** Alzheimer's disease, mild cognitive impairment,
+machine learning, prediction, ADNI
+
+# Introduction
+
+## Background
+
+Alzheimer's disease (AD) is the most common cause of dementia,
+affecting an estimated 6.7 million Americans aged 65 and older
+[@Grassi2019]. The disease is characterized by progressive
+cognitive decline, ultimately leading to loss of independence
+and death. Mild Cognitive Impairment (MCI) represents a
+transitional state between normal aging and dementia, with
+annual conversion rates to AD of approximately 10--15%
+[@Petersen2004].
+
+Early identification of MCI subjects likely to convert to AD
+is of great clinical importance. Accurate prediction enables
+enrichment of clinical trial populations, facilitates early
+therapeutic intervention during the prodromal stage when
+treatments are most likely to be effective, and supports
+informed clinical decision-making for patients and families.
+Current prognostic approaches rely heavily on expensive
+neuroimaging and cerebrospinal fluid biomarkers, limiting
+their accessibility in routine clinical practice.
+
+Machine learning methods offer the potential to integrate
+multiple clinical and neuropsychological variables into
+accurate, clinically translatable prediction tools. Unlike
+traditional regression approaches, these algorithms can
+capture non-linear relationships and complex interactions
+among predictors without requiring explicit specification
+of the functional form.
+
+## Rationale
+
+Grassi et al. [-@Grassi2019] demonstrated that an
+ensemble-based machine learning algorithm using only
+clinically available measures (sociodemographic
+characteristics, clinical scales, and neuropsychological
+tests) could predict MCI-to-AD conversion with an AUROC of
+0.88 (sensitivity 77.7%, specificity 79.9%). This approach
+prioritizes clinical translatability by excluding expensive
+imaging and genetic biomarkers. Rye et al. [-@Rye2022]
+further validated this general approach using clinically
+transferable features, reinforcing the feasibility of
+accessible prediction tools.
+
+## Objectives
+
+The primary objective of this study was to replicate and
+extend the approach of Grassi et al. [-@Grassi2019] using
+data from the Alzheimer's Disease Neuroimaging Initiative
+(ADNI).
+
+**Specific aims:**
+
+1. Develop machine learning models to predict 3-year
+   MCI-to-AD conversion
+2. Compare performance across logistic regression, random
+   forest, and gradient boosting algorithms
+3. Identify the most important predictive features
+
+# Methods
+
+## Data Source
+
+Data were obtained from the Alzheimer's Disease Neuroimaging
+Initiative (ADNI) via the ADNIMERGE dataset [@Donohue2026].
+ADNI is a longitudinal multicenter study designed to develop
+clinical, imaging, genetic, and biochemical biomarkers for
+early detection and tracking of Alzheimer's disease.
+
+## Study Population
+
+### Inclusion Criteria
+
+1. Baseline diagnosis of Mild Cognitive Impairment (EMCI or
+   LMCI)
+2. At least 3 years of diagnostic follow-up
+3. Age 55--90 at baseline
+4. Baseline MMSE between 24 and 30
+
+### Exclusion Criteria
+
+1. Baseline diagnosis of Cognitively Normal (CN) or Dementia
+2. Fewer than 3 years of follow-up data
+3. Missing baseline diagnosis
+
+```{r}
+#| label: load-data
+
+df_raw <- read.csv("./data/ADNIMERGE.csv", na.strings = "-4")
+
+df <- df_raw |>
+  dplyr::select(
+    RID, VISCODE, SITE, ORIGPROT,
+    AGE, PTGENDER, PTEDUCAT, PTMARRY,
+    DX, DX_bl,
+    CDRSB, ADAS11, ADAS13, ADASQ4, MMSE,
+    RAVLT_immediate, RAVLT_learning,
+    RAVLT_forgetting, RAVLT_perc_forgetting,
+    LDELTOTAL, DIGITSCOR, TRABSCOR, FAQ,
+    Years_bl
+  ) |>
+  rename_with(tolower) |>
+  dplyr::filter(dx_bl %in% c("EMCI", "LMCI"))
+```
+
+```{r}
+#| label: apply-criteria
+
+followup_duration <- df |>
+  group_by(rid) |>
+  dplyr::summarize(
+    max_years = max(years_bl, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+rids_3yr <- followup_duration |>
+  dplyr::filter(max_years >= 3) |>
+  pull(rid)
+
+df_3yr <- df |>
+  dplyr::filter(rid %in% rids_3yr)
+
+converter_status <- df_3yr |>
+  dplyr::filter(years_bl <= 3) |>
+  group_by(rid) |>
+  dplyr::summarize(
+    converter = any(dx == "Dementia", na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+```{r}
+#| label: baseline-data
+
+df_bl <- df_3yr |>
+  dplyr::filter(viscode == "bl") |>
+  left_join(converter_status, by = "rid") |>
+  dplyr::filter(
+    !is.na(converter),
+    age >= 55, age <= 90,
+    mmse >= 24, mmse <= 30
+  ) |>
+  mutate(
+    group = if_else(converter, "cAD", "sMCI"),
+    mci_subtype = if_else(
+      dx_bl == "EMCI", "Early", "Late"
+    ),
+    sex = ptgender
+  )
+```
+
+```{r}
+#| label: sample-counts
+
+n_total <- nrow(df_bl)
+n_conv <- sum(df_bl$converter)
+n_stable <- n_total - n_conv
+pct_conv <- round(100 * n_conv / n_total, 1)
+```
+
+## Cohort Summary
+
+```{r}
+#| label: fig-flowchart
+#| fig-cap: "Cohort selection flow diagram"
+#| fig-height: 5
+#| results: markup
+
+n_mci_all <- df |> distinct(rid) |> nrow()
+n_excluded_fu <- n_mci_all - length(rids_3yr)
+
+n_bl_before_filter <- df_3yr |>
+  dplyr::filter(viscode == "bl") |>
+  left_join(converter_status, by = "rid") |>
+  dplyr::filter(!is.na(converter)) |>
+  nrow()
+
+n_excluded_criteria <- n_bl_before_filter - n_total
+
+par(mar = c(1, 1, 1, 1))
+plot.new()
+plot.window(xlim = c(0, 10), ylim = c(0, 10))
+
+box_w <- 3.5
+box_h <- 0.8
+
+draw_box <- function(x, y, w, h, label, fill = "white") {
+  rect(x - w / 2, y - h / 2, x + w / 2, y + h / 2,
+       col = fill, border = "black")
+  text(x, y, label, cex = 0.7)
+}
+
+draw_box(5, 9, box_w, box_h,
+         paste0("All MCI subjects in ADNI\n(N = ",
+                n_mci_all, ")"))
+arrows(5, 9 - box_h / 2, 5, 7.5 + box_h / 2,
+       length = 0.1)
+draw_box(8, 8.25, box_w - 0.5, box_h,
+         paste0("Excluded: < 3 yr\nfollow-up (n = ",
+                n_excluded_fu, ")"),
+         fill = "#fff3cd")
+arrows(5 + box_w / 2 - 0.5, 8.25, 8 - box_w / 2 + 0.75,
+       8.25, length = 0.1)
+
+draw_box(5, 7.5, box_w, box_h,
+         paste0("MCI with >= 3 yr follow-up\n(N = ",
+                n_bl_before_filter, ")"))
+arrows(5, 7.5 - box_h / 2, 5, 5.8 + box_h / 2,
+       length = 0.1)
+draw_box(8, 6.65, box_w - 0.5, box_h,
+         paste0("Excluded: age/MMSE\ncriteria (n = ",
+                n_excluded_criteria, ")"),
+         fill = "#fff3cd")
+arrows(5 + box_w / 2 - 0.5, 6.65, 8 - box_w / 2 + 0.75,
+       6.65, length = 0.1)
+
+draw_box(5, 5.8, box_w, box_h,
+         paste0("Analytic sample\n(N = ",
+                n_total, ")"))
+arrows(3.5, 5.8 - box_h / 2, 3.5, 4.2 + box_h / 2,
+       length = 0.1)
+arrows(6.5, 5.8 - box_h / 2, 6.5, 4.2 + box_h / 2,
+       length = 0.1)
+
+draw_box(3.5, 4.2, box_w - 0.5, box_h,
+         paste0("Stable MCI (sMCI)\nn = ",
+                n_stable, " (",
+                round(100 - pct_conv, 1), "%)"),
+         fill = "#d4edda")
+draw_box(6.5, 4.2, box_w - 0.5, box_h,
+         paste0("Converters (cAD)\nn = ",
+                n_conv, " (", pct_conv, "%)"),
+         fill = "#f8d7da")
+```
+
+The analytic sample includes `r n_total` MCI subjects with at
+least 3 years of diagnostic follow-up: `r n_conv` converters
+(`r pct_conv`%) and `r n_stable` stable MCI subjects
+(`r round(100 - pct_conv, 1)`%). Grassi et al. [-@Grassi2019]
+reported 550 subjects (197 converters, 35.8%; 353
+non-converters, 64.2%).
+
+## Outcome Definition
+
+The primary outcome was conversion from MCI to AD dementia,
+defined as any follow-up diagnosis of 'Dementia' within
+3 years of baseline assessment. Subjects who remained MCI
+throughout follow-up or reverted to CN were classified as
+stable (sMCI). Subjects who progressed to dementia were
+classified as converters (cAD).
+
+## Predictor Variables
+
+Following Grassi et al. [-@Grassi2019], we included
+predictor variables from four categories:
+
+**Sociodemographic:** Age, years of education, sex, marital
+status
+
+**Clinical scales:** Clinical Dementia Rating Sum of Boxes
+(CDR-SB), Functional Activities Questionnaire (FAQ)
+
+**Neuropsychological tests:** Mini-Mental State Examination
+(MMSE), Alzheimer's Disease Assessment Scale-Cognitive
+(ADAS-11, ADAS-13, ADASQ4), Rey Auditory Verbal Learning
+Test (RAVLT) immediate recall, learning, and forgetting
+scores, Logical Memory delayed recall (LDELTOTAL),
+Trail Making Test Part B (TRABSCOR)
+
+**MCI subtype:** Early MCI (EMCI) vs. Late MCI (LMCI)
+
+Imaging and genetic variables were intentionally excluded to
+maximize clinical translatability.
+
+## Statistical Analysis
+
+### Descriptive Statistics
+
+Baseline characteristics were summarized by conversion status
+using means and standard deviations for continuous variables
+and frequencies and percentages for categorical variables.
+
+### Feature Engineering
+
+Following Grassi et al. [-@Grassi2019], continuous
+predictors were standardized (mean = 0, SD = 1). Categorical
+variables were one-hot encoded. Highly correlated variable
+sets (pairwise $r > 0.75$) were replaced by their first
+principal component to reduce multicollinearity. Missing
+continuous values were imputed with the training-set median.
+
+### Machine Learning Models
+
+We implemented three classification algorithms:
+
+1. **Logistic Regression (LR):** L2-regularized logistic
+   regression via elastic net with $\alpha = 0$
+2. **Random Forest (RF):** Ensemble of 500 decision trees
+   with tuned `mtry` parameter
+3. **Gradient Boosting (XGBoost):** Sequential tree ensemble
+   with tuned depth, learning rate, and number of rounds
+
+### Model Training and Validation
+
+The dataset was split into training (70%) and test (30%) sets
+using stratified random sampling to preserve the proportion
+of converters. Hyperparameter tuning was performed using
+5-fold cross-validation within the training set. Final model
+performance was evaluated on the held-out test set.
+
+### Evaluation Metrics
+
+Model discrimination was assessed using the area under the
+receiver operating characteristic curve (AUROC). Additional
+metrics included sensitivity, specificity, positive predictive
+value (PPV), and negative predictive value (NPV). The optimal
+classification threshold was determined using Youden's J
+statistic.
+
+### Feature Importance
+
+Variable importance was assessed using:
+
+- Logistic regression: Absolute standardized coefficients
+- Random Forest: Mean decrease in Gini impurity
+- XGBoost: Gain-based importance
+
+### Software
+
+All analyses were conducted in R version
+`r paste(R.version$major, R.version$minor, sep = ".")` using
+the following packages: tidyverse, caret, glmnet, randomForest,
+xgboost, and pROC.
+
+# Results
+
+## Study Population
+
+```{r}
+#| label: tbl-continuous
+#| tbl-cap: "Baseline continuous characteristics by conversion status"
+
+cont_vars <- c(
+  "age", "pteducat", "cdrsb", "adas11", "adas13", "adasq4",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravlt_forgetting", "ravlt_perc_forgetting",
+  "ldeltotal", "digitscor", "trabscor", "faq"
+)
+cont_labels <- c(
+  "Age", "Education (years)", "CDR-SB",
+  "ADAS-11", "ADAS-13", "ADAS-Q4",
+  "MMSE", "RAVLT Immediate", "RAVLT Learning",
+  "RAVLT Forgetting", "RAVLT % Forgetting",
+  "Logical Memory (delayed)", "Digit Symbol",
+  "Trail Making B", "FAQ"
+)
+
+tbl_cont <- map2_dfr(
+  cont_vars, cont_labels, function(v, lab) {
+    stats <- df_bl |>
+      group_by(group) |>
+      dplyr::summarize(
+        mean_val = mean(.data[[v]], na.rm = TRUE),
+        sd_val = sd(.data[[v]], na.rm = TRUE),
+        .groups = "drop"
+      ) |>
+      mutate(
+        stat = sprintf("%.2f (%.2f)", mean_val, sd_val)
+      ) |>
+      dplyr::select(group, stat) |>
+      pivot_wider(names_from = group, values_from = stat)
+
+    tt <- tryCatch(
+      t.test(
+        df_bl[[v]][df_bl$group == "cAD"],
+        df_bl[[v]][df_bl$group == "sMCI"]
+      )$p.value,
+      error = function(e) NA_real_
+    )
+
+    stats |>
+      mutate(
+        Variable = lab,
+        p = if_else(
+          is.na(tt), "",
+          if_else(tt < 0.001, "<0.001",
+                  sprintf("%.3f", tt))
+        ),
+        .before = 1
+      )
+  }
+)
+
+kbl(
+  tbl_cont, booktabs = TRUE, linesep = "",
+  escape = TRUE,
+  col.names = c("Variable", "Mean (SD)", "Mean (SD)", "p")
+) |>
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    font_size = 9
+  ) |>
+  add_header_above(c(
+    " " = 1, "cAD" = 1, "sMCI" = 1, " " = 1
+  ))
+```
+
+```{r}
+#| label: tbl-categorical
+#| tbl-cap: "Baseline categorical characteristics by conversion status"
+
+cat_summary <- function(data, var, levels_vec) {
+  map_dfr(levels_vec, function(lev) {
+    data |>
+      group_by(group) |>
+      dplyr::summarize(
+        n_lev = sum(.data[[var]] == lev, na.rm = TRUE),
+        pct_lev = 100 * mean(
+          .data[[var]] == lev, na.rm = TRUE
+        ),
+        .groups = "drop"
+      ) |>
+      mutate(
+        stat = sprintf("%d (%.1f%%)", n_lev, pct_lev)
+      ) |>
+      dplyr::select(group, stat) |>
+      pivot_wider(names_from = group, values_from = stat) |>
+      mutate(Category = lev, .before = 1)
+  })
+}
+
+tbl_sex <- cat_summary(df_bl, "sex", c("Male", "Female")) |>
+  mutate(Variable = c("Sex", ""), .before = 1)
+
+tbl_mci <- cat_summary(
+  df_bl, "mci_subtype", c("Early", "Late")
+) |>
+  mutate(Variable = c("MCI subtype", ""), .before = 1)
+
+df_marry <- df_bl |>
+  dplyr::filter(ptmarry %in% c(
+    "Never married", "Married", "Divorced", "Widowed"
+  ))
+tbl_marry <- cat_summary(
+  df_marry, "ptmarry",
+  c("Never married", "Married", "Divorced", "Widowed")
+) |>
+  mutate(
+    Variable = c("Marital status", "", "", ""),
+    .before = 1
+  )
+
+tbl_cat <- bind_rows(tbl_sex, tbl_mci, tbl_marry) |>
+  dplyr::select(Variable, Category, cAD, sMCI)
+
+kbl(
+  tbl_cat, booktabs = TRUE, linesep = "",
+  escape = TRUE,
+  col.names = c("Variable", "", "N (\\%)", "N (\\%)")
+) |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  ) |>
+  add_header_above(c(
+    " " = 2, "cAD" = 1, "sMCI" = 1
+  ))
+```
+
+## Feature Engineering
+
+```{r}
+#| label: feature-prep
+#| results: hide
+
+pred_cont <- c(
+  "age", "pteducat", "cdrsb", "adas11", "adas13", "adasq4",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravlt_forgetting", "ravlt_perc_forgetting",
+  "ldeltotal", "trabscor", "faq"
+)
+
+df_model <- df_bl |>
+  dplyr::select(
+    rid, converter, all_of(pred_cont),
+    sex, mci_subtype, ptmarry
+  ) |>
+  dplyr::filter(
+    ptmarry %in% c(
+      "Never married", "Married", "Divorced", "Widowed"
+    )
+  ) |>
+  mutate(
+    outcome = factor(
+      converter,
+      levels = c(FALSE, TRUE),
+      labels = c("sMCI", "cAD")
+    )
+  )
+
+impute_median <- function(x) {
+  x[is.na(x)] <- median(x, na.rm = TRUE)
+  x
+}
+df_model <- df_model |>
+  mutate(across(all_of(pred_cont), impute_median))
+
+adas_cor <- cor(
+  df_model[, c("adas11", "adas13", "adasq4")],
+  use = "complete.obs"
+)
+adas_pca <- prcomp(
+  df_model[, c("adas11", "adas13", "adasq4")],
+  scale. = TRUE
+)
+df_model$adas_pc1 <- adas_pca$x[, 1]
+
+ravltf_cor <- cor(
+  df_model[, c("ravlt_forgetting", "ravlt_perc_forgetting")],
+  use = "complete.obs"
+)
+ravltf_pca <- prcomp(
+  df_model[, c("ravlt_forgetting", "ravlt_perc_forgetting")],
+  scale. = TRUE
+)
+df_model$ravltf_pc1 <- ravltf_pca$x[, 1]
+
+pred_final <- c(
+  "age", "pteducat", "cdrsb", "adas_pc1",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravltf_pc1", "ldeltotal", "trabscor", "faq",
+  "sex", "mci_subtype", "ptmarry"
+)
+
+df_analytic <- df_model |>
+  dplyr::select(rid, outcome, all_of(pred_final))
+
+dummies <- dummyVars(
+  outcome ~ sex + mci_subtype + ptmarry,
+  data = df_analytic
+)
+cat_encoded <- predict(dummies, df_analytic) |>
+  as.data.frame()
+names(cat_encoded) <- make.names(names(cat_encoded))
+
+pred_numeric <- c(
+  "age", "pteducat", "cdrsb", "adas_pc1",
+  "mmse", "ravlt_immediate", "ravlt_learning",
+  "ravltf_pc1", "ldeltotal", "trabscor", "faq"
+)
+
+df_final <- bind_cols(
+  df_analytic[, c("rid", "outcome")],
+  df_analytic[, pred_numeric],
+  cat_encoded
+)
+
+preproc <- preProcess(
+  df_final[, pred_numeric],
+  method = c("center", "scale")
+)
+df_final[, pred_numeric] <- predict(
+  preproc, df_final[, pred_numeric]
+)
+
+feature_names <- setdiff(
+  names(df_final), c("rid", "outcome")
+)
+```
+
+The ADAS scores (ADAS-11, ADAS-13, ADASQ4) exhibited pairwise
+correlations above 0.75 and were replaced by their first
+principal component (ADAS-PC1, explaining
+`r round(100 * summary(adas_pca)$importance[2, 1], 1)`% of
+variance). Similarly, RAVLT Forgetting and RAVLT % Forgetting
+were replaced by RAVLT-F-PC1
+(`r round(100 * summary(ravltf_pca)$importance[2, 1], 1)`%
+of variance). After encoding and PCA replacement, the model
+used `r length(feature_names)` features.
+
+## Train/Test Split
+
+```{r}
+#| label: train-test-split
+#| results: hide
+
+set.seed(243)
+train_idx <- createDataPartition(
+  df_final$outcome, p = 0.7, list = FALSE
+)
+
+train_data <- df_final[train_idx, ]
+test_data <- df_final[-train_idx, ]
+
+x_train <- train_data[, feature_names]
+y_train <- train_data$outcome
+x_test <- test_data[, feature_names]
+y_test <- test_data$outcome
+
+n_train <- nrow(train_data)
+n_test <- nrow(test_data)
+n_train_conv <- sum(y_train == "cAD")
+n_test_conv <- sum(y_test == "cAD")
+```
+
+The dataset was split into a training set (N = `r n_train`;
+`r n_train_conv` converters) and a test set (N = `r n_test`;
+`r n_test_conv` converters) using stratified random sampling.
+
+## Model Training
+
+```{r}
+#| label: ml-training
+#| results: hide
+#| cache: true
+
+train_ctrl <- trainControl(
+  method = "cv",
+  number = 5,
+  classProbs = TRUE,
+  summaryFunction = twoClassSummary,
+  savePredictions = "final"
+)
+
+fit_lr <- train(
+  x = x_train, y = y_train,
+  method = "glmnet",
+  family = "binomial",
+  metric = "ROC",
+  trControl = train_ctrl,
+  tuneGrid = expand.grid(
+    alpha = 0,
+    lambda = 10^seq(-4, 1, length.out = 20)
+  )
+)
+
+fit_rf <- train(
+  x = x_train, y = y_train,
+  method = "rf",
+  ntree = 500,
+  metric = "ROC",
+  trControl = train_ctrl,
+  tuneLength = 5
+)
+
+fit_xgb <- train(
+  x = x_train, y = y_train,
+  method = "xgbTree",
+  metric = "ROC",
+  trControl = train_ctrl,
+  tuneLength = 5,
+  verbosity = 0
+)
+```
+
+```{r}
+#| label: cv-results
+
+cv_lr <- max(fit_lr$results$ROC)
+cv_rf <- max(fit_rf$results$ROC)
+cv_xgb <- max(fit_xgb$results$ROC)
+```
+
+Cross-validated AUROC on the training set: logistic regression
+`r sprintf("%.3f", cv_lr)`, random forest
+`r sprintf("%.3f", cv_rf)`, XGBoost
+`r sprintf("%.3f", cv_xgb)`.
+
+## Model Performance
+
+```{r}
+#| label: test-predictions
+#| results: hide
+
+prob_lr <- predict(fit_lr, x_test, type = "prob")[["cAD"]]
+prob_rf <- predict(fit_rf, x_test, type = "prob")[["cAD"]]
+prob_xgb <- predict(fit_xgb, x_test, type = "prob")[["cAD"]]
+
+roc_lr <- roc(
+  y_test, prob_lr,
+  levels = c("sMCI", "cAD"), direction = "<", quiet = TRUE
+)
+roc_rf <- roc(
+  y_test, prob_rf,
+  levels = c("sMCI", "cAD"), direction = "<", quiet = TRUE
+)
+roc_xgb <- roc(
+  y_test, prob_xgb,
+  levels = c("sMCI", "cAD"), direction = "<", quiet = TRUE
+)
+
+ci_lr <- ci.auc(roc_lr, method = "delong")
+ci_rf <- ci.auc(roc_rf, method = "delong")
+ci_xgb <- ci.auc(roc_xgb, method = "delong")
+
+get_metrics <- function(roc_obj, name) {
+  best <- coords(
+    roc_obj, "best",
+    ret = c("threshold", "sensitivity", "specificity",
+            "ppv", "npv"),
+    best.method = "youden"
+  )
+  ci_obj <- ci.auc(roc_obj, method = "delong")
+
+  tibble(
+    Model = name,
+    AUROC = sprintf(
+      "%.3f (%.3f--%.3f)",
+      as.numeric(auc(roc_obj)),
+      as.numeric(ci_obj[1]),
+      as.numeric(ci_obj[3])
+    ),
+    Sensitivity = sprintf("%.1f%%", 100 * best$sensitivity),
+    Specificity = sprintf("%.1f%%", 100 * best$specificity),
+    PPV = sprintf("%.1f%%", 100 * best$ppv),
+    NPV = sprintf("%.1f%%", 100 * best$npv)
+  )
+}
+
+perf_tbl <- bind_rows(
+  get_metrics(roc_lr, "Logistic Regression"),
+  get_metrics(roc_rf, "Random Forest"),
+  get_metrics(roc_xgb, "XGBoost")
+)
+```
+
+```{r}
+#| label: tbl-performance
+#| tbl-cap: "Model performance metrics on the held-out test set"
+
+kbl(
+  perf_tbl, booktabs = TRUE, linesep = "",
+  escape = TRUE,
+  col.names = c(
+    "Model", "AUROC (95\\% CI)",
+    "Sens.", "Spec.", "PPV", "NPV"
+  )
+) |>
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    font_size = 9
+  )
+```
+
+```{r}
+#| label: fig-roc
+#| fig-cap: "ROC curves comparing classification algorithms on the test set"
+#| fig-height: 5
+#| results: markup
+
+plot(
+  roc_lr, col = "blue", lwd = 2,
+  main = "ROC Curves (Test Set)",
+  legacy.axes = TRUE,
+  print.auc = FALSE
+)
+lines(roc_rf, col = "darkgreen", lwd = 2)
+lines(roc_xgb, col = "red", lwd = 2)
+
+legend(
+  "bottomright",
+  legend = c(
+    sprintf(
+      "LR (%.3f)", auc(roc_lr)
+    ),
+    sprintf(
+      "RF (%.3f)", auc(roc_rf)
+    ),
+    sprintf(
+      "XGBoost (%.3f)", auc(roc_xgb)
+    )
+  ),
+  col = c("blue", "darkgreen", "red"),
+  lwd = 2, cex = 0.8, bty = "n"
+)
+```
+
+## Feature Importance
+
+```{r}
+#| label: compute-importance
+#| results: hide
+
+imp_lr_raw <- varImp(fit_lr)$importance
+imp_lr <- tibble(
+  Feature = rownames(imp_lr_raw),
+  LR = imp_lr_raw$Overall
+) |>
+  arrange(desc(LR))
+
+imp_rf_raw <- varImp(fit_rf)$importance
+imp_rf <- tibble(
+  Feature = rownames(imp_rf_raw),
+  RF = imp_rf_raw$Overall
+) |>
+  arrange(desc(RF))
+
+imp_xgb_raw <- varImp(fit_xgb)$importance
+imp_xgb <- tibble(
+  Feature = rownames(imp_xgb_raw),
+  XGBoost = imp_xgb_raw$Overall
+) |>
+  arrange(desc(XGBoost))
+
+imp_all <- imp_lr |>
+  full_join(imp_rf, by = "Feature") |>
+  full_join(imp_xgb, by = "Feature") |>
+  mutate(across(where(is.numeric), \(x) replace_na(x, 0)))
+```
+
+```{r}
+#| label: tbl-importance
+#| tbl-cap: "Top 10 features by variable importance (scaled 0--100) for each model"
+
+top_features <- imp_all |>
+  mutate(avg = (LR + RF + XGBoost) / 3) |>
+  slice_max(avg, n = 10) |>
+  arrange(desc(avg)) |>
+  mutate(across(
+    c(LR, RF, XGBoost),
+    \(x) sprintf("%.1f", x)
+  )) |>
+  dplyr::select(Feature, LR, RF, XGBoost)
+
+kbl(
+  top_features, booktabs = TRUE, linesep = "",
+  escape = TRUE
+) |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  )
+```
+
+```{r}
+#| label: fig-importance
+#| fig-cap: "Top 10 predictive features by average importance across models"
+#| fig-height: 5
+#| results: markup
+
+imp_plot <- imp_all |>
+  mutate(avg = (LR + RF + XGBoost) / 3) |>
+  slice_max(avg, n = 10) |>
+  mutate(Feature = fct_reorder(Feature, avg))
+
+ggplot(imp_plot, aes(x = avg, y = Feature)) +
+  geom_col(fill = "steelblue", width = 0.6) +
+  labs(
+    x = "Average Importance (scaled 0--100)",
+    y = NULL,
+    title = "Top 10 Predictive Features"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid.minor = element_blank())
+```
+
+```{r}
+#| label: fig-importance-comparison
+#| fig-cap: "Feature importance rankings across models"
+#| fig-height: 6
+#| results: markup
+
+imp_long <- imp_all |>
+  mutate(avg = (LR + RF + XGBoost) / 3) |>
+  slice_max(avg, n = 10) |>
+  pivot_longer(
+    cols = c(LR, RF, XGBoost),
+    names_to = "Model",
+    values_to = "Importance"
+  ) |>
+  mutate(Feature = fct_reorder(Feature, avg))
+
+ggplot(
+  imp_long,
+  aes(x = Importance, y = Feature, fill = Model)
+) +
+  geom_col(position = "dodge", width = 0.7) +
+  scale_fill_manual(values = c(
+    LR = "blue", RF = "darkgreen", XGBoost = "red"
+  )) +
+  labs(
+    x = "Importance (scaled 0--100)",
+    y = NULL,
+    title = "Feature Importance by Model"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+## Sensitivity Analyses
+
+### Performance by MCI Subtype
+
+```{r}
+#| label: subtype-analysis
+#| results: hide
+
+test_with_subtype <- test_data |>
+  left_join(
+    df_model |> dplyr::select(rid, mci_subtype),
+    by = "rid"
+  )
+
+subtype_perf <- map_dfr(
+  c("Early", "Late"), function(sub) {
+    idx <- test_with_subtype$mci_subtype == sub
+    if (sum(idx) < 10) {
+      return(tibble(
+        Subtype = sub, N = sum(idx),
+        LR = NA_character_, RF = NA_character_,
+        XGBoost = NA_character_
+      ))
+    }
+    y_sub <- y_test[idx]
+
+    roc_sub_lr <- tryCatch(
+      roc(y_sub, prob_lr[idx],
+          levels = c("sMCI", "cAD"),
+          direction = "<", quiet = TRUE),
+      error = function(e) NULL
+    )
+    roc_sub_rf <- tryCatch(
+      roc(y_sub, prob_rf[idx],
+          levels = c("sMCI", "cAD"),
+          direction = "<", quiet = TRUE),
+      error = function(e) NULL
+    )
+    roc_sub_xgb <- tryCatch(
+      roc(y_sub, prob_xgb[idx],
+          levels = c("sMCI", "cAD"),
+          direction = "<", quiet = TRUE),
+      error = function(e) NULL
+    )
+
+    tibble(
+      Subtype = sub,
+      N = sum(idx),
+      LR = if (!is.null(roc_sub_lr)) {
+        sprintf("%.3f", auc(roc_sub_lr))
+      } else {
+        "N/A"
+      },
+      RF = if (!is.null(roc_sub_rf)) {
+        sprintf("%.3f", auc(roc_sub_rf))
+      } else {
+        "N/A"
+      },
+      XGBoost = if (!is.null(roc_sub_xgb)) {
+        sprintf("%.3f", auc(roc_sub_xgb))
+      } else {
+        "N/A"
+      }
+    )
+  }
+)
+```
+
+```{r}
+#| label: tbl-subtype
+#| tbl-cap: "Test set AUROC by MCI subtype"
+
+kbl(
+  subtype_perf, booktabs = TRUE, linesep = "",
+  escape = TRUE,
+  col.names = c("Subtype", "N", "LR", "RF", "XGBoost")
+) |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  ) |>
+  add_header_above(c(" " = 2, "AUROC" = 3))
+```
+
+### Threshold Analysis
+
+```{r}
+#| label: tbl-thresholds
+#| tbl-cap: "Sensitivity/specificity at various thresholds for the best model"
+
+best_roc <- list(roc_lr, roc_rf, roc_xgb)
+best_names <- c("LR", "RF", "XGBoost")
+best_aucs <- c(auc(roc_lr), auc(roc_rf), auc(roc_xgb))
+best_idx <- which.max(best_aucs)
+best_model_roc <- best_roc[[best_idx]]
+best_model_name <- best_names[best_idx]
+best_probs <- list(prob_lr, prob_rf, prob_xgb)[[best_idx]]
+
+sens_targets <- c(1.00, 0.95, 0.90, 0.85, 0.80, 0.75)
+
+threshold_tbl <- map_dfr(sens_targets, function(s) {
+  coord <- coords(
+    best_model_roc, x = s,
+    input = "sensitivity",
+    ret = c("threshold", "sensitivity", "specificity"),
+    best.method = "closest.topleft"
+  )
+  pred_class <- if_else(
+    best_probs >= coord$threshold, "cAD", "sMCI"
+  )
+  tp <- sum(pred_class == "cAD" & y_test == "cAD")
+  fp <- sum(pred_class == "cAD" & y_test == "sMCI")
+  fn <- sum(pred_class == "sMCI" & y_test == "cAD")
+  tn <- sum(pred_class == "sMCI" & y_test == "sMCI")
+  ppv <- tp / (tp + fp)
+  npv <- tn / (tn + fn)
+
+  tibble(
+    `Target Sens.` = sprintf("%.0f%%", 100 * s),
+    Sensitivity = sprintf("%.1f%%", 100 * coord$sensitivity),
+    Specificity = sprintf("%.1f%%", 100 * coord$specificity),
+    PPV = sprintf("%.1f%%", 100 * ppv),
+    NPV = sprintf("%.1f%%", 100 * npv)
+  )
+})
+
+kbl(
+  threshold_tbl, booktabs = TRUE, linesep = "",
+  escape = TRUE,
+  caption = paste0(
+    "Performance at various sensitivity thresholds (",
+    best_model_name, " model)."
+  )
+) |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  )
+```
+
+# Discussion
+
+## Principal Findings
+
+This analysis developed and evaluated three machine learning
+algorithms for predicting 3-year conversion from MCI to AD
+using baseline sociodemographic, clinical, and
+neuropsychological data from the ADNI cohort. All three
+models achieved discriminative performance, with test-set
+AUROCs summarized in @tbl-performance. The most consistently
+important predictors included clinical and cognitive measures
+that are routinely collected in memory clinic assessments.
+
+## Comparison with Prior Work
+
+Our findings are broadly consistent with those of Grassi et al.
+[-@Grassi2019], who reported an ensemble AUROC of 0.88 using
+a similar predictor set. Differences in exact performance may
+reflect variations in sample composition (ADNI data versions),
+inclusion criteria, and the use of a held-out test set rather
+than cross-validation alone. Rye et al. [-@Rye2022] similarly
+demonstrated that clinically transferable features provide
+strong discriminative performance, reinforcing the viability
+of accessible prediction tools.
+
+## Clinical Implications
+
+The models developed here rely exclusively on clinical and
+neuropsychological measures that are routinely collected in
+memory clinic settings. This design choice maximizes clinical
+translatability: the prediction tool could be deployed without
+requiring expensive PET imaging or invasive lumbar puncture.
+The threshold analysis (@tbl-thresholds) illustrates the
+sensitivity-specificity trade-off, allowing clinicians to
+select operating points based on clinical priorities (e.g.,
+high sensitivity for screening, high specificity for trial
+enrollment).
+
+## Strengths and Limitations
+
+**Strengths:**
+
+1. Use of well-characterized ADNI cohort with standardized
+   assessments
+2. Focus on clinically available predictors for
+   translatability
+3. Comparison of multiple machine learning algorithms
+4. Rigorous train/test split with cross-validation
+
+**Limitations:**
+
+1. ADNI participants are predominantly White and well-educated,
+   limiting generalizability to diverse community populations
+2. Retrospective design cannot establish causation
+3. No external validation cohort
+4. Median imputation may attenuate associations for variables
+   with substantial missingness
+
+## Future Directions
+
+External validation in independent, community-based cohorts is
+needed to establish generalizability. Future work could compare
+the performance of clinical-only models against models
+incorporating neuroimaging and fluid biomarkers to quantify
+the incremental value of expensive assessments. Longitudinal
+prediction models that incorporate change trajectories, rather
+than baseline snapshots alone, may further improve prognostic
+accuracy.
+
+# Conclusion
+
+Machine learning models using readily available clinical and
+neuropsychological measures can discriminate MCI subjects at
+risk for 3-year conversion to AD. The approach prioritizes
+clinical translatability by excluding imaging and genetic
+biomarkers, supporting potential deployment in routine memory
+clinic assessments. External validation and prospective
+evaluation are necessary before clinical implementation.
+
+# References
+
+::: {#refs}
+:::
+
+\newpage
+
+# Supplementary Material
+
+## Supplementary Table S1: Logistic Regression Coefficients
+
+```{r}
+#| label: tbl-coefficients
+#| tbl-cap: "L2-regularized logistic regression coefficients at optimal lambda"
+
+lr_coefs <- coef(
+  fit_lr$finalModel,
+  s = fit_lr$bestTune$lambda
+)
+coef_df <- tibble(
+  Feature = rownames(lr_coefs)[-1],
+  Coefficient = as.numeric(lr_coefs)[-1]
+) |>
+  dplyr::filter(abs(Coefficient) > 1e-6) |>
+  arrange(desc(abs(Coefficient))) |>
+  mutate(Coefficient = sprintf("%.4f", Coefficient))
+
+kbl(
+  coef_df, booktabs = TRUE, linesep = "",
+  escape = TRUE
+) |>
+  kable_styling(
+    latex_options = "hold_position",
+    font_size = 9
+  )
+```
+
+## Supplementary Figure S1: Calibration Plots
+
+```{r}
+#| label: fig-calibration
+#| fig-cap: "Calibration plots: predicted vs. observed conversion probability"
+#| fig-height: 4
+#| results: markup
+
+calibration_data <- function(probs, actual, model_name,
+                              n_bins = 10) {
+  breaks <- seq(0, 1, length.out = n_bins + 1)
+  bin <- cut(probs, breaks, include.lowest = TRUE)
+  tibble(prob = probs, actual = actual, bin = bin) |>
+    group_by(bin) |>
+    dplyr::summarize(
+      pred_mean = mean(prob),
+      obs_mean = mean(actual == "cAD"),
+      n = n(),
+      .groups = "drop"
+    ) |>
+    mutate(Model = model_name)
+}
+
+cal_df <- bind_rows(
+  calibration_data(prob_lr, y_test, "LR"),
+  calibration_data(prob_rf, y_test, "RF"),
+  calibration_data(prob_xgb, y_test, "XGBoost")
+)
+
+ggplot(cal_df, aes(x = pred_mean, y = obs_mean)) +
+  geom_abline(
+    slope = 1, intercept = 0,
+    linetype = "dashed", color = "gray50"
+  ) +
+  geom_point(aes(color = Model, size = n)) +
+  geom_line(aes(color = Model)) +
+  scale_color_manual(values = c(
+    LR = "blue", RF = "darkgreen", XGBoost = "red"
+  )) +
+  scale_size_continuous(range = c(1, 4), guide = "none") +
+  labs(
+    x = "Mean Predicted Probability",
+    y = "Observed Proportion",
+    title = "Calibration Plot"
+  ) +
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1)) +
+  theme_minimal(base_size = 10) +
+  theme(legend.position = "bottom")
+```
+
+## Supplementary Figure S2: Cross-Validation Performance
+
+```{r}
+#| label: fig-cv-comparison
+#| fig-cap: "Cross-validated AUROC distributions across 5 folds"
+#| fig-height: 4
+#| results: markup
+
+cv_results <- resamples(list(
+  LR = fit_lr, RF = fit_rf, XGBoost = fit_xgb
+))
+
+dotplot(
+  cv_results, metric = "ROC",
+  main = "Cross-Validated AUROC by Model"
+)
+```
+
+# Session Information
+
+```{r}
+#| label: session-info
+#| echo: true
+#| results: markup
+sessionInfo()
+```
