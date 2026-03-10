@@ -107,20 +107,22 @@ in the pipeline, such as imputation or cross-validation splits.
 
 ## The Reproducibility Stack
 
-```
-+------------------------------------------+
-|           Your Analysis Code             |
-+------------------------------------------+
-|              R Packages                  |
-|         (locked by renv.lock)            |
-+------------------------------------------+
-|     R Version + System Libraries         |
-|         (locked by Dockerfile)           |
-+------------------------------------------+
-|           Operating System               |
-|       (rocker/r-ver base image)          |
-+------------------------------------------+
-```
+::: {style="display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 1em;"}
+::: {style="width: 70%; background: #f0f4ff; border: 2px solid #336; padding: 15px; text-align: center; font-weight: bold; font-size: 1.1em;"}
+Your Analysis Code
+:::
+::: {style="width: 70%; background: #e8f0e8; border: 2px solid #363; border-top: none; padding: 15px; text-align: center;"}
+**R Packages** <br> (locked by renv.lock)
+:::
+::: {style="width: 70%; background: #fff3e0; border: 2px solid #963; border-top: none; padding: 15px; text-align: center;"}
+**R Version + System Libraries** <br> (locked by Dockerfile)
+:::
+::: {style="width: 70%; background: #f5f0ff; border: 2px solid #639; border-top: none; padding: 15px; text-align: center;"}
+**Operating System** <br> (rocker/r-ver base image)
+:::
+:::
+
+## The Reproducibility Stack: Tools
 
 | Tool | What It Locks | Key Commands |
 |------|---------------|--------------|
@@ -337,7 +339,7 @@ factor level is exactly `"Adelie"` rather than `"adelie"`.
 
 ## Linear Regression: From Simple to Species-Aware
 
-$$\text{body\_mass}_i = \beta_0 + \beta_1 \cdot \text{flipper\_length}_i + \epsilon_i$$
+$$\text{body_mass}_i = \beta_0 + \beta_1 \cdot \text{flipper_length}_i + \epsilon_i$$
 
 **Model building strategy** (sequential):
 
