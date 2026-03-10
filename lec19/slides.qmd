@@ -1,0 +1,628 @@
+---
+title: "PHB 243b: Practicum in Biostatistics"
+subtitle: "Lecture 19: Full Course Review"
+author: "Dr. Ronald G. Thomas"
+date: "March 10, 2026"
+format:
+  revealjs:
+    theme: serif
+    slide-number: true
+    code-fold: false
+    code-tools: true
+    code-copy: true
+    highlight-style: github
+    smaller: true
+    css: ../custom.css
+    title-slide-attributes:
+      data-background-image: "../ucsdlibrary.jpeg"
+      data-background-size: 25%
+      data-background-position: right 5% bottom 5%
+---
+
+<style>
+.question {
+  background-color: #e6f7ff;
+  border-left: 5px solid #1890ff;
+  padding: 10px 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.answer {
+  background-color: #f6ffed;
+  border-left: 5px solid #52c41a;
+  padding: 10px 15px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.reference-stamp {
+  background-color: rgba(255,0,0,0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
+
+## Course Information
+
+- **Instructor**: Dr. Ronald G. Thomas
+- **Email**: rgthomas@ucsd.edu
+- **Office Hours**: by appointment
+- **TA**: Man Luo
+- **TA Email**: maluo@ucsd.edu
+
+
+## Lecture 19: Full Course Review {.subtitle}
+
+## Today's Agenda
+
+1. Reproducible Research Foundations
+2. Package Management: renv
+3. Containerization: Docker
+4. Version Control: Git and GitHub
+5. Statistical Analysis Plans
+6. Testing Data Analysis Workflows
+7. Regression and Model Diagnostics
+8. Simpson's Paradox and Confounding
+9. Machine Learning and Classification
+10. Study Design Across Four Projects
+
+
+# Part I: Reproducible Research
+
+## Reproducibility: Core Definitions
+
+- **Reproducibility**: Same data + same code = same results
+- **Replicability**: New data + same methods = consistent findings
+- **Transparency**: Complete documentation of analytical decisions
+
+Five components of a reproducible analysis:
+
+1. **Data management** -- raw data preservation, clear provenance
+2. **Code organization** -- modular, well-documented scripts
+3. **Environment capture** -- package versions, system dependencies
+4. **Documentation** -- README files, analysis narratives
+5. **Version control** -- complete history of changes
+
+::: {.fragment .question}
+**Question:** A collaborator runs your R script from six months ago and
+gets different regression coefficients. The data file is identical.
+What are the three most likely causes?
+:::
+
+::: {.fragment .answer}
+**Answer:** (1) Package versions changed -- a function's default
+arguments or internal behavior may have been updated. (2) R version
+differs -- floating-point handling or random number generation can
+vary across versions. (3) A seed was not set for any stochastic step
+in the pipeline, such as imputation or cross-validation splits.
+:::
+
+
+## The Reproducibility Stack
+
+```
++------------------------------------------+
+|           Your Analysis Code             |
++------------------------------------------+
+|              R Packages                  |
+|         (locked by renv.lock)            |
++------------------------------------------+
+|     R Version + System Libraries         |
+|         (locked by Dockerfile)           |
++------------------------------------------+
+|           Operating System               |
+|       (rocker/r-ver base image)          |
++------------------------------------------+
+```
+
+| Tool | What It Locks | Key Commands |
+|------|---------------|--------------|
+| renv | R package versions | `init()`, `snapshot()`, `restore()` |
+| Docker | OS, R version, system libs | `build`, `run`, `push` |
+| Git | Change history | `add`, `commit`, `push`, `pull` |
+| rrtools | Project structure | `use_compendium()`, `use_analysis()` |
+
+::: {.fragment .question}
+**Question:** Why is renv alone insufficient for full reproducibility?
+:::
+
+::: {.fragment .answer}
+**Answer:** renv locks R package versions but cannot control the R
+version itself, operating system, or system-level C/C++ libraries.
+Packages like `sf` depend on system libraries (GDAL, GEOS) that may
+differ across machines. Docker complements renv by containerizing
+the entire computing environment, guaranteeing identical behavior
+regardless of the host machine.
+:::
+
+
+# Part II: renv and Docker
+
+## renv: Package Version Control
+
+Three essential functions:
+
+```r
+renv::init()       # Initialize: create project library + lockfile
+renv::snapshot()   # Save current package versions to renv.lock
+renv::restore()    # Install exact versions from renv.lock
+```
+
+Key files created:
+
+- `renv.lock` -- JSON file with exact package versions and hashes
+- `renv/` -- project-specific package library
+- `.Rprofile` -- auto-activates renv when project opens
+
+::: {.fragment .question}
+**Question:** You install a new package with `install.packages("glmnet")`
+inside an renv project. What must you do before committing to Git?
+:::
+
+::: {.fragment .answer}
+**Answer:** Run `renv::snapshot()` to update `renv.lock` with the new
+package and its dependencies. Without this step, the lockfile will be
+out of sync with your code, and a collaborator running
+`renv::restore()` will not get glmnet installed. You can verify
+synchronization with `renv::status()`.
+:::
+
+
+## Docker: Environment Containerization
+
+```dockerfile
+FROM rocker/r-ver:4.4.0
+
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev libssl-dev libxml2-dev
+
+WORKDIR /workspace
+
+RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+RUN R -e "renv::restore()"
+
+CMD ["/bin/bash"]
+```
+
+```bash
+docker build -t myimage:v1 .                          # Build
+docker run --rm -it -v "$(pwd):/workspace" myimage:v1  # Run
+docker push username/myimage:v1                        # Share
+```
+
+::: {.fragment .question}
+**Question:** Why does the Dockerfile copy `renv.lock` before copying
+the rest of the analysis files?
+:::
+
+::: {.fragment .answer}
+**Answer:** Docker caches each layer and only rebuilds layers that
+change. If all files are copied first, any edit to analysis code
+invalidates the cache and forces a full package reinstallation.
+Copying the lockfile separately ensures packages are only
+reinstalled when dependencies actually change, reducing rebuild
+time from minutes to seconds during development.
+:::
+
+
+# Part III: Version Control
+
+## Git and GitHub
+
+**Core workflow:** Edit -- Stage -- Commit -- Push
+
+```bash
+git status                                    # What changed?
+git add analysis.R                            # Stage specific files
+git commit -m "Add species interaction model" # Snapshot with message
+git push origin main                          # Send to GitHub
+```
+
+**Collaboration workflow:**
+
+1. `git pull origin main` -- get latest changes
+2. `git checkout -b feature/survival-analysis` -- create branch
+3. Make changes, commit regularly
+4. `git push origin feature/survival-analysis` -- push branch
+5. Open pull request on GitHub for code review
+6. After approval, merge into main
+
+::: {.fragment .question}
+**Question:** Your teammate pushed changes to main while you were
+working on a branch. You try to merge your branch and Git reports
+a conflict. What do you do?
+:::
+
+::: {.fragment .answer}
+**Answer:** Open the conflicted file and find the conflict markers
+(`<<<<<<<`, `=======`, `>>>>>>>`). The section above `=======` is
+your version; below is your teammate's. Edit the file to keep the
+correct version (or combine both), remove all conflict markers,
+then `git add` the resolved file and `git commit`. Always discuss
+with your teammate before resolving conflicts in shared analysis
+code to avoid introducing subtle errors.
+:::
+
+
+# Part IV: Statistical Analysis Plans
+
+## Elements of a Statistical Analysis Plan
+
+A **Statistical Analysis Plan (SAP)** is written *before* conducting
+the analysis. It specifies:
+
+| Section | Contents |
+|---------|----------|
+| Introduction | Research questions, hypotheses, literature context |
+| Data description | Source, population, key variables |
+| Statistical methods | Descriptive stats, primary analysis, sensitivity |
+| Missing data | Strategy (complete case, imputation, justification) |
+| Results presentation | Table shells, planned figures |
+| Sensitivity analyses | Robustness checks, alternative specifications |
+
+:::{.callout-note}
+The SAP prevents data dredging, documents analytical intentions, and
+serves as a contract between team members about what will be done.
+:::
+
+::: {.fragment .question}
+**Question:** Why should table shells be included in the analysis plan
+rather than created after the analysis is complete?
+:::
+
+::: {.fragment .answer}
+**Answer:** Table shells force you to think through exactly what you
+will report before seeing results. They identify gaps in your
+variable list -- if you cannot fill a cell, you may be missing a
+required measurement. They also prevent post-hoc addition of
+favorable comparisons. In clinical trials, table shells are
+required by FDA guidance (ICH E9). For course projects, they
+ensure your team agrees on deliverables before dividing work.
+:::
+
+
+# Part V: Testing Data Analysis Workflows
+
+## Types of Tests for Data Science
+
+| Test Type | What It Checks | Example |
+|-----------|---------------|---------|
+| Unit tests | Individual functions | `clean_penguins()` removes NAs |
+| Data validation | Data quality | All body masses > 0, species valid |
+| Integration | Full pipeline | Scripts 01-04 run without error |
+| Reproducibility | Determinism | Same seed yields same bootstrap CI |
+
+```r
+test_that("clean_penguins removes rows with missing values", {
+  test_data <- data.frame(
+    species = c("Adelie", "Gentoo", "Chinstrap"),
+    bill_length = c(39.1, NA, 46.5),
+    body_mass = c(3750, 4500, NA)
+  )
+  cleaned <- clean_penguins(test_data)
+
+  expect_equal(nrow(cleaned), 1)
+  expect_equal(cleaned$species, "Adelie")
+  expect_false(any(is.na(cleaned)))
+})
+```
+
+::: {.fragment .question}
+**Question:** What is the difference between `expect_equal()` and
+`expect_identical()` in testthat, and when would you use each?
+:::
+
+::: {.fragment .answer}
+**Answer:** `expect_equal()` allows a small numerical tolerance
+(default 1.5e-8), appropriate for floating-point comparisons such
+as regression coefficients or computed means. `expect_identical()`
+requires an exact bitwise match, appropriate for strings, integers,
+and logical values where tolerance is meaningless. Use `expect_equal()`
+for model outputs; use `expect_identical()` for checking that a
+factor level is exactly `"Adelie"` rather than `"adelie"`.
+:::
+
+
+# Part VI: Regression and Model Diagnostics
+
+## Linear Regression: From Simple to Species-Aware
+
+$$\text{body\_mass}_i = \beta_0 + \beta_1 \cdot \text{flipper\_length}_i + \epsilon_i$$
+
+**Model building strategy** (sequential):
+
+| Model | Predictors | R-squared | CV RMSE (g) |
+|-------|-----------|-----------|-------------|
+| Simple | Flipper length | 0.759 | ~390 |
+| Multiple | Flipper + bill length + bill depth | 0.779 | ~380 |
+| Species-aware | + species | 0.868 | ~290 |
+
+**Interpretation of the simple model:**
+
+- Intercept: -5781 g (extrapolation, not meaningful)
+- Slope: 49.7 g per mm of flipper length
+- Each additional mm of flipper length is associated with ~50 g of
+  body mass
+
+::: {.fragment .question}
+**Question:** The multiple regression model (without species) shows a
+*negative* coefficient for bill depth. The bivariate correlation
+between bill depth and body mass is *positive*. How is this possible?
+:::
+
+::: {.fragment .answer}
+**Answer:** This is Simpson's Paradox. Gentoo penguins are the largest
+species but have shallow bills, while Adelie penguins have deep bills
+but smaller bodies. When species is omitted, the model conflates
+between-species differences with the within-species relationship.
+The negative coefficient reflects the confounded overall trend.
+Adding species to the model resolves the paradox and reveals the
+expected positive within-species association between bill depth and
+body mass.
+:::
+
+
+## Model Diagnostics and Cross-Validation
+
+**Four diagnostic plots** (from `plot(model)`):
+
+1. **Residuals vs. Fitted** -- linearity and constant variance
+2. **Q-Q Plot** -- normality of residuals
+3. **Scale-Location** -- homoscedasticity
+4. **Residuals vs. Leverage** -- influential observations
+
+**Multicollinearity:** Variance Inflation Factor (VIF)
+
+- VIF > 5 indicates concerning multicollinearity
+- VIF > 10 indicates severe multicollinearity
+
+**Cross-validation** provides honest performance estimates:
+
+```r
+library(caret)
+set.seed(42)
+train_control <- trainControl(method = "cv", number = 10)
+cv_model <- train(body_mass_g ~ ., data = penguins_clean,
+                  method = "lm", trControl = train_control)
+```
+
+::: {.fragment .question}
+**Question:** Your training R-squared is 0.92 but your 10-fold
+cross-validated R-squared is 0.71. What does this discrepancy
+suggest, and what would you do?
+:::
+
+::: {.fragment .answer}
+**Answer:** A large gap between training and CV performance indicates
+overfitting -- the model has learned noise in the training data that
+does not generalize. Potential remedies: (1) Reduce model complexity
+by removing weak predictors or using regularization (e.g., elastic
+net). (2) Increase sample size if possible. (3) Use feature selection
+guided by domain knowledge rather than automated stepwise methods.
+The CV estimate is the honest one; the training R-squared is
+optimistically biased.
+:::
+
+
+# Part VII: Machine Learning and Classification
+
+## Predicting MCI to AD Conversion
+
+**The clinical problem:** Not all MCI patients progress to Alzheimer's
+disease. Identifying who will convert enables targeted treatment
+planning, clinical trial enrollment, and family counseling.
+
+**Grassi et al. (2019) approach:**
+
+- Cohort: MCI subjects from ADNI with 3+ years follow-up
+- Outcome: Binary (converter vs. stable within 3 years)
+- Features: Baseline clinical and cognitive data only
+- Result: AUROC = 0.88 using ensemble of 13 algorithms
+
+**Top predictors** (ranked by individual AUROC):
+
+| Rank | Feature | AUROC |
+|------|---------|-------|
+| 1 | ADAS-Cog (PC1) | 0.809 |
+| 2 | RAVLT Immediate | 0.777 |
+| 3 | FAQ | 0.777 |
+| 4 | LDELTOTAL | 0.770 |
+| 5 | CDRSB | 0.697 |
+
+::: {.fragment .question}
+**Question:** Grassi et al. intentionally excluded imaging (MRI, PET)
+and genetic (APOE4) features. Why might excluding the most accurate
+biomarkers be a deliberate methodological choice?
+:::
+
+::: {.fragment .answer}
+**Answer:** The goal was clinical translatability. MRI and PET scans
+are expensive, require specialized equipment, and are not available
+in many community clinics. APOE4 genotyping raises ethical concerns
+about genetic discrimination. By restricting features to standard
+neuropsychological assessments (MMSE, ADAS, RAVLT) and clinical
+scales (CDR-SB, FAQ), the resulting model can be deployed in any
+clinical setting with a trained assessor. Achieving AUROC = 0.88
+with only clinical features demonstrates that expensive biomarkers
+are not always necessary for clinically useful prediction.
+:::
+
+
+## Evaluation Metrics for Classification
+
+| Metric | Formula | Interpretation |
+|--------|---------|----------------|
+| Sensitivity | TP / (TP + FN) | Proportion of true converters detected |
+| Specificity | TN / (TN + FP) | Proportion of true stable identified |
+| PPV | TP / (TP + FP) | Of predicted converters, how many are true |
+| NPV | TN / (TN + FN) | Of predicted stable, how many are true |
+| AUROC | Area under ROC curve | Overall discrimination ability |
+
+**ROC curve:** Plot of sensitivity vs. (1 - specificity) across all
+classification thresholds. A perfect classifier has AUROC = 1.0;
+random guessing gives AUROC = 0.5.
+
+```r
+library(pROC)
+roc_obj <- roc(test_data$converter, predictions)
+plot(roc_obj)
+auc(roc_obj)
+coords(roc_obj, "best",
+       ret = c("threshold", "sensitivity", "specificity"))
+```
+
+::: {.fragment .question}
+**Question:** In the ADNI prediction task, the conversion rate is
+approximately 25%. If you built a model that always predicted
+'stable' for every patient, what would the sensitivity, specificity,
+and accuracy be?
+:::
+
+::: {.fragment .answer}
+**Answer:** Sensitivity = 0% (no converters detected), specificity =
+100% (all stable correctly labeled), and accuracy = 75% (since 75%
+of patients are stable). This illustrates why accuracy is misleading
+for imbalanced outcomes. A model that never detects the outcome of
+interest is clinically useless despite appearing 75% 'accurate.'
+This is why AUROC, sensitivity, and specificity are the appropriate
+metrics for classification with class imbalance.
+:::
+
+
+# Part VIII: Study Design Across Projects
+
+## Four Datasets, Four Design Contexts
+
+| Project | Dataset | Design | Key Challenge |
+|---------|---------|--------|---------------|
+| P1 | Palmer Penguins | Observational | Simpson's paradox, confounding |
+| P2 | ADNI | Longitudinal cohort | ML classification, class imbalance |
+| P3 | Stanford Policing | Observational | Racial disparities, large N |
+| P4 | Licorice Gargle | Randomized trial | RCT analysis, ITT vs. per-protocol |
+
+**Common analytical thread across all projects:**
+
+1. Write SAP before analyzing data
+2. Explore data with descriptive statistics and visualizations
+3. Fit appropriate models with proper diagnostics
+4. Validate results (cross-validation, sensitivity analyses)
+5. Present in reproducible compendium (rrtools + renv + Git)
+
+::: {.fragment .question}
+**Question:** What is the fundamental difference between the
+analytical approach for Project 4 (Licorice Gargle RCT) and
+Projects 1--3 (observational data)?
+:::
+
+::: {.fragment .answer}
+**Answer:** In an RCT, randomization ensures that treatment groups
+are balanced on both observed and unobserved confounders at
+baseline, permitting causal inference. The primary analysis follows
+intention-to-treat (ITT): subjects are analyzed in the group to
+which they were randomized regardless of compliance. In
+observational studies (Projects 1--3), confounding must be
+addressed through statistical adjustment (regression, matching,
+stratification) and causal claims are limited. The policing data
+(P3) is especially vulnerable to unmeasured confounding because
+officer decisions and departmental policies vary in ways that
+cannot be fully captured in the data.
+:::
+
+
+## Cross-Validation Strategies
+
+| Strategy | When to Use | Example |
+|----------|-------------|---------|
+| k-fold CV | General model evaluation | 10-fold CV for penguins regression |
+| Site-independent split | Multicenter studies | ADNI: train/test from different sites |
+| Stratified CV | Imbalanced outcomes | Preserve converter ratio in each fold |
+| Leave-one-out CV | Small samples | Maximum use of limited data |
+
+```r
+# k-fold cross-validation
+train_control <- trainControl(method = "cv", number = 10)
+
+# Site-independent split (ADNI)
+train_data <- adni_mci |> filter(SITE %in% train_sites)
+test_data  <- adni_mci |> filter(SITE %in% test_sites)
+```
+
+::: {.fragment .question}
+**Question:** For the ADNI project, why is a site-independent
+train/test split preferable to a random split of individual
+subjects?
+:::
+
+::: {.fragment .answer}
+**Answer:** Subjects within the same site share unmeasured
+characteristics: the same clinicians administer cognitive tests,
+the same MRI scanner acquires images, and local referral patterns
+affect patient demographics. A random split would leak these
+site-level correlations into both training and test sets,
+producing optimistically biased performance estimates. A
+site-independent split simulates real-world generalization:
+will the model work at a clinic that was not used for training?
+This is the clinically relevant question.
+:::
+
+
+# Part IX: Putting It All Together
+
+## The Complete Reproducible Workflow
+
+```
+1. Plan           Write SAP before touching data
+                  Specify methods, table shells, sensitivity analyses
+
+2. Set up         Create rrtools compendium
+                  Initialize renv, Git, and GitHub
+
+3. Explore        Load data, compute descriptives
+                  Visualize distributions and relationships
+
+4. Analyze        Fit models specified in SAP
+                  Run diagnostics and cross-validation
+
+5. Test           Write testthat tests for functions and data
+                  Verify reproducibility with seeds
+
+6. Document       Write report in R Markdown / Quarto
+                  Ensure complete narrative + code integration
+
+7. Share          Snapshot renv, build Docker image
+                  Push to GitHub and DockerHub
+```
+
+::: {.fragment .question}
+**Question:** A reviewer asks you to change your primary regression
+model from linear to mixed-effects. What steps in this workflow
+are affected, and in what order should you address them?
+:::
+
+::: {.fragment .answer}
+**Answer:** (1) Update the SAP to document and justify the change.
+(2) Install `lme4` and run `renv::snapshot()` to record the new
+dependency. (3) Modify your analysis script to fit the mixed model.
+(4) Update tests to reflect the new model class (`expect_s4_class`
+for lmer objects). (5) Re-run all tests to confirm nothing else
+broke. (6) Update the report narrative and tables. (7) Commit all
+changes with a descriptive message explaining why the model changed.
+(8) Rebuild the Docker image if sharing via container.
+:::
+
+
+## Questions?
+
+- **Office hours:** By appointment
+- **Email:** rgthomas@ucsd.edu or maluo@ucsd.edu
+- **Canvas:** Post in discussion board

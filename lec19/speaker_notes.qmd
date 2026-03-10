@@ -1,0 +1,390 @@
+---
+title: "Speaker Notes: Lecture 19 -- Full Course Review"
+author: "Dr. Ronald G. Thomas"
+date: "March 10, 2026"
+format: html
+---
+
+## Timing Plan
+
+| Time | Cumulative | Slide(s) | Topic |
+|------|-----------|----------|-------|
+| 5 min | 0:05 | 1--3 | Course info, agenda |
+| 8 min | 0:13 | 4--5 | Reproducible research foundations |
+| 8 min | 0:21 | 6--7 | renv and Docker |
+| 7 min | 0:28 | 8 | Git and GitHub |
+| 7 min | 0:35 | 9 | Statistical analysis plans |
+| 7 min | 0:42 | 10 | Testing workflows |
+| 10 min | 0:52 | 11--12 | Regression and diagnostics |
+| 10 min | 1:02 | 13--14 | ML and classification metrics |
+| 10 min | 1:12 | 15--16 | Study design and cross-validation |
+| 5 min | 1:17 | 17 | Complete reproducible workflow |
+| 3 min | 1:20 | 18 | Questions |
+
+Total: approximately 80 minutes.
+
+
+## Slide-by-Slide Notes
+
+### Slide 1: Course Information
+
+Standard opening. No discussion needed.
+
+### Slide 2: Lecture 19: Full Course Review
+
+Frame the session: this is a comprehensive review of the entire
+quarter. Every major concept from lectures 1--18 will be revisited
+at a high level. Encourage students to interrupt with questions
+at any point -- the goal is clarity, not coverage speed.
+
+### Slide 3: Today's Agenda
+
+Walk through the ten topics. Note that these map roughly to the
+chronological order of the course: reproducibility foundations
+first, then tools, then statistical methods, then study design.
+
+Mention that all four project datasets will be referenced
+throughout.
+
+
+### Slide 4: Reproducibility -- Core Definitions
+
+**Key distinctions to emphasize:**
+
+- Reproducibility is a technical property (can I re-run your code
+  and get the same numbers?). It is achievable with proper tools.
+- Replicability is a scientific property (does the finding hold in
+  new data?). It depends on the underlying phenomenon.
+- Both matter, but reproducibility is the minimum standard.
+
+**On the five components:** Ask students which component they
+found most difficult to maintain across their four projects. This
+usually generates good discussion about environment capture
+(renv/Docker) being the most commonly neglected.
+
+**Question discussion:** The 'different coefficients' scenario is
+common in practice. Push students to think beyond 'the code is
+wrong' to structural causes. A good follow-up: 'How would you
+have prevented this?' (Answer: renv + Docker + Git.)
+
+**Anticipated student question:** 'Does reproducibility guarantee
+correctness?' No. You can reproducibly produce wrong results. But
+reproducibility enables others to find and fix errors. Without it,
+errors are invisible.
+
+
+### Slide 5: The Reproducibility Stack
+
+**Visual emphasis:** The layered diagram is the key takeaway. Each
+layer addresses a different failure mode:
+
+- Code layer: the analysis itself (your scripts)
+- Package layer: renv locks exact versions
+- System layer: Docker locks R version + OS + system libs
+- Base layer: rocker images provide stable foundations
+
+**On the tool table:** Ask students to recall the three renv
+commands from memory. Most will get `init()` and `restore()` but
+forget `snapshot()` -- reinforce that snapshot is the step most
+commonly skipped and the one that causes collaboration failures.
+
+**Question discussion:** The renv insufficiency question tests
+understanding of the reproducibility layers. A strong answer
+mentions system libraries specifically. An excellent answer gives
+a concrete example (e.g., the sf/GDAL case, or differences in
+BLAS implementations affecting numerical results).
+
+
+### Slide 6: renv -- Package Version Control
+
+**Walk through the workflow:**
+
+1. `init()` -- do this once at project creation
+2. Install packages as normal
+3. `snapshot()` -- do this after every package change
+4. Commit `renv.lock` to Git
+5. Collaborator clones and runs `restore()`
+
+**Emphasize the lockfile:** It is JSON, human-readable, and
+includes hashes for integrity verification. Students should
+know what it contains conceptually even if they do not read it.
+
+**Question discussion:** The glmnet scenario tests whether
+students understand the snapshot step. Common mistake: installing
+packages and committing code without updating the lockfile.
+The `renv::status()` command is a useful check they should
+run before every commit.
+
+**Anticipated student question:** 'What if renv::restore() fails
+because a package was removed from CRAN?' Point to the CRAN
+archive, GitHub sources, and `renv::install("pkg@version")`.
+
+
+### Slide 7: Docker -- Environment Containerization
+
+**On the Dockerfile:** Walk through each line and explain what
+it does. Emphasize the ordering -- renv files before analysis
+files -- and explain Docker layer caching.
+
+**Key flags to reinforce:**
+
+- `--rm`: container is temporary, removed after exit
+- `-it`: interactive terminal (needed for R console)
+- `-v`: volume mount (your local files inside the container)
+
+**Question discussion:** The layer caching question tests
+understanding of Docker's build process. This is a practical
+optimization that matters during development. Students who
+built Docker images for Project 2 likely experienced slow
+rebuilds and will appreciate this explanation.
+
+**Anticipated student question:** 'Do I need Docker for every
+project?' Not necessarily. For coursework, renv + Git is
+often sufficient. Docker becomes essential when sharing with
+collaborators on different operating systems or when deploying
+to servers.
+
+
+### Slide 8: Git and GitHub
+
+**Core workflow:** Write the four commands on the board if
+possible. The staging area concept is the most confusing for
+new Git users -- emphasize that staging lets you select which
+changes to include in a commit.
+
+**Collaboration workflow:** This is the workflow students used
+for all four projects. Ask if any teams encountered merge
+conflicts and how they resolved them.
+
+**Question discussion:** The merge conflict scenario tests
+practical Git skills. Walk through the conflict markers
+carefully. Emphasize the importance of communication -- never
+resolve a conflict in analysis code unilaterally. The wrong
+merge could silently change results.
+
+**Anticipated student question:** 'What if I accidentally
+committed sensitive data?' Use `git filter-branch` or BFG
+Repo-Cleaner, but emphasize prevention (.gitignore) over cure.
+
+
+### Slide 9: Statistical Analysis Plans
+
+**Key message:** The SAP is not bureaucratic overhead. It is
+the most important document in a biostatistical project because
+it separates planned analyses from post-hoc exploration.
+
+**Table shells:** This is often the most surprising concept for
+students. Show how a blank Table 1 shell forces you to identify
+all variables, stratification groups, and summary statistics
+before touching data.
+
+**Question discussion:** The table shell question connects to
+clinical trial practice (ICH E9). For observational studies,
+table shells are equally valuable for preventing 'fishing
+expeditions.' A student who has worked on Project 4 (the RCT)
+should be able to explain this from experience.
+
+
+### Slide 10: Testing Data Analysis Workflows
+
+**Taxonomy:** Distinguish the four test types clearly. Unit
+tests are for individual functions. Data validation tests check
+data quality (ranges, types, missing patterns). Integration
+tests verify the full pipeline. Reproducibility tests confirm
+determinism.
+
+**Code example:** Walk through the `clean_penguins` test.
+Highlight the Arrange-Act-Assert pattern. Note that the test
+uses synthetic data with known properties, not the real dataset.
+
+**Question discussion:** The `expect_equal` vs `expect_identical`
+distinction is subtle but important. Many students will have
+encountered floating-point comparison issues in their projects.
+The tolerance parameter in `expect_equal` is the solution.
+
+**Anticipated student question:** 'How many tests should I
+write?' Enough to catch the errors that matter. Focus on data
+loading, cleaning functions, and model outputs. Testing every
+line of exploratory code is unnecessary.
+
+
+### Slide 11: Linear Regression -- Simple to Species-Aware
+
+**Sequential model building:** This is the pedagogical strategy
+from Lecture 10. Each model adds complexity and shows how
+R-squared improves. The jump from 0.779 to 0.868 when adding
+species demonstrates how much variance is explained by group
+membership.
+
+**Coefficient interpretation:** Emphasize that the intercept
+of -5781 g is extrapolation (no penguin has zero flipper length)
+and should not be interpreted literally.
+
+**Question discussion:** The Simpson's Paradox question is
+central to the entire penguins analysis. Draw the two scatter
+plots on the board if possible: overall negative trend, within-
+species positive trend. Ask students to identify the confounding
+variable (species). This concept applies directly to Projects 2
+and 3 as well.
+
+
+### Slide 12: Model Diagnostics and Cross-Validation
+
+**Diagnostic plots:** Name all four and state what each reveals.
+The residuals vs. fitted plot is the most informative single
+diagnostic. Random scatter = good. Patterns = problems.
+
+**VIF:** Students should know the 5/10 thresholds. For the
+penguins data, VIF is moderate because bill measurements and
+flipper length are correlated.
+
+**Question discussion:** The overfitting scenario (training
+R-squared 0.92, CV R-squared 0.71) is a critical concept.
+Ask students if they encountered this in Project 2 (ADNI).
+Many will have seen this gap with complex ML models. The
+remedies (regularization, feature selection, more data) are
+practical and important.
+
+
+### Slide 13: Predicting MCI to AD Conversion
+
+**Clinical context:** Spend a moment on why this prediction
+task matters clinically. Early identification of converters
+enables enrollment in clinical trials for disease-modifying
+therapies. This is not an abstract ML exercise.
+
+**Grassi et al. approach:** Emphasize the deliberate
+restriction to baseline clinical features. This is a design
+decision, not a limitation. The AUROC of 0.88 with only
+clinical features is clinically meaningful.
+
+**Question discussion:** The biomarker exclusion question tests
+whether students understand the difference between maximizing
+accuracy in a research setting and building a deployable
+clinical tool. A model requiring PET scans excludes most
+clinical settings worldwide. This connects to the broader theme
+of designing analyses for real-world impact.
+
+
+### Slide 14: Evaluation Metrics for Classification
+
+**Metrics table:** Walk through each metric with the ADNI
+example. Sensitivity and specificity are conditional on true
+status. PPV and NPV are conditional on test result. These
+conditioning directions are frequently confused.
+
+**ROC curve:** Explain that the curve shows all possible
+sensitivity/specificity tradeoffs. The 'best' threshold
+depends on the clinical context -- is it worse to miss a
+converter or to falsely alarm a stable patient?
+
+**Question discussion:** The 'always predict stable' scenario
+is the single most important lesson about class imbalance.
+75% accuracy sounds good but is useless. This directly
+demonstrates why accuracy alone is insufficient and why AUROC
+is the standard metric for binary classification.
+
+**Anticipated student question:** 'How do you choose the
+classification threshold?' It depends on the cost of false
+positives vs. false negatives. For screening (catching all
+converters), prioritize sensitivity. For confirmatory testing
+(avoiding unnecessary interventions), prioritize specificity.
+
+
+### Slide 15: Four Datasets, Four Design Contexts
+
+**Project comparison table:** This is a synthesis slide. Walk
+through each row and ask students to name the key analytical
+challenge they encountered.
+
+**Common thread:** Emphasize that despite different designs
+(observational, cohort, RCT), the reproducible workflow was
+identical across all projects: SAP, compendium, renv, Git,
+tests, report.
+
+**Question discussion:** The RCT vs. observational distinction
+is fundamental to biostatistics. Randomization is the key word.
+Ask students: 'Could we randomize officers to stop drivers of
+different races?' (No -- ethical and practical impossibility.)
+This is why the policing analysis cannot make causal claims
+despite having millions of observations.
+
+
+### Slide 16: Cross-Validation Strategies
+
+**Strategy table:** Each row connects to a specific project.
+k-fold for Penguins, site-independent for ADNI, stratified
+for any imbalanced outcome.
+
+**Question discussion:** The site-independent split question
+is the most important validation concept from Project 2.
+Site-level correlations are a form of data leakage -- subjects
+within a site are not independent. This applies broadly to
+any multicenter clinical study.
+
+**Anticipated student question:** 'Is leave-one-out CV ever
+better than k-fold?' LOOCV has lower bias but higher variance
+than k-fold. For most biostatistics applications with
+reasonable sample sizes, 10-fold CV is preferred.
+
+
+### Slide 17: The Complete Reproducible Workflow
+
+**Seven steps:** This is the capstone slide. Walk through the
+workflow as a linear process, but note that in practice it is
+iterative -- you often loop back to earlier steps.
+
+**Question discussion:** The mixed-effects model change
+scenario tests whether students can trace a methodological
+change through all workflow steps. The correct answer touches
+SAP, renv, code, tests, documentation, Git, and Docker. This
+comprehensive thinking is the goal of the entire course.
+
+
+### Slide 18: Questions
+
+Open the floor. If no questions arise, consider asking:
+
+- 'Which tool or concept from this course do you think will
+  be most valuable in your career?'
+- 'What would you do differently if you started Project 1
+  over again today?'
+- 'Is there anything from the course that still feels unclear?'
+
+
+## Troubleshooting Guide
+
+**If students ask about specific test format:**
+Redirect to the test itself on Thursday. This lecture is a
+conceptual review, not a test prep session.
+
+**If discussion runs long on one topic:**
+The reproducibility and regression sections are the most
+likely to generate extended discussion. If running behind,
+abbreviate the cross-validation strategies slide and direct
+students to the Lecture 10 slides for detailed review.
+
+**If students request practice problems:**
+Suggest they re-read the Q&A fragments on each slide, as
+these are representative of the level of reasoning expected.
+
+
+## Prerequisites Verified in This Lecture
+
+Students should be able to:
+
+- [ ] Define reproducibility, replicability, and transparency
+- [ ] Explain the roles of renv, Docker, Git, and rrtools
+- [ ] Describe the core renv workflow (init, snapshot, restore)
+- [ ] Read a Dockerfile and explain layer caching
+- [ ] Execute the Git staging-commit-push workflow
+- [ ] Resolve a merge conflict
+- [ ] List the sections of a statistical analysis plan
+- [ ] Write a testthat test with appropriate expectations
+- [ ] Interpret regression coefficients and R-squared
+- [ ] Explain Simpson's Paradox with the penguins example
+- [ ] Distinguish sensitivity, specificity, PPV, NPV, and AUROC
+- [ ] Explain why accuracy is misleading for imbalanced outcomes
+- [ ] Compare RCT and observational study designs
+- [ ] Justify site-independent cross-validation for ADNI
+- [ ] Trace a methodological change through the full workflow
