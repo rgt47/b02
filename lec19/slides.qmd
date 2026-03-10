@@ -69,9 +69,8 @@ format:
 5. Statistical Analysis Plans
 6. Testing Data Analysis Workflows
 7. Regression and Model Diagnostics
-8. Simpson's Paradox and Confounding
-9. Machine Learning and Classification
-10. Study Design Across Four Projects
+8. Machine Learning and Classification
+9. Study Design Across Four Projects
 
 
 # Part I: Reproducible Research
@@ -535,7 +534,7 @@ metrics for classification with class imbalance.
 
 | Project | Dataset | Design | Key Challenge |
 |---------|---------|--------|---------------|
-| P1 | Palmer Penguins | Observational | Simpson's paradox, confounding |
+| P1 | Palmer Penguins | Observational | Confounding, species effects |
 | P2 | ADNI | Longitudinal cohort | ML classification, class imbalance |
 | P3 | Stanford Policing | Observational | Racial disparities, large N |
 | P4 | Licorice Gargle | Randomized trial | RCT analysis, ITT vs. per-protocol |
