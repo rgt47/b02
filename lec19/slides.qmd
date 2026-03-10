@@ -343,11 +343,26 @@ $$\text{body_mass}_i = \beta_0 + \beta_1 \cdot \text{flipper_length}_i + \epsilo
 
 **Model building strategy** (sequential):
 
-| Model | Predictors | R-squared | CV RMSE (g) |
-|-------|-----------|-----------|-------------|
-| Simple | Flipper length | 0.759 | ~390 |
-| Multiple | Flipper + bill length + bill depth | 0.779 | ~380 |
-| Species-aware | + species | 0.868 | ~290 |
+| Model | Predictors | Adj. R-sq | AIC | CV RMSE (g) |
+|-------|-----------|-----------|-----|-------------|
+| Simple | Flipper length | 0.759 | 5780 | ~390 |
+| Multiple | Flipper + bill + depth | 0.779 | 5765 | ~380 |
+| Species-aware | + species | 0.868 | 5620 | ~290 |
+
+**Model comparison criteria:**
+
+1. **Adjusted R-squared** -- proportion of variance explained
+   (penalizes extra predictors)
+2. **RMSE** -- prediction error in original units
+3. **AIC / BIC** -- information criteria (lower is better;
+   BIC penalizes complexity more than AIC)
+4. **F-test for nested models** -- tests whether added
+   predictors significantly improve fit
+
+```r
+anova(model_simple, model_multiple)  # F-test
+AIC(model_simple, model_multiple)    # Information criteria
+```
 
 **Interpretation of the simple model:**
 
@@ -383,7 +398,11 @@ body mass.
 3. **Scale-Location** -- homoscedasticity
 4. **Residuals vs. Leverage** -- influential observations
 
-**Multicollinearity:** Variance Inflation Factor (VIF)
+**Two additional checks:**
+
+5. **Independence** -- assessed through study design (not a
+   plot; requires knowing how data were collected)
+6. **Multicollinearity** -- Variance Inflation Factor (VIF)
 
 - VIF > 5 indicates concerning multicollinearity
 - VIF > 10 indicates severe multicollinearity
@@ -473,6 +492,15 @@ are not always necessary for clinically useful prediction.
 **ROC curve:** Plot of sensitivity vs. (1 - specificity) across all
 classification thresholds. A perfect classifier has AUROC = 1.0;
 random guessing gives AUROC = 0.5.
+
+**Threshold selection -- Youden's J statistic:**
+
+$$J = \text{Sensitivity} + \text{Specificity} - 1$$
+
+Youden's J finds the threshold that maximizes the sum of sensitivity
+and specificity -- the point on the ROC curve farthest from the
+diagonal (chance line). The `coords(..., "best")` function in `pROC`
+uses this method by default.
 
 ```r
 library(pROC)

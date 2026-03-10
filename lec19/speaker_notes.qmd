@@ -216,6 +216,23 @@ R-squared improves. The jump from 0.779 to 0.868 when adding
 species demonstrates how much variance is explained by group
 membership.
 
+**Model comparison criteria (new for Test 2):** Walk through all
+four criteria explicitly. These map directly to Test 2, Q2:
+
+1. Adjusted R-squared -- penalizes adding weak predictors
+   (unlike raw R-squared, which can only increase)
+2. RMSE -- interpretable in original units (grams for penguins)
+3. AIC/BIC -- information-theoretic; lower is better. Note that
+   BIC penalizes complexity more heavily than AIC, so BIC tends
+   to select simpler models.
+4. F-test for nested models -- `anova()` in R. Only valid when
+   comparing models where one is a strict subset of the other.
+
+Show the `anova()` and `AIC()` code. Ask students: 'Can you use
+an F-test to compare the species-aware model to a completely
+different model with different predictors?' (No -- models must
+be nested.)
+
 **Coefficient interpretation:** Emphasize that the intercept
 of -5781 g is extrapolation (no penguin has zero flipper length)
 and should not be interpreted literally.
@@ -233,6 +250,13 @@ and 3 as well.
 **Diagnostic plots:** Name all four and state what each reveals.
 The residuals vs. fitted plot is the most informative single
 diagnostic. Random scatter = good. Patterns = problems.
+
+**Six assumptions (new for Test 2):** The slides now list all
+six regression assumptions from the analysis plan diagnostic
+table. The addition of independence (item 5) is important --
+emphasize that this is not checkable from a plot. It depends
+on knowing the data collection process (e.g., are penguins
+sampled independently, or are there nest-level correlations?).
 
 **VIF:** Students should know the 5/10 thresholds. For the
 penguins data, VIF is moderate because bill measurements and
@@ -277,6 +301,17 @@ conditioning directions are frequently confused.
 sensitivity/specificity tradeoffs. The 'best' threshold
 depends on the clinical context -- is it worse to miss a
 converter or to falsely alarm a stable patient?
+
+**Youden's J statistic (new for Test 2):** The formula is
+J = Sensitivity + Specificity - 1. Geometrically, it finds
+the point on the ROC curve farthest from the diagonal. Walk
+through why this is a reasonable default: it equally weights
+sensitivity and specificity. Note that `coords(roc_obj, "best")`
+in pROC uses Youden's J by default. Ask students: 'When might
+you NOT want to use Youden's J?' (When the costs of false
+positives and false negatives are very different -- e.g., a
+screening test for a fatal disease should favor sensitivity
+over specificity.)
 
 **Question discussion:** The 'always predict stable' scenario
 is the single most important lesson about class imbalance.
@@ -382,7 +417,10 @@ Students should be able to:
 - [ ] List the sections of a statistical analysis plan
 - [ ] Write a testthat test with appropriate expectations
 - [ ] Interpret regression coefficients and R-squared
+- [ ] List the four model comparison criteria (Adj. R-sq, RMSE, AIC/BIC, F-test)
+- [ ] Name six regression assumptions and their diagnostic methods
 - [ ] Explain Simpson's Paradox with the penguins example
+- [ ] Define Youden's J statistic and its purpose
 - [ ] Distinguish sensitivity, specificity, PPV, NPV, and AUROC
 - [ ] Explain why accuracy is misleading for imbalanced outcomes
 - [ ] Compare RCT and observational study designs
