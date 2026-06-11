@@ -14,5 +14,27 @@ archive/
 *.swp
 
 /.quarto/
-
 **/*.quarto_ipynb
+
+# DUA-restricted data
+**/ADNIMERGE*.csv
+**/ADNIMERGEtadpole.csv
+**/data/*.csv
+
+# Exam and assessment materials
+*answer_key*
+*answerkey*
+*solutions*.R
+*solutions*.r
+*solutions*.md
+
+# Build artifacts
+*_files/
+*_cache/
+_site/
+_freeze/
+_book/
+renv/library/
+
+# Claude Code
+.claude/
