@@ -705,7 +705,7 @@ Today you learned to:
 2. Use renv to lock R package versions
 3. Create a Dockerfile for full environment reproducibility
 4. Build and push Docker images
-5. Enable seamless collaboration via GitHub + DockerHub
+5. Enable collaboration via GitHub + DockerHub
 
 This workflow ensures your ADNI analysis is **reproducible** across any
 machine, any time.

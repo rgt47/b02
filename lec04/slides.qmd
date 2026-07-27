@@ -113,7 +113,7 @@ same file and then try to combine their work?
 ::: {.fragment .answer}
 **Answer:** "Without version control, someone has to manually compare the
 files line by line and merge the changes by hand. This is tedious and
-error-prone—you might accidentally overwrite important changes. I once lost
+error-prone; you might accidentally overwrite important changes. I once lost
 two days of work when a collaborator emailed me their version and I saved
 it over mine, not realizing I had made changes too."
 :::
@@ -144,7 +144,7 @@ like Dropbox or Google Drive?
 people edit simultaneously, you get a conflict file and must resolve it
 manually. Version control is designed for this: it tracks line-by-line
 changes and can often merge automatically. It also captures intent through
-commit messages—cloud storage only knows a file changed, not why."
+commit messages; cloud storage only knows a file changed, not why."
 :::
 
 ## Git: The Version Control Standard {.smaller}
@@ -166,7 +166,7 @@ that matter for collaborative research?
 ::: {.fragment .answer}
 **Answer:** "Each collaborator has the entire project history on their
 computer, not just the latest version. If the central server crashes, no
-work is lost—anyone can restore the repository from their local copy. It
+work is lost; anyone can restore the repository from their local copy. It
 also means you can work offline, making commits and viewing history without
 internet access, then sync when reconnected."
 :::
@@ -195,7 +195,7 @@ directly to your main code?
 ::: {.fragment .answer}
 **Answer:** "Branches let you experiment safely. If I want to try a
 different statistical model, I create a branch and work there. If the
-experiment fails, I delete the branch—the main code is untouched. If it
+experiment fails, I delete the branch; the main code is untouched. If it
 succeeds, I merge it in. This is especially important in collaboration:
 each person works on their own branch, so incomplete work never breaks
 the shared code."
@@ -230,7 +230,7 @@ committing all changes at once?
 **Answer:** "Staging lets you group related changes into logical commits.
 If I fixed a bug and added a new feature, I can stage and commit them
 separately, making the history clearer. I might also have experimental
-changes I am not ready to commit—staging lets me be selective. This
+changes I am not ready to commit, staging lets me be selective. This
 precision in recording changes makes the project history more useful."
 :::
 
@@ -288,7 +288,7 @@ collaboration features. Alternatives include GitLab and Bitbucket.
 ::: {.fragment .answer}
 **Answer:** "Git is software that runs on your computer and tracks changes
 to files. GitHub is a website that hosts Git repositories online. You can
-use Git without GitHub—everything works locally. GitHub adds cloud storage,
+use Git without GitHub; everything works locally. GitHub adds cloud storage,
 web interface, and collaboration features. The relationship is like R
 versus RStudio: Git is the engine, GitHub is a interface that makes it
 easier to use and adds extra features."
@@ -320,7 +320,7 @@ pushed changes you do not have?
 **Answer:** "Git rejects the push to prevent you from overwriting their
 changes. You must first pull their changes, merge them with yours locally,
 resolve any conflicts if the same lines were modified, and then push the
-merged result. This ensures no one's work is ever silently lost—Git
+merged result. This ensures no one's work is ever silently lost. Git
 forces you to explicitly handle concurrent modifications."
 :::
 
@@ -371,7 +371,7 @@ reproducibility and accountability."
 
 - Large data files (use .gitignore)
 - Sensitive data (PHI, credentials)
-- Generated output (HTML, PDF—usually)
+- Generated output (HTML, PDF, usually)
 - Temporary files (.Rhistory, .DS_Store)
 
 
@@ -472,7 +472,7 @@ git diff --staged       # See staged changes
 **Answer:** "Use 'git reset --soft HEAD~1' to undo the commit but keep your
 changes staged, or 'git reset HEAD~1' to unstage them too but keep the
 files modified. If you need to completely discard the changes, 'git reset
---hard HEAD~1' reverts everything—use with caution. Never use reset on
+--hard HEAD~1' reverts everything, use with caution. Never use reset on
 commits you have already pushed, as this rewrites history others may have."
 :::
 
@@ -510,6 +510,6 @@ merge conflict?
 one is clearly correct; other times you need to combine them. For analysis
 code, check with your collaborator to understand their reasoning. The
 commit messages should explain why changes were made. If unsure, discuss
-before resolving—a wrong merge can introduce subtle bugs that are hard
+before resolving; a wrong merge can introduce subtle bugs that are hard
 to trace later."
 :::

@@ -10,7 +10,7 @@ format:
     colorlinks: true
 ---
 
-When working alone, you have flexibility in how you use Git. Should you commit directly to `main`, or use branches? Both approaches are valid—the right choice depends on your project.
+When working alone, you have flexibility in how you use Git. Should you commit directly to `main`, or use branches? Both approaches are valid; the right choice depends on your project.
 
 ## Option 1: Direct Commits to Main
 
@@ -105,4 +105,4 @@ git branch -D experiment-name
 
 ## Key Insight
 
-Branches are cheap in Git—creating one writes only 41 bytes. Don't hesitate to branch when uncertain. The cost of an unnecessary branch is near zero; the cost of a broken `main` is real.
+Branches are cheap in Git, creating one writes only 41 bytes. Don't hesitate to branch when uncertain. The cost of an unnecessary branch is near zero; the cost of a broken `main` is real.

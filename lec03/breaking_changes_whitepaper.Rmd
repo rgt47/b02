@@ -392,7 +392,7 @@ long_data <- pivot_longer(
 \newpage
 
 # Example 6: `dplyr::summarise()` Grouping Behavior
-\label{sec:summarise}
+\label{sec:summarize}
 
 ## The Change
 
@@ -505,7 +505,7 @@ dplyr & 1.1.0 & arrange() locale & Sort order changes \\
 ggplot2 & 3.4.0 & size to linewidth & Visual output differs \\
 readr & 1.2.0 & Integer guessing removed & Column types differ \\
 tidyr & 1.0.0 & gather/spread superseded & API migration needed \\
-dplyr & 1.0.0+ & summarise() grouping & Grouping structure changes \\
+dplyr & 1.0.0+ & summarize() grouping & Grouping structure changes \\
 \bottomrule
 \end{tabular}
 \end{table}

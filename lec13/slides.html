@@ -6,8 +6,8 @@
 <script src="slides_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="slides_files/libs/quarto-html/quarto-syntax-highlighting-a6ed5eb8724c29512b75ae76af222dd4.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.25">
+<link href="slides_files/libs/quarto-html/quarto-syntax-highlighting-bb62276ab45c84d9efd712f51ff97b5a.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
 
   <meta name="author" content="Dr.&nbsp;Ronald G. Thomas">
   <meta name="dcterms.date" content="2026-02-17">
@@ -18,10 +18,16 @@
   <link rel="stylesheet" href="slides_files/libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="slides_files/libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -96,7 +102,7 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-90fd36d93b2474ff5ba50edd39c754ee.css">
+  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-cc987b028043672fb83204947dec60a2.css">
   <link rel="stylesheet" href="../custom.css">
   <link href="slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -201,7 +207,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Dr.&nbsp;Ronald G. Thomas 
+Dr.&nbsp;Ronald G. Thomas
 </div>
 </div>
 </div>
@@ -414,14 +420,14 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="loading-adnimerge" class="slide level2">
 <h2>Loading ADNIMERGE</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href=""></a></span>
-<span id="cb1-3"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
-<span id="cb1-4"><a href=""></a><span class="fu">dim</span>(adni)          <span class="co"># 15278 rows x 113 columns</span></span>
-<span id="cb1-5"><a href=""></a></span>
-<span id="cb1-6"><a href=""></a><span class="co"># Baseline data: one row per subject</span></span>
-<span id="cb1-7"><a href=""></a>adni_bl <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span> <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>)</span>
-<span id="cb1-8"><a href=""></a><span class="fu">nrow</span>(adni_bl)      <span class="co"># 2306 subjects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="" aria-label="2"></a></span>
+<span id="cb1-3"><a href="" aria-label="3"></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb1-4"><a href="" aria-label="4"></a><span class="fu">dim</span>(adni)          <span class="co"># 15278 rows x 113 columns</span></span>
+<span id="cb1-5"><a href="" aria-label="5"></a></span>
+<span id="cb1-6"><a href="" aria-label="6"></a><span class="co"># Baseline data: one row per subject</span></span>
+<span id="cb1-7"><a href="" aria-label="7"></a>adni_bl <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span> <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>)</span>
+<span id="cb1-8"><a href="" aria-label="8"></a><span class="fu">nrow</span>(adni_bl)      <span class="co"># 2306 subjects</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Key variables in ADNIMERGE:</p>
 <ul>
@@ -486,16 +492,16 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="adni-data-structure" class="slide level2">
 <h2>ADNI Data Structure</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
-<span id="cb2-2"><a href=""></a></span>
-<span id="cb2-3"><a href=""></a><span class="co"># One row per visit; filter to baseline</span></span>
-<span id="cb2-4"><a href=""></a>adni_bl <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span> <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>)</span>
-<span id="cb2-5"><a href=""></a></span>
-<span id="cb2-6"><a href=""></a><span class="fu">dim</span>(adni_bl)           <span class="co"># 2306 x 113</span></span>
-<span id="cb2-7"><a href=""></a><span class="fu">names</span>(adni_bl)[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>]</span>
-<span id="cb2-8"><a href=""></a></span>
-<span id="cb2-9"><a href=""></a><span class="co"># Baseline diagnoses</span></span>
-<span id="cb2-10"><a href=""></a><span class="fu">table</span>(adni_bl<span class="sc">$</span>DX_bl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-label="1"></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb2-2"><a href="" aria-label="2"></a></span>
+<span id="cb2-3"><a href="" aria-label="3"></a><span class="co"># One row per visit; filter to baseline</span></span>
+<span id="cb2-4"><a href="" aria-label="4"></a>adni_bl <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span> <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>)</span>
+<span id="cb2-5"><a href="" aria-label="5"></a></span>
+<span id="cb2-6"><a href="" aria-label="6"></a><span class="fu">dim</span>(adni_bl)           <span class="co"># 2306 x 113</span></span>
+<span id="cb2-7"><a href="" aria-label="7"></a><span class="fu">names</span>(adni_bl)[<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>]</span>
+<span id="cb2-8"><a href="" aria-label="8"></a></span>
+<span id="cb2-9"><a href="" aria-label="9"></a><span class="co"># Baseline diagnoses</span></span>
+<span id="cb2-10"><a href="" aria-label="10"></a><span class="fu">table</span>(adni_bl<span class="sc">$</span>DX_bl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="checkpoint">
 <p><strong>Key insight</strong>: ADNIMERGE has one row per visit per subject. Filter to <code>VISCODE == "bl"</code> for baseline data; use <code>Years_bl</code> to track follow-up time from baseline.</p>
@@ -732,14 +738,14 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="sociodemographic-features" class="slide level2">
 <h2>Sociodemographic Features</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
-<span id="cb3-2"><a href=""></a></span>
-<span id="cb3-3"><a href=""></a>demo_vars <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span></span>
-<span id="cb3-4"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>,</span>
-<span id="cb3-5"><a href=""></a>         DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-6"><a href=""></a>  <span class="fu">select</span>(RID, AGE, PTEDUCAT, PTGENDER, PTMARRY)</span>
-<span id="cb3-7"><a href=""></a></span>
-<span id="cb3-8"><a href=""></a><span class="fu">head</span>(demo_vars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-label="1"></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb3-2"><a href="" aria-label="2"></a></span>
+<span id="cb3-3"><a href="" aria-label="3"></a>demo_vars <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="" aria-label="4"></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>,</span>
+<span id="cb3-5"><a href="" aria-label="5"></a>         DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="" aria-label="6"></a>  <span class="fu">select</span>(RID, AGE, PTEDUCAT, PTGENDER, PTMARRY)</span>
+<span id="cb3-7"><a href="" aria-label="7"></a></span>
+<span id="cb3-8"><a href="" aria-label="8"></a><span class="fu">head</span>(demo_vars)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <table class="caption-top">
 <thead>
@@ -846,14 +852,14 @@ Dr.&nbsp;Ronald G. Thomas
 <h2>ADAS-Cog in Detail</h2>
 <p>The Alzheimer’s Disease Assessment Scale-Cognitive (ADAS-Cog):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
-<span id="cb4-2"><a href=""></a>adas_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ADAS11"</span>, <span class="st">"ADAS13"</span>, <span class="st">"ADASQ4"</span>)</span>
-<span id="cb4-3"><a href=""></a></span>
-<span id="cb4-4"><a href=""></a>adni <span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>,</span>
-<span id="cb4-6"><a href=""></a>         DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a href=""></a>  <span class="fu">select</span>(RID, <span class="fu">all_of</span>(adas_vars)) <span class="sc">|&gt;</span></span>
-<span id="cb4-8"><a href=""></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-label="1"></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb4-2"><a href="" aria-label="2"></a>adas_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ADAS11"</span>, <span class="st">"ADAS13"</span>, <span class="st">"ADASQ4"</span>)</span>
+<span id="cb4-3"><a href="" aria-label="3"></a></span>
+<span id="cb4-4"><a href="" aria-label="4"></a>adni <span class="sc">|&gt;</span></span>
+<span id="cb4-5"><a href="" aria-label="5"></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>,</span>
+<span id="cb4-6"><a href="" aria-label="6"></a>         DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="" aria-label="7"></a>  <span class="fu">select</span>(RID, <span class="fu">all_of</span>(adas_vars)) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="" aria-label="8"></a>  <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li><strong>ADAS11</strong>: Original 11-item version</li>
@@ -952,19 +958,19 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="random-forest-a-closer-look" class="slide level2">
 <h2>Random Forest: A Closer Look</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">library</span>(randomForest)</span>
-<span id="cb5-2"><a href=""></a></span>
-<span id="cb5-3"><a href=""></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(</span>
-<span id="cb5-4"><a href=""></a>  converter <span class="sc">~</span> ADAS13 <span class="sc">+</span> CDRSB <span class="sc">+</span> FAQ <span class="sc">+</span> RAVLT_forgetting <span class="sc">+</span></span>
-<span id="cb5-5"><a href=""></a>              LDELTOTAL <span class="sc">+</span> TRABSCOR <span class="sc">+</span> MMSE,</span>
-<span id="cb5-6"><a href=""></a>  <span class="at">data =</span> train_data,</span>
-<span id="cb5-7"><a href=""></a>  <span class="at">ntree =</span> <span class="dv">500</span>,</span>
-<span id="cb5-8"><a href=""></a>  <span class="at">mtry =</span> <span class="dv">3</span>,</span>
-<span id="cb5-9"><a href=""></a>  <span class="at">importance =</span> <span class="cn">TRUE</span></span>
-<span id="cb5-10"><a href=""></a>)</span>
-<span id="cb5-11"><a href=""></a></span>
-<span id="cb5-12"><a href=""></a><span class="fu">importance</span>(rf_model)</span>
-<span id="cb5-13"><a href=""></a><span class="fu">varImpPlot</span>(rf_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-label="1"></a><span class="fu">library</span>(randomForest)</span>
+<span id="cb5-2"><a href="" aria-label="2"></a></span>
+<span id="cb5-3"><a href="" aria-label="3"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(</span>
+<span id="cb5-4"><a href="" aria-label="4"></a>  converter <span class="sc">~</span> ADAS13 <span class="sc">+</span> CDRSB <span class="sc">+</span> FAQ <span class="sc">+</span> RAVLT_forgetting <span class="sc">+</span></span>
+<span id="cb5-5"><a href="" aria-label="5"></a>              LDELTOTAL <span class="sc">+</span> TRABSCOR <span class="sc">+</span> MMSE,</span>
+<span id="cb5-6"><a href="" aria-label="6"></a>  <span class="at">data =</span> train_data,</span>
+<span id="cb5-7"><a href="" aria-label="7"></a>  <span class="at">ntree =</span> <span class="dv">500</span>,</span>
+<span id="cb5-8"><a href="" aria-label="8"></a>  <span class="at">mtry =</span> <span class="dv">3</span>,</span>
+<span id="cb5-9"><a href="" aria-label="9"></a>  <span class="at">importance =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-10"><a href="" aria-label="10"></a>)</span>
+<span id="cb5-11"><a href="" aria-label="11"></a></span>
+<span id="cb5-12"><a href="" aria-label="12"></a><span class="fu">importance</span>(rf_model)</span>
+<span id="cb5-13"><a href="" aria-label="13"></a><span class="fu">varImpPlot</span>(rf_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="cross-validation-strategy" class="slide level2">
@@ -982,17 +988,17 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="site-independent-testing" class="slide level2">
 <h2>Site-Independent Testing</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
-<span id="cb6-2"><a href=""></a></span>
-<span id="cb6-3"><a href=""></a><span class="co"># 67 unique sites available</span></span>
-<span id="cb6-4"><a href=""></a><span class="fu">length</span>(<span class="fu">unique</span>(adni<span class="sc">$</span>SITE))</span>
-<span id="cb6-5"><a href=""></a></span>
-<span id="cb6-6"><a href=""></a><span class="co"># Split by site to ensure independence</span></span>
-<span id="cb6-7"><a href=""></a>train_sites <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">9</span>, <span class="dv">10</span>, ...)</span>
-<span id="cb6-8"><a href=""></a>test_sites  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, ...)</span>
-<span id="cb6-9"><a href=""></a></span>
-<span id="cb6-10"><a href=""></a>train_data <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> train_sites)</span>
-<span id="cb6-11"><a href=""></a>test_data  <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> test_sites)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb6-2"><a href="" aria-label="2"></a></span>
+<span id="cb6-3"><a href="" aria-label="3"></a><span class="co"># 67 unique sites available</span></span>
+<span id="cb6-4"><a href="" aria-label="4"></a><span class="fu">length</span>(<span class="fu">unique</span>(adni<span class="sc">$</span>SITE))</span>
+<span id="cb6-5"><a href="" aria-label="5"></a></span>
+<span id="cb6-6"><a href="" aria-label="6"></a><span class="co"># Split by site to ensure independence</span></span>
+<span id="cb6-7"><a href="" aria-label="7"></a>train_sites <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">9</span>, <span class="dv">10</span>, ...)</span>
+<span id="cb6-8"><a href="" aria-label="8"></a>test_sites  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, ...)</span>
+<span id="cb6-9"><a href="" aria-label="9"></a></span>
+<span id="cb6-10"><a href="" aria-label="10"></a>train_data <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> train_sites)</span>
+<span id="cb6-11"><a href="" aria-label="11"></a>test_data  <span class="ot">&lt;-</span> adni_mci <span class="sc">|&gt;</span> <span class="fu">filter</span>(SITE <span class="sc">%in%</span> test_sites)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="concept-box">
 <p>Site-independent testing simulates real-world generalization: Will the model work at a clinic that wasn’t used for training?</p>
@@ -1040,15 +1046,15 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="roc-curve-interpretation" class="slide level2">
 <h2>ROC Curve Interpretation</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(pROC)</span>
-<span id="cb7-2"><a href=""></a></span>
-<span id="cb7-3"><a href=""></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(test_data<span class="sc">$</span>converter, predictions)</span>
-<span id="cb7-4"><a href=""></a></span>
-<span id="cb7-5"><a href=""></a><span class="fu">plot</span>(roc_obj, <span class="at">main =</span> <span class="st">"MCI to AD Conversion Prediction"</span>)</span>
-<span id="cb7-6"><a href=""></a><span class="fu">auc</span>(roc_obj)</span>
-<span id="cb7-7"><a href=""></a></span>
-<span id="cb7-8"><a href=""></a><span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>,</span>
-<span id="cb7-9"><a href=""></a>       <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"sensitivity"</span>, <span class="st">"specificity"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-label="1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb7-2"><a href="" aria-label="2"></a></span>
+<span id="cb7-3"><a href="" aria-label="3"></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(test_data<span class="sc">$</span>converter, predictions)</span>
+<span id="cb7-4"><a href="" aria-label="4"></a></span>
+<span id="cb7-5"><a href="" aria-label="5"></a><span class="fu">plot</span>(roc_obj, <span class="at">main =</span> <span class="st">"MCI to AD Conversion Prediction"</span>)</span>
+<span id="cb7-6"><a href="" aria-label="6"></a><span class="fu">auc</span>(roc_obj)</span>
+<span id="cb7-7"><a href="" aria-label="7"></a></span>
+<span id="cb7-8"><a href="" aria-label="8"></a><span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>,</span>
+<span id="cb7-9"><a href="" aria-label="9"></a>       <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"sensitivity"</span>, <span class="st">"specificity"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section></section>
 <section>
@@ -1097,46 +1103,46 @@ Dr.&nbsp;Ronald G. Thomas
 <section id="data-preparation-steps" class="slide level2">
 <h2>Data Preparation Steps</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb8-2"><a href=""></a></span>
-<span id="cb8-3"><a href=""></a><span class="co"># Step 1: Load ADNIMERGE</span></span>
-<span id="cb8-4"><a href=""></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
-<span id="cb8-5"><a href=""></a></span>
-<span id="cb8-6"><a href=""></a><span class="co"># Step 2: Select MCI subjects at baseline</span></span>
-<span id="cb8-7"><a href=""></a>mci <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span></span>
-<span id="cb8-8"><a href=""></a>  <span class="fu">filter</span>(DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>))</span>
-<span id="cb8-9"><a href=""></a></span>
-<span id="cb8-10"><a href=""></a><span class="co"># Step 3: Identify subjects with 3+ years follow-up</span></span>
-<span id="cb8-11"><a href=""></a>followup <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
-<span id="cb8-12"><a href=""></a>  <span class="fu">group_by</span>(RID) <span class="sc">|&gt;</span></span>
-<span id="cb8-13"><a href=""></a>  <span class="fu">summarize</span>(<span class="at">max_years =</span> <span class="fu">max</span>(Years_bl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb8-14"><a href=""></a></span>
-<span id="cb8-15"><a href=""></a>rids_3yr <span class="ot">&lt;-</span> followup <span class="sc">|&gt;</span></span>
-<span id="cb8-16"><a href=""></a>  <span class="fu">filter</span>(max_years <span class="sc">&gt;=</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-17"><a href=""></a>  <span class="fu">pull</span>(RID)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-label="1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb8-2"><a href="" aria-label="2"></a></span>
+<span id="cb8-3"><a href="" aria-label="3"></a><span class="co"># Step 1: Load ADNIMERGE</span></span>
+<span id="cb8-4"><a href="" aria-label="4"></a>adni <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/ADNIMERGE.csv"</span>, <span class="at">na.strings =</span> <span class="st">"-4"</span>)</span>
+<span id="cb8-5"><a href="" aria-label="5"></a></span>
+<span id="cb8-6"><a href="" aria-label="6"></a><span class="co"># Step 2: Select MCI subjects at baseline</span></span>
+<span id="cb8-7"><a href="" aria-label="7"></a>mci <span class="ot">&lt;-</span> adni <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href="" aria-label="8"></a>  <span class="fu">filter</span>(DX_bl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>))</span>
+<span id="cb8-9"><a href="" aria-label="9"></a></span>
+<span id="cb8-10"><a href="" aria-label="10"></a><span class="co"># Step 3: Identify subjects with 3+ years follow-up</span></span>
+<span id="cb8-11"><a href="" aria-label="11"></a>followup <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
+<span id="cb8-12"><a href="" aria-label="12"></a>  <span class="fu">group_by</span>(RID) <span class="sc">|&gt;</span></span>
+<span id="cb8-13"><a href="" aria-label="13"></a>  <span class="fu">summarize</span>(<span class="at">max_years =</span> <span class="fu">max</span>(Years_bl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb8-14"><a href="" aria-label="14"></a></span>
+<span id="cb8-15"><a href="" aria-label="15"></a>rids_3yr <span class="ot">&lt;-</span> followup <span class="sc">|&gt;</span></span>
+<span id="cb8-16"><a href="" aria-label="16"></a>  <span class="fu">filter</span>(max_years <span class="sc">&gt;=</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-17"><a href="" aria-label="17"></a>  <span class="fu">pull</span>(RID)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="defining-conversion-status" class="slide level2">
 <h2>Defining Conversion Status</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="co"># Converters: DX changed to "Dementia" within 3 years</span></span>
-<span id="cb9-2"><a href=""></a>converters <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href=""></a>  <span class="fu">filter</span>(RID <span class="sc">%in%</span> rids_3yr, Years_bl <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-4"><a href=""></a>  <span class="fu">group_by</span>(RID) <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href=""></a>  <span class="fu">summarize</span>(</span>
-<span id="cb9-6"><a href=""></a>    <span class="at">converted =</span> <span class="fu">any</span>(DX <span class="sc">==</span> <span class="st">"Dementia"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-7"><a href=""></a>  )</span>
-<span id="cb9-8"><a href=""></a></span>
-<span id="cb9-9"><a href=""></a><span class="co"># Merge to baseline data</span></span>
-<span id="cb9-10"><a href=""></a>mci_bl <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
-<span id="cb9-11"><a href=""></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>, RID <span class="sc">%in%</span> rids_3yr) <span class="sc">|&gt;</span></span>
-<span id="cb9-12"><a href=""></a>  <span class="fu">left_join</span>(converters, <span class="at">by =</span> <span class="st">"RID"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-13"><a href=""></a>  <span class="fu">filter</span>(AGE <span class="sc">&gt;=</span> <span class="dv">55</span>, AGE <span class="sc">&lt;=</span> <span class="dv">90</span>,</span>
-<span id="cb9-14"><a href=""></a>         MMSE <span class="sc">&gt;=</span> <span class="dv">24</span>, MMSE <span class="sc">&lt;=</span> <span class="dv">30</span>)</span>
-<span id="cb9-15"><a href=""></a></span>
-<span id="cb9-16"><a href=""></a><span class="fu">table</span>(mci_bl<span class="sc">$</span>converted)</span>
-<span id="cb9-17"><a href=""></a><span class="co"># FALSE  TRUE</span></span>
-<span id="cb9-18"><a href=""></a><span class="co">#   446   147</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-label="1"></a><span class="co"># Converters: DX changed to "Dementia" within 3 years</span></span>
+<span id="cb9-2"><a href="" aria-label="2"></a>converters <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="" aria-label="3"></a>  <span class="fu">filter</span>(RID <span class="sc">%in%</span> rids_3yr, Years_bl <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="" aria-label="4"></a>  <span class="fu">group_by</span>(RID) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="" aria-label="5"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb9-6"><a href="" aria-label="6"></a>    <span class="at">converted =</span> <span class="fu">any</span>(DX <span class="sc">==</span> <span class="st">"Dementia"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-7"><a href="" aria-label="7"></a>  )</span>
+<span id="cb9-8"><a href="" aria-label="8"></a></span>
+<span id="cb9-9"><a href="" aria-label="9"></a><span class="co"># Merge to baseline data</span></span>
+<span id="cb9-10"><a href="" aria-label="10"></a>mci_bl <span class="ot">&lt;-</span> mci <span class="sc">|&gt;</span></span>
+<span id="cb9-11"><a href="" aria-label="11"></a>  <span class="fu">filter</span>(VISCODE <span class="sc">==</span> <span class="st">"bl"</span>, RID <span class="sc">%in%</span> rids_3yr) <span class="sc">|&gt;</span></span>
+<span id="cb9-12"><a href="" aria-label="12"></a>  <span class="fu">left_join</span>(converters, <span class="at">by =</span> <span class="st">"RID"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-13"><a href="" aria-label="13"></a>  <span class="fu">filter</span>(AGE <span class="sc">&gt;=</span> <span class="dv">55</span>, AGE <span class="sc">&lt;=</span> <span class="dv">90</span>,</span>
+<span id="cb9-14"><a href="" aria-label="14"></a>         MMSE <span class="sc">&gt;=</span> <span class="dv">24</span>, MMSE <span class="sc">&lt;=</span> <span class="dv">30</span>)</span>
+<span id="cb9-15"><a href="" aria-label="15"></a></span>
+<span id="cb9-16"><a href="" aria-label="16"></a><span class="fu">table</span>(mci_bl<span class="sc">$</span>converted)</span>
+<span id="cb9-17"><a href="" aria-label="17"></a><span class="co"># FALSE  TRUE</span></span>
+<span id="cb9-18"><a href="" aria-label="18"></a><span class="co">#   446   147</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="suggested-timeline" class="slide level2">
@@ -1423,7 +1429,7 @@ Dr.&nbsp;Ronald G. Thomas
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -1535,13 +1541,14 @@ Dr.&nbsp;Ronald G. Thomas
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

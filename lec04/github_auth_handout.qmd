@@ -20,7 +20,7 @@ GitHub requires **two-factor authentication (2FA)** for all users. After enablin
    - **Security key**: YubiKey or other FIDO2 device
    - **GitHub Mobile**: Use the GitHub app for push notifications
    - **Passkey**: Passwordless authentication (newest option)
-3. **Save your recovery codes** in a secure location—you need these if you lose your device
+3. **Save your recovery codes** in a secure location; you need these if you lose your device
 
 ## Step 2: Choose Your Command-Line Authentication Method
 
@@ -62,7 +62,7 @@ Use this if SSH setup is problematic or you prefer HTTPS URLs.
 1. Go to **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
 2. Click **Generate new token (classic)**
 3. Set expiration and select scopes: `repo` (full repository access)
-4. Click **Generate token** and **copy it immediately**—you cannot see it again
+4. Click **Generate token** and **copy it immediately**; you cannot see it again
 5. When Git prompts for password, paste your token instead
 
 **Store your token** using Git Credential Manager to avoid re-entering:

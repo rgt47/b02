@@ -130,7 +130,7 @@ your code uses in a README file?
 
 ::: {.fragment .answer}
 **Answer:** "A README requires manual installation and hopes the versions
-are still available. renv automates the entire process—it knows which
+are still available. renv automates the entire process; it knows which
 versions you used, where to download them, and how to install them. It also
 handles dependencies: if package A requires a specific version of package B,
 renv manages that automatically. Manual documentation cannot capture this
@@ -163,7 +163,7 @@ Key files created:
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Run snapshot after any package change—installing new packages,
+**Answer:** "Run snapshot after any package change, installing new packages,
 updating existing ones, or removing packages you no longer need. I also
 run it before committing to Git, ensuring the lockfile stays synchronized
 with my code. Some people snapshot daily as a habit, which catches any
@@ -261,7 +261,7 @@ slightly different coordinates on Linux versus macOS."
 **Answer:** "Virtual machines include a complete operating system with its
 own kernel, making them heavy and slow to start. Containers share the host
 machine's kernel and only include the differences from a base image. This
-makes containers lightweight—they start in seconds and use minimal disk
+makes containers lightweight; they start in seconds and use minimal disk
 space. For data science, this efficiency means you can quickly spin up
 reproducible environments without the overhead of full virtualization."
 :::
@@ -347,10 +347,10 @@ docker run --rm -it \
 
 Key flags:
 
-- `--rm` — Remove container when it exits
-- `-it` — Interactive terminal
-- `-v` — Mount local directory into container
-- `-w` — Set working directory
+- `--rm`: Remove container when it exits
+- `-it`: Interactive terminal
+- `-v`: Mount local directory into container
+- `-w`: Set working directory
 
 ::: {.fragment .question}
 **Question:** What happens to files you create inside a container if you
@@ -360,8 +360,8 @@ do not use the -v volume mount?
 ::: {.fragment .answer}
 **Answer:** "Without a volume mount, files exist only inside the container's
 filesystem. When the container stops, especially with --rm, those files
-vanish completely. This is actually a feature for reproducibility—containers
-start fresh every time—but during development you need mounts to preserve
+vanish completely. This is actually a feature for reproducibility; containers
+start fresh every time, but during development you need mounts to preserve
 your work. Always mount your working directory when doing interactive
 analysis."
 :::
@@ -390,7 +390,7 @@ reproducible project with renv and Docker?
 ::: {.fragment .answer}
 **Answer:** "First commit the basic project structure and renv.lock after
 initializing renv. This lets collaborators restore packages immediately.
-Add the Dockerfile once your analysis stabilizes—you do not want to rebuild
+Add the Dockerfile once your analysis stabilizes; you do not want to rebuild
 images constantly during early development. Finally, document the workflow
 in your README so others know whether to use renv::restore() locally or
 pull your Docker image."
@@ -437,7 +437,7 @@ to Docker?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "Start with the Rocker Project website—it is written specifically
+**Answer:** "Start with the Rocker Project website; it is written specifically
 for R users and assumes no Docker knowledge. The official Docker
 documentation is comprehensive but overwhelming for beginners. After
 understanding Rocker basics, the Docker 'Get Started' tutorial fills in
@@ -476,7 +476,7 @@ about unavailable packages?
 :::
 
 ::: {.fragment .answer}
-**Answer:** "First check if the package was removed from CRAN—this happens
+**Answer:** "First check if the package was removed from CRAN; this happens
 occasionally with problematic packages. Try the CRAN archive or the
 package's GitHub repository as alternative sources. You can also use
 renv::install() with a specific URL. If the package is truly unavailable,

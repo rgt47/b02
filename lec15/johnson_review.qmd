@@ -1,6 +1,6 @@
 ---
 title: "PHB 243b: Practicum in Biostatistics"
-subtitle: "Paper Review: Johnson et al. (2014) — Genetic Algorithm with Logistic Regression for Prediction of AD Progression"
+subtitle: "Paper Review: Johnson et al. (2014): Genetic Algorithm with Logistic Regression for Prediction of AD Progression"
 author: "Dr. Ronald G. Thomas"
 date: "February 24, 2026"
 format:
@@ -103,10 +103,10 @@ the analytic strategy is directly transferable to ADNIMERGE data.
 
 |  | AIBL | ADNI |
 |--|------|------|
-| **Full name** | Australian Imaging, Biomarkers and Lifestyle Study of Ageing | Alzheimer's Disease Neuroimaging Initiative |
+| **Full name** | Australian Imaging, Biomarkers and Lifestyle Study of Aging | Alzheimer's Disease Neuroimaging Initiative |
 | **Launched** | November 2006 | October 2004 |
 | **Country** | Australia (Melbourne, Perth) | US and Canada |
-| **Sites** | 2 centres | 67 sites |
+| **Sites** | 2 centers | 67 sites |
 | **Baseline N** | 1,112 (768 HC, 133 MCI, 211 AD) | 2,306 (521 CN, 303 SMC, 404 EMCI, 659 LMCI, 400 AD) |
 | **Enrichment** | +1,247 added over time (total 3,045) | Additional enrollment via ADNI-GO, ADNI-2, ADNI-3 |
 | **Follow-up** | Every 18 months | 6--12 month intervals |
@@ -156,7 +156,7 @@ from 13 test instruments:
 | Rey Complex Figure | Copy, delay, recognition (5 variables) |
 | D-KEFS | Letter fluency, category fluency, switching (4 variables) |
 | WAIS-III | Digit span, digit symbol-coding, IQ estimates (4 variables) |
-| Stroop | Dots, words, colours --- time and errors (7 variables) |
+| Stroop | Dots, words, colors --- time and errors (7 variables) |
 | BNT | Boston Naming Test (2 variables) |
 | CDT / CDRSoB / WTAR / HADS | Clock drawing, dementia rating, reading, mood (5 variables) |
 
@@ -455,7 +455,7 @@ Top features selected in >60% of GA runs:
 | v10 | CVLT-II Recognition d' | Recognition memory |
 | v15 | Rey Complex Figure Recognition | Visual memory |
 | v19 | D-KEFS Category Switching (switches) | Semantic fluency |
-| v31 | Stroop Colour errors | Executive function |
+| v31 | Stroop Color errors | Executive function |
 | v35 | CDR Sum of Boxes | Clinical staging |
 
 ::: {.concept-box}
@@ -533,7 +533,7 @@ ADNIMERGE contains analogous measures to the AIBL battery:
 | CVLT-II Recognition d' (v10) | Not directly available |
 | D-KEFS Category Switching (v18, v19) | Not directly available |
 | CDR Sum of Boxes (v35) | CDRSB |
-| Stroop Colour errors (v31) | Not in ADNIMERGE |
+| Stroop Color errors (v31) | Not in ADNIMERGE |
 | MMSE (v1) | MMSE |
 | Rey Complex Figure (v15) | Not in ADNIMERGE |
 

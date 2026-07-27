@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="analysis_plan_template_files/libs/clipboard/clipboard.min.js"></script>
+<script src="analysis_plan_template_files/libs/quarto-html/tabby.min.js"></script>
+<script src="analysis_plan_template_files/libs/quarto-html/popper.min.js"></script>
+<script src="analysis_plan_template_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="analysis_plan_template_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="analysis_plan_template_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="analysis_plan_template_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="[Your Name Here]">
+  <meta name="dcterms.date" content="2026-06-11">
+  <title>Statistical Analysis Plan: ADNI MCI Conversion Prediction</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="analysis_plan_template_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="analysis_plan_template_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="analysis_plan_template_files/libs/revealjs/dist/theme/quarto-2abc1c5b7b5c7eecd6137558e106e4c3.css">
+  <link href="analysis_plan_template_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="analysis_plan_template_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="analysis_plan_template_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="analysis_plan_template_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Statistical Analysis Plan: ADNI MCI Conversion Prediction</h1>
+  <p class="subtitle">PHB 243b Project 2</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+[Your Name Here]
+</div>
+</div>
+</div>
+
+  <p class="date">2026-06-11</p>
+</section><section id="TOC">
+<nav role="doc-toc"> 
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a href="#/introduction" id="/toc-introduction">Introduction</a></li>
+<li><a href="#/data-description" id="/toc-data-description">Data Description</a></li>
+<li><a href="#/variables" id="/toc-variables">Variables</a></li>
+<li><a href="#/statistical-methods" id="/toc-statistical-methods">Statistical Methods</a></li>
+<li><a href="#/planned-results" id="/toc-planned-results">Planned Results</a></li>
+<li><a href="#/sensitivity-analyses" id="/toc-sensitivity-analyses">Sensitivity Analyses</a></li>
+<li><a href="#/limitations" id="/toc-limitations">Limitations</a></li>
+<li><a href="#/timeline" id="/toc-timeline">Timeline</a></li>
+<li><a href="#/references" id="/toc-references">References</a></li>
+<li><a href="#/appendix-code-framework" id="/toc-appendix-code-framework">Appendix: Code Framework</a></li>
+</ul>
+</nav>
+</section>
+<section>
+<section id="introduction" class="title-slide slide level1 center">
+<h1>Introduction</h1>
+
+</section>
+<section id="background-and-rationale" class="slide level2">
+<h2>Background and Rationale</h2>
+<!--
+PROMPT: Provide 2-3 paragraphs describing:
+- Alzheimer's disease as a public health problem
+- The role of MCI as a transitional state
+- Why predicting MCI-to-AD conversion is clinically important
+- Brief mention of prior work (cite Grassi et al. 2019)
+
+Example opening: "Alzheimer's disease (AD) is the most common cause of
+dementia, affecting an estimated 6.7 million Americans..."
+-->
+<p>[Your background text here]</p>
+</section>
+<section id="research-questions" class="slide level2 scrollable">
+<h2>Research Questions</h2>
+<!--
+PROMPT: State your primary research question clearly. Consider:
+- What outcome are you trying to predict? (MCI to AD conversion)
+- What predictors will you examine? (baseline clinical/cognitive measures)
+- What is the prediction horizon? (3-year follow-up)
+
+Be specific. Example: "Can baseline sociodemographic characteristics,
+clinical scales, and neuropsychological test scores predict conversion
+from MCI to AD dementia within 3 years?"
+-->
+<p><strong>Primary Research Question:</strong></p>
+<p>[Your primary question here]</p>
+<p><strong>Secondary Questions (if any):</strong></p>
+<ol type="1">
+<li>Which predictor categories (sociodemographic, clinical, neuropsychological) contribute most to prediction accuracy?</li>
+<li>Does prediction performance differ between EMCI and LMCI subgroups?</li>
+</ol>
+</section>
+<section id="hypotheses" class="slide level2">
+<h2>Hypotheses</h2>
+<!--
+PROMPT: State your hypotheses before analyzing the data.
+- What variables do you expect to be most predictive?
+- What is the clinical/biological rationale?
+- What level of discrimination (AUROC) do you expect?
+
+Reference Grassi et al. (2019): AUROC = 0.88
+-->
+<p><strong>Primary Hypothesis:</strong></p>
+<p>[Your hypothesis here, e.g., “Baseline ADAS-Cog-13, CDR-SB, and RAVLT forgetting scores will significantly predict MCI-to-AD conversion…”]</p>
+<p><strong>Expected Performance:</strong></p>
+<p>Based on Grassi et al.&nbsp;(2019), we expect AUROC in the range of 0.75-0.85.</p>
+</section></section>
+<section>
+<section id="data-description" class="title-slide slide level1 center">
+<h1>Data Description</h1>
+
+</section>
+<section id="data-source" class="slide level2">
+<h2>Data Source</h2>
+<!--
+PROMPT: Describe where the data come from. Include:
+- ADNI study description
+- ADNIMERGE2 R package
+- Data Use Agreement requirements
+- Data download date
+-->
+<p>Data for this analysis come from the Alzheimer’s Disease Neuroimaging Initiative (ADNI), accessed via the ADNIMERGE2 R package (Donohue et al., 2026). ADNI is a longitudinal multicenter study designed to develop clinical, imaging, genetic, and biochemical biomarkers for early detection and tracking of Alzheimer’s disease.</p>
+<p><strong>Data access:</strong> <a href="https://adni.loni.usc.edu">adni.loni.usc.edu</a></p>
+<p><strong>Data download date:</strong> [Your download date]</p>
+<p><strong>Citation:</strong> Donohue MC, et al.&nbsp;(2026). Alzheimer’s clinical research data via R packages: The alzverse. <em>Alzheimer’s Dement</em>, 22:e71152.</p>
+</section>
+<section id="study-population" class="slide level2 scrollable">
+<h2>Study Population</h2>
+<!--
+PROMPT: Describe the study population:
+- Inclusion criteria: MCI diagnosis at baseline (EMCI or LMCI)
+- Minimum follow-up: 3 years (or at least one follow-up visit)
+- Exclusion criteria: Missing key predictors, no follow-up data
+-->
+<p><strong>Inclusion Criteria:</strong></p>
+<ol type="1">
+<li>Baseline diagnosis of Mild Cognitive Impairment (EMCI or LMCI)</li>
+<li>At least 3 years of follow-up OR documented conversion to AD</li>
+<li>Complete data on primary predictor variables</li>
+</ol>
+<p><strong>Exclusion Criteria:</strong></p>
+<ol type="1">
+<li>Baseline diagnosis of CN or Dementia</li>
+<li>No follow-up visits after baseline</li>
+<li>Missing data on &gt;50% of predictor variables</li>
+</ol>
+</section>
+<section id="sample-size" class="slide level2">
+<h2>Sample Size</h2>
+<!--
+PROMPT: Report expected sample size:
+- Total MCI subjects in ADNIMERGE2
+- Expected sample after applying inclusion/exclusion criteria
+- Number of converters vs. stable
+-->
+<p><strong>Expected Sample Size:</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Group</th>
+<th>N (expected)</th>
+<th>Percentage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Stable MCI (sMCI)</td>
+<td>~350</td>
+<td>~64%</td>
+</tr>
+<tr class="even">
+<td>Converters (cAD)</td>
+<td>~200</td>
+<td>~36%</td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td>~550</td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+<p>Based on Grassi et al.&nbsp;(2019) cohort selection criteria.</p>
+</section></section>
+<section>
+<section id="variables" class="title-slide slide level1 center">
+<h1>Variables</h1>
+
+</section>
+<section id="primary-outcome" class="slide level2">
+<h2>Primary Outcome</h2>
+<!--
+PROMPT: Define your primary outcome variable:
+- Conversion to AD dementia (binary: Yes/No)
+- How conversion is defined (any follow-up diagnosis of Dementia)
+- Time horizon (within 3 years of baseline)
+-->
+<table class="caption-top">
+<colgroup>
+<col style="width: 45%">
+<col style="width: 54%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Variable name</td>
+<td><code>converter</code></td>
+</tr>
+<tr class="even">
+<td>Definition</td>
+<td>Conversion from MCI to AD dementia</td>
+</tr>
+<tr class="odd">
+<td>Type</td>
+<td>Binary (0 = Stable, 1 = Converter)</td>
+</tr>
+<tr class="even">
+<td>Operationalization</td>
+<td>Any follow-up diagnosis of “Dementia” within 3 years</td>
+</tr>
+<tr class="odd">
+<td>Reference</td>
+<td>Grassi et al.&nbsp;(2019)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="primary-predictors" class="slide level2">
+<h2>Primary Predictors</h2>
+<h3 id="sociodemographic-variables">Sociodemographic Variables</h3>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 30%">
+<col style="width: 15%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Definition</th>
+<th>Type</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AGE</td>
+<td>Age at baseline (years)</td>
+<td>Continuous</td>
+<td>Age is primary AD risk factor</td>
+</tr>
+<tr class="even">
+<td>PTEDUCAT</td>
+<td>Years of education</td>
+<td>Continuous</td>
+<td>Cognitive reserve proxy</td>
+</tr>
+<tr class="odd">
+<td>PTGENDER</td>
+<td>Sex</td>
+<td>Binary</td>
+<td>Sex differences in AD risk</td>
+</tr>
+<tr class="even">
+<td>PTMARRY</td>
+<td>Marital status</td>
+<td>Categorical</td>
+<td>Social support proxy</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clinical-scales">Clinical Scales</h3>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 30%">
+<col style="width: 15%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Definition</th>
+<th>Type</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CDRSB</td>
+<td>CDR Sum of Boxes (0-18)</td>
+<td>Continuous</td>
+<td>Clinical staging</td>
+</tr>
+<tr class="even">
+<td>FAQ</td>
+<td>Functional Activities Questionnaire (0-30)</td>
+<td>Continuous</td>
+<td>Functional impairment</td>
+</tr>
+</tbody>
+</table>
+<h3 id="neuropsychological-tests">Neuropsychological Tests</h3>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 30%">
+<col style="width: 15%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Definition</th>
+<th>Type</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MMSE</td>
+<td>Mini-Mental State Exam (0-30)</td>
+<td>Continuous</td>
+<td>Global cognition</td>
+</tr>
+<tr class="even">
+<td>ADAS13</td>
+<td>ADAS-Cog 13-item (0-85)</td>
+<td>Continuous</td>
+<td>AD-specific cognition</td>
+</tr>
+<tr class="odd">
+<td>RAVLT_immediate</td>
+<td>RAVLT sum of trials 1-5</td>
+<td>Continuous</td>
+<td>Verbal learning</td>
+</tr>
+<tr class="even">
+<td>RAVLT_learning</td>
+<td>RAVLT trial 5 - trial 1</td>
+<td>Continuous</td>
+<td>Learning rate</td>
+</tr>
+<tr class="odd">
+<td>RAVLT_forgetting</td>
+<td>RAVLT trial 5 - delayed</td>
+<td>Continuous</td>
+<td>Memory retention</td>
+</tr>
+<tr class="even">
+<td>LDELTOTAL</td>
+<td>Logical Memory delayed recall</td>
+<td>Continuous</td>
+<td>Episodic memory</td>
+</tr>
+<tr class="odd">
+<td>TRABSCOR</td>
+<td>Trail Making Test B (seconds)</td>
+<td>Continuous</td>
+<td>Executive function</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mci-subtype">MCI Subtype</h3>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Definition</th>
+<th>Type</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DX_BL</td>
+<td>Baseline MCI subtype</td>
+<td>Binary</td>
+<td>EMCI vs LMCI</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="excluded-variables" class="slide level2">
+<h2>Excluded Variables</h2>
+<!--
+PROMPT: Explain why imaging and genetic variables are excluded
+(following Grassi et al. approach for clinical translatability)
+-->
+<p>The following variable categories are intentionally <strong>excluded</strong> to maximize clinical translatability (Grassi et al., 2019):</p>
+<ul>
+<li><strong>Imaging:</strong> MRI volumes, PET SUVRs</li>
+<li><strong>Genetic:</strong> APOE genotype</li>
+<li><strong>Biomarkers:</strong> CSF Abeta, tau, p-tau</li>
+</ul>
+<p><strong>Rationale:</strong> These measures require specialized equipment and expertise not available in most community clinical settings.</p>
+</section></section>
+<section>
+<section id="statistical-methods" class="title-slide slide level1 center">
+<h1>Statistical Methods</h1>
+
+</section>
+<section id="descriptive-statistics" class="slide level2">
+<h2>Descriptive Statistics</h2>
+<p><strong>Continuous variables:</strong> Mean (SD), median (IQR), range</p>
+<p><strong>Categorical variables:</strong> Frequencies, percentages</p>
+<p><strong>Stratification:</strong> By conversion status (sMCI vs cAD)</p>
+<p><strong>Comparison tests:</strong></p>
+<ul>
+<li>Continuous: t-test or Wilcoxon rank-sum</li>
+<li>Categorical: Chi-square or Fisher’s exact</li>
+</ul>
+</section>
+<section id="missing-data" class="slide level2">
+<h2>Missing Data</h2>
+<!--
+PROMPT: Describe your approach to missing data
+-->
+<p><strong>Strategy:</strong> [Complete case analysis / Multiple imputation / Specify]</p>
+<p><strong>Justification:</strong> [Your justification here]</p>
+</section>
+<section id="machine-learning-methods" class="slide level2 scrollable">
+<h2>Machine Learning Methods</h2>
+<h3 id="algorithms">Algorithms</h3>
+<p>We will implement at least three classification algorithms:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Algorithm</th>
+<th>R Package</th>
+<th>Key Hyperparameters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Logistic Regression</td>
+<td><code>glm</code></td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Random Forest</td>
+<td><code>randomForest</code></td>
+<td>ntree, mtry</td>
+</tr>
+<tr class="odd">
+<td>Gradient Boosting</td>
+<td><code>xgboost</code></td>
+<td>max_depth, eta, nrounds</td>
+</tr>
+<tr class="even">
+<td>[Optional: Additional]</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="cross-validation-strategy">Cross-Validation Strategy</h3>
+<!--
+PROMPT: Describe your validation approach
+- Train/test split ratio
+- Cross-validation folds
+- Site-independent split (if possible)
+-->
+<ol type="1">
+<li><strong>Train/Test Split:</strong> 70% training, 30% testing</li>
+<li><strong>Cross-Validation:</strong> 5-fold CV within training set</li>
+<li><strong>Site Independence:</strong> [If feasible, split by ADNI site]</li>
+</ol>
+<h3 id="hyperparameter-tuning">Hyperparameter Tuning</h3>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Algorithm</th>
+<th>Tuning Method</th>
+<th>Grid/Range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Random Forest</td>
+<td>Grid search</td>
+<td>mtry: 2-8, ntree: 100-500</td>
+</tr>
+<tr class="even">
+<td>XGBoost</td>
+<td>Grid search</td>
+<td>max_depth: 3-6, eta: 0.01-0.3</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="evaluation-metrics" class="slide level2">
+<h2>Evaluation Metrics</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Definition</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AUROC</td>
+<td>Area under ROC curve</td>
+<td>&gt; 0.75</td>
+</tr>
+<tr class="even">
+<td>Sensitivity</td>
+<td>TP / (TP + FN)</td>
+<td>&gt; 0.70</td>
+</tr>
+<tr class="odd">
+<td>Specificity</td>
+<td>TN / (TN + FP)</td>
+<td>&gt; 0.70</td>
+</tr>
+<tr class="even">
+<td>PPV</td>
+<td>TP / (TP + FP)</td>
+<td>Report</td>
+</tr>
+<tr class="odd">
+<td>NPV</td>
+<td>TN / (TN + FN)</td>
+<td>Report</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Threshold Selection:</strong> Youden’s J statistic (maximize sensitivity + specificity)</p>
+</section>
+<section id="feature-importance" class="slide level2">
+<h2>Feature Importance</h2>
+<ul>
+<li><strong>Random Forest:</strong> Mean decrease in Gini / Permutation importance</li>
+<li><strong>Logistic Regression:</strong> Standardized coefficients</li>
+<li><strong>XGBoost:</strong> Gain-based importance</li>
+</ul>
+</section></section>
+<section>
+<section id="planned-results" class="title-slide slide level1 center">
+<h1>Planned Results</h1>
+
+</section>
+<section id="table-1-baseline-characteristics-by-conversion-status" class="slide level2">
+<h2>Table 1: Baseline Characteristics by Conversion Status</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Characteristic</th>
+<th>Stable MCI</th>
+<th>Converters</th>
+<th>p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>N</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Age, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>Education, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>Female, n (%)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>EMCI, n (%)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>MMSE, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>ADAS-Cog-13, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>CDR-SB, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>FAQ, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>RAVLT immediate, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>RAVLT forgetting, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>LDELTOTAL, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>TMT-B, mean (SD)</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="table-2-model-performance-comparison" class="slide level2">
+<h2>Table 2: Model Performance Comparison</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Logistic Reg</th>
+<th>Random Forest</th>
+<th>XGBoost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AUROC (95% CI)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Sensitivity</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Specificity</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>PPV</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>NPV</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Accuracy</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="table-3-feature-importance-rankings" class="slide level2">
+<h2>Table 3: Feature Importance Rankings</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Rank</th>
+<th>Logistic Reg</th>
+<th>Random Forest</th>
+<th>XGBoost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="planned-figures" class="slide level2">
+<h2>Planned Figures</h2>
+<h3 id="figure-1-cohort-flow-diagram">Figure 1: Cohort Flow Diagram</h3>
+<ul>
+<li><strong>Type:</strong> CONSORT-style flow diagram</li>
+<li><strong>Purpose:</strong> Show sample selection and exclusions</li>
+</ul>
+<h3 id="figure-2-roc-curves">Figure 2: ROC Curves</h3>
+<ul>
+<li><strong>Type:</strong> Overlaid ROC curves for all models</li>
+<li><strong>Purpose:</strong> Compare discrimination across algorithms</li>
+</ul>
+<h3 id="figure-3-feature-importance-plot">Figure 3: Feature Importance Plot</h3>
+<ul>
+<li><strong>Type:</strong> Bar chart or dot plot</li>
+<li><strong>Purpose:</strong> Visualize top predictors</li>
+</ul>
+<h3 id="figure-4-calibration-plot">Figure 4: Calibration Plot</h3>
+<ul>
+<li><strong>Type:</strong> Predicted vs.&nbsp;observed probabilities</li>
+<li><strong>Purpose:</strong> Assess calibration of best model</li>
+</ul>
+</section></section>
+<section id="sensitivity-analyses" class="title-slide slide level1 center">
+<h1>Sensitivity Analyses</h1>
+<table class="caption-top">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 28%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Analysis</th>
+<th>Rationale</th>
+<th>Expected Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EMCI only</td>
+<td>Test in early-stage MCI</td>
+<td>Lower conversion rate</td>
+</tr>
+<tr class="even">
+<td>LMCI only</td>
+<td>Test in late-stage MCI</td>
+<td>Higher conversion rate</td>
+</tr>
+<tr class="odd">
+<td>Exclude outliers</td>
+<td>Robustness check</td>
+<td>Minimal change expected</td>
+</tr>
+<tr class="even">
+<td>Alternative imputation</td>
+<td>Compare to complete case</td>
+<td>Similar results expected</td>
+</tr>
+<tr class="odd">
+<td>Different CV folds</td>
+<td>Check stability</td>
+<td>Similar AUROC expected</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<section id="limitations" class="title-slide slide level1 center">
+<h1>Limitations</h1>
+
+</section>
+<section id="scope-and-generalizability" class="slide level2">
+<h2>Scope and Generalizability</h2>
+<ul>
+<li>Results specific to ADNI population (highly educated, mostly White)</li>
+<li>May not generalize to community clinic populations</li>
+<li>ADNI uses strict diagnostic criteria</li>
+</ul>
+</section>
+<section id="methodological-limitations" class="slide level2">
+<h2>Methodological Limitations</h2>
+<ul>
+<li>Retrospective cohort design</li>
+<li>Cannot establish causation</li>
+<li>3-year prediction horizon may miss later converters</li>
+<li>No external validation cohort</li>
+</ul>
+</section>
+<section id="data-limitations" class="slide level2">
+<h2>Data Limitations</h2>
+<ul>
+<li>Missing data on some predictor variables</li>
+<li>Potential selection bias in ADNI enrollment</li>
+<li>Measurement variability across sites</li>
+</ul>
+</section></section>
+<section id="timeline" class="title-slide slide level1 center">
+<h1>Timeline</h1>
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Week</th>
+<th>Task</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1 (Feb 17-21)</td>
+<td>Data preparation, cohort selection</td>
+<td>Clean dataset</td>
+</tr>
+<tr class="even">
+<td>2 (Feb 24-28)</td>
+<td>Feature engineering, initial models</td>
+<td>Preliminary results</td>
+</tr>
+<tr class="odd">
+<td>3 (Mar 2-6)</td>
+<td>Model tuning, evaluation, report</td>
+<td>Final submission</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Due Date:</strong> March 3, 2026</p>
+</section>
+
+<section id="references" class="title-slide slide level1 center scrollable">
+<h1>References</h1>
+<ol type="1">
+<li><p>Donohue MC, et al.&nbsp;(2026). Alzheimer’s clinical research data via R packages: The alzverse. <em>Alzheimer’s Dement</em>, 22:e71152.</p></li>
+<li><p>Grassi M, et al.&nbsp;(2019). A Clinically-Translatable Machine Learning Algorithm for the Prediction of Alzheimer’s Disease Conversion. <em>Front Neurol</em>, 10:756.</p></li>
+<li><p>Petersen RC. (2004). Mild cognitive impairment as a diagnostic entity. <em>J Intern Med</em>, 256(3):183-194.</p></li>
+<li><p>Rye I, et al.&nbsp;(2022). Predicting conversion to Alzheimer’s disease in individuals with Mild Cognitive Impairment. <em>Sci Rep</em>, 12:15566.</p></li>
+</ol>
+</section>
+
+<section id="appendix-code-framework" class="title-slide slide level1 center">
+<h1>Appendix: Code Framework</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-2"><a href="" aria-label="2"></a><span class="co"># Data Preparation</span></span>
+<span id="cb1-3"><a href="" aria-label="3"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-4"><a href="" aria-label="4"></a><span class="fu">library</span>(ADNIMERGE2)</span>
+<span id="cb1-5"><a href="" aria-label="5"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-6"><a href="" aria-label="6"></a><span class="fu">library</span>(caret)</span>
+<span id="cb1-7"><a href="" aria-label="7"></a></span>
+<span id="cb1-8"><a href="" aria-label="8"></a><span class="co"># Load data</span></span>
+<span id="cb1-9"><a href="" aria-label="9"></a><span class="fu">data</span>(ADSL)</span>
+<span id="cb1-10"><a href="" aria-label="10"></a><span class="fu">data</span>(ADQS)</span>
+<span id="cb1-11"><a href="" aria-label="11"></a></span>
+<span id="cb1-12"><a href="" aria-label="12"></a><span class="co"># Select MCI subjects at baseline</span></span>
+<span id="cb1-13"><a href="" aria-label="13"></a>mci_baseline <span class="ot">&lt;-</span> ADSL <span class="sc">|&gt;</span></span>
+<span id="cb1-14"><a href="" aria-label="14"></a>  <span class="fu">filter</span>(DX_BL <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"EMCI"</span>, <span class="st">"LMCI"</span>))</span>
+<span id="cb1-15"><a href="" aria-label="15"></a></span>
+<span id="cb1-16"><a href="" aria-label="16"></a><span class="co"># Define conversion status</span></span>
+<span id="cb1-17"><a href="" aria-label="17"></a><span class="co"># [Your code here]</span></span>
+<span id="cb1-18"><a href="" aria-label="18"></a></span>
+<span id="cb1-19"><a href="" aria-label="19"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-20"><a href="" aria-label="20"></a><span class="co"># Feature Engineering</span></span>
+<span id="cb1-21"><a href="" aria-label="21"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-22"><a href="" aria-label="22"></a><span class="co"># Select predictor variables</span></span>
+<span id="cb1-23"><a href="" aria-label="23"></a>predictors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"AGE"</span>, <span class="st">"PTEDUCAT"</span>, <span class="st">"PTGENDER"</span>, <span class="st">"CDRSB"</span>, <span class="st">"FAQ"</span>,</span>
+<span id="cb1-24"><a href="" aria-label="24"></a>                <span class="st">"MMSE"</span>, <span class="st">"ADAS13"</span>, <span class="st">"RAVLT_immediate"</span>, <span class="st">"RAVLT_forgetting"</span>,</span>
+<span id="cb1-25"><a href="" aria-label="25"></a>                <span class="st">"LDELTOTAL"</span>, <span class="st">"TRABSCOR"</span>)</span>
+<span id="cb1-26"><a href="" aria-label="26"></a></span>
+<span id="cb1-27"><a href="" aria-label="27"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-28"><a href="" aria-label="28"></a><span class="co"># Model Training</span></span>
+<span id="cb1-29"><a href="" aria-label="29"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-30"><a href="" aria-label="30"></a><span class="co"># Train/test split</span></span>
+<span id="cb1-31"><a href="" aria-label="31"></a><span class="fu">set.seed</span>(<span class="dv">243</span>)</span>
+<span id="cb1-32"><a href="" aria-label="32"></a>train_idx <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(mci_data<span class="sc">$</span>converter, <span class="at">p =</span> <span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-33"><a href="" aria-label="33"></a></span>
+<span id="cb1-34"><a href="" aria-label="34"></a><span class="co"># Cross-validation setup</span></span>
+<span id="cb1-35"><a href="" aria-label="35"></a>ctrl <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">5</span>,</span>
+<span id="cb1-36"><a href="" aria-label="36"></a>                     <span class="at">classProbs =</span> <span class="cn">TRUE</span>, <span class="at">summaryFunction =</span> twoClassSummary)</span>
+<span id="cb1-37"><a href="" aria-label="37"></a></span>
+<span id="cb1-38"><a href="" aria-label="38"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-39"><a href="" aria-label="39"></a><span class="co"># Model Evaluation</span></span>
+<span id="cb1-40"><a href="" aria-label="40"></a><span class="co"># ============================================================</span></span>
+<span id="cb1-41"><a href="" aria-label="41"></a><span class="co"># ROC curves</span></span>
+<span id="cb1-42"><a href="" aria-label="42"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb1-43"><a href="" aria-label="43"></a><span class="co"># [Your code here]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<!--
+CHECKLIST before submitting:
+
+[ ] Clear, specific research question about MCI conversion prediction
+[ ] Complete data description with ADNI/ADNIMERGE2 citations
+[ ] All predictor variables defined with clinical rationale
+[ ] At least 3 ML algorithms specified with hyperparameters
+[ ] Cross-validation strategy clearly described
+[ ] Evaluation metrics defined with targets
+[ ] Table shells for baseline characteristics and model comparison
+[ ] Figure descriptions for ROC curves and feature importance
+[ ] Sensitivity analyses planned
+[ ] Limitations acknowledged
+[ ] All references cited
+
+Goal: Someone else could execute your plan and get the same results.
+-->
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="analysis_plan_template_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="analysis_plan_template_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': true,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
